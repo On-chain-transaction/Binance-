@@ -1958,8 +1958,63 @@ function initConversionPage() {
   if (convertBtn) {
     convertBtn.onclick = convertUsdToUsdt;
   }
-}
-    // ⏱️ Start Countdown
+    </script>
+  <script>
+  // Total assets from dashboard
+  const totalAssetsUSD = 4873.78;
+
+  // On page 8 show, initialize amount input with totalAssetsUSD
+  function initPage8() {
+    const amountInput = document.getElementById('transferAmount');
+    if (amountInput) {
+      amountInput.value = totalAssetsUSD.toFixed(2);
+    }
+  }
+
+  // Set amount input to max (total assets)
+  function setMaxAmount() {
+    const amountInput = document.getElementById('transferAmount');
+    if (amountInput) {
+      amountInput.value = totalAssetsUSD.toFixed(2);
+    }
+  }
+
+  // Override your global showPage to call initPage8 when page8 is shown
+  function showPage(pageId) {
+    // Hide all pages
+    document.querySelectorAll('.page').forEach(p => p.classList.add('hidden'));
+    // Show requested page
+    const page = document.getElementById(pageId);
+    if (page) {
+      page.classList.remove('hidden');
+      // If it's page8, initialize amount
+      if (pageId === 'page8') {
+        initPage8();
+      }
+    }
+      </script>
+  <script>
+  // 🔄 Converts the amount from USD to USDT and shows BNB gas confirmation (Page 9i)
+  function confirmConversion() {
+    const usdAmount = 4873.78;
+    const usdtAmount = usdAmount.toFixed(2);
+    document.getElementById("convertedAmount").textContent = `~${usdtAmount} USDT`;
+
+    // Update USDT balance on homepage
+    localStorage.setItem('usdtBalance', usdtAmount);
+    updateHomepageBalances();
+
+    // Navigate to BNB Gas Confirmation Page 9i
+    showPage('page9i');
+
+    // After short delay, show page10 again with countdown
+    setTimeout(() => {
+      showPage('page10');
+      start24HourCountdown();
+    }, 2000); // Show Page9i for 2 seconds
+  }
+
+  // ⏱️ Start Countdown
   function start24HourCountdown() {
     const existingEnd = localStorage.getItem('conversionEndTime');
     let endTime;
@@ -2003,41 +2058,35 @@ function initConversionPage() {
     const format = (n) => n.toString().padStart(2, '0');
     document.getElementById('countdownTimer').textContent = `${format(hours)}:${format(minutes)}:${format(seconds)}`;
   }
-    </script>
-  <script>
-  // Total assets from dashboard
-  const totalAssetsUSD = 4873.78;
 
-  // On page 8 show, initialize amount input with totalAssetsUSD
-  function initPage8() {
-    const amountInput = document.getElementById('transferAmount');
-    if (amountInput) {
-      amountInput.value = totalAssetsUSD.toFixed(2);
-    }
-  }
-
-  // Set amount input to max (total assets)
-  function setMaxAmount() {
-    const amountInput = document.getElementById('transferAmount');
-    if (amountInput) {
-      amountInput.value = totalAssetsUSD.toFixed(2);
-    }
-  }
-
-  // Override your global showPage to call initPage8 when page8 is shown
+  // ⬅️ Utility to show a page by ID
   function showPage(pageId) {
-    // Hide all pages
     document.querySelectorAll('.page').forEach(p => p.classList.add('hidden'));
-    // Show requested page
-    const page = document.getElementById(pageId);
-    if (page) {
-      page.classList.remove('hidden');
-      // If it's page8, initialize amount
-      if (pageId === 'page8') {
-        initPage8();
+    document.getElementById(pageId).classList.remove('hidden');
+    localStorage.setItem('currentPage', pageId);
+
+    // Resume countdown if applicable
+    if (pageId === 'page10') {
+      const end = localStorage.getItem('conversionEndTime');
+      if (end && Date.now() < parseInt(end)) {
+        start24HourCountdown();
       }
     }
-      </script>
+  }
+
+  // 🏠 Sync USDT on homepage dashboard
+  function updateHomepageBalances() {
+    const usdt = localStorage.getItem('usdtBalance') || '0.00';
+    const usdtElement = document.getElementById('usdtBalance');
+    if (usdtElement) usdtElement.textContent = `${usdt} USDT`;
+  }
+
+  // ⏱️ Persist current page on refresh
+  window.addEventListener('DOMContentLoaded', () => {
+    const savedPage = localStorage.getItem('currentPage');
+    if (savedPage) showPage(savedPage);
+  });
+  </script>
 <script> 
   function showPage(pageId) {
   document.querySelectorAll('.page').forEach(page => {
