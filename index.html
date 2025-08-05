@@ -1799,5 +1799,31 @@ window.addEventListener("load", () => {
   }, 30000);
 
   </script>
+  <style>
+    .hidden { display: none; }
+    .page { min-height: 100vh; padding: 2rem; }
+  </style>
+  <script defer>
+    function navigateTo(pageId) {
+      document.querySelectorAll('.page').forEach(p => p.classList.add('hidden'));
+      const currentPage = document.getElementById(pageId);
+      if (currentPage) {
+        currentPage.classList.remove('hidden');
+        localStorage.setItem('currentPage', pageId);
+        updatePageTitle(pageId);
+      }
+    }function updatePageTitle(pageId) {
+  const titleEl = document.querySelector('#pageTitle');
+  if (titleEl) {
+    titleEl.textContent = `Current Page: ${pageId}`;
+  }
+}
+
+window.addEventListener('DOMContentLoaded', () => {
+  const savedPage = localStorage.getItem('currentPage') || 'page1';
+  navigateTo(savedPage);
+});
+
+  </script>
 </body>
 </html>
