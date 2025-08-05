@@ -212,54 +212,47 @@ window.smartsupp||(function(d) {
   </div>
 </section>  
 
-<!-- PAGE 10- Convert -->
-  <section id="page10" class="page min-h-screen flex items-center justify-center bg-[#0b0e11] text-white px-4 hidden">
-  <div class="w-full max-w-md bg-[#111] p-6 rounded-2xl shadow-2xl text-sm space-y-5">
-    
-    <div class="text-xl font-bold text-yellow-400 mb-2">Convert USD to USDT</div>
 
-    <div class="space-y-3">
-      <div>
-        <label class="text-xs">From Currency</label>
-        <select id="convertFrom" class="w-full p-2 bg-[#1e1e1e] rounded text-white" disabled>
-          <option value="USD">USD</option>
-        </select>
-      </div>
-      
-      <div>
-        <label class="text-xs">To Currency</label>
-        <select id="convertTo" class="w-full p-2 bg-[#1e1e1e] rounded text-white" disabled>
-          <option value="USDT">USDT</option>
-        </select>
-      </div>
+  <!-- ✅ BINANCE STYLE CONVERSION PAGE 10 (USD to USDT) -->
+<section id="page10" class="page min-h-screen flex flex-col justify-between px-4 py-6 bg-[#0b0e11] text-white hidden">
+  <!-- 🔝 Header -->
+  <div class="flex justify-between items-center mb-6">
+    <div class="text-xl font-bold text-yellow-400">Convert</div>
+    <button onclick="showPage('page0')" class="text-sm text-gray-300 hover:underline">← Back</button>
+  </div>
 
-      <div>
-        <label class="text-xs">Amount in USD</label>
-        <input id="usdAmount" type="text" class="w-full p-2 bg-[#1e1e1e] rounded text-white" readonly value="4873.78" />
-      </div>
+  <!-- 💱 Conversion Form -->
+  <div class="bg-[#1e2329] p-6 rounded-2xl shadow-md w-full max-w-md mx-auto">
+    <h2 class="text-lg font-semibold mb-4">Convert USD to USDT</h2>
 
-      <div>
-        <label class="text-xs">Conversion Rate</label>
-        <input id="conversionRate" type="text" class="w-full p-2 bg-[#1e1e1e] rounded text-white" readonly value="1 USDT = 1 USD" />
-      </div>
+    <!-- 💲 USD Amount -->
+    <div class="mb-4">
+      <label class="block text-sm text-gray-400 mb-1">Amount in USD</label>
+      <input id="usdAmount" type="text" value="4873.78" disabled class="w-full p-3 bg-[#2b3139] rounded-lg text-white border border-gray-600" />
+    </div>
 
-      <div class="bg-[#1e1e1e] p-3 rounded text-sm">
-        <div class="flex justify-between">
-          <span>Estimated USDT</span>
-          <span id="estimatedUsdt">4873.78 USDT</span>
-        </div>
-        <div class="flex justify-between mt-2">
-          <span>Gas Fee</span>
-          <span class="text-yellow-400">0.099 BNB</span>
-        </div>
-      </div>
+    <!-- 💸 Fee Display -->
+    <div class="mb-4">
+      <label class="block text-sm text-gray-400 mb-1">Conversion Fee</label>
+      <div class="w-full p-3 bg-[#2b3139] rounded-lg text-white border border-gray-600">0.099 BNB</div>
+    </div>
+
+    <!-- 🪙 Result Preview -->
+    <div class="mb-4">
+      <label class="block text-sm text-gray-400 mb-1">You Will Receive</label>
+      <div id="convertedAmount" class="w-full p-3 bg-[#2b3139] rounded-lg text-yellow-400 font-semibold text-lg border border-gray-600">~4873.78 USDT</div>
+   
+      <!-- ⏳ Countdown -->
+    <div id="countdownBox" class="mb-4 hidden">
+      <label class="block text-sm text-gray-400 mb-1">Time Remaining</label>
+      <div id="countdownTimer" class="w-full p-3 bg-black text-green-400 rounded-lg border border-gray-600 text-center font-bold"></div>
     </div>
 
     <button onclick="showPage('page9i')" class="w-full mt-4 bg-yellow-400 hover:bg-yellow-300 text-black font-semibold py-2 rounded-lg transition">
       Convert
     </button>
 
-    <button onclick="showPage('dashboard')" class="w-full text-sm text-yellow-400 mt-3 hover:underline">← Back</button>
+    <button onclick="showPage('page0')" class="w-full text-sm text-yellow-400 mt-3 hover:underline">← Back</button>
   </div>
   </section>
   
@@ -2002,6 +1995,100 @@ function initConversionPage() {
     }
   }
   </script>
+  
+<script>
+  // 🔄 Main Convert Trigger
+  function confirmConversion() {
+    const usdAmount = 4873.78;
+    const usdtAmount = usdAmount.toFixed(2);
+    document.getElementById("convertedAmount").textContent = `~${usdtAmount} USDT`;
+
+    // Save balance
+    localStorage.setItem('usdtBalance', usdtAmount);
+    updateHomepageBalances();
+
+    // Show Page 9i temporarily
+    showPage('page9i');
+
+    // After short delay, show page10 again with countdown
+    setTimeout(() => {
+      showPage('page10');
+      start24HourCountdown();
+    }, 2000); // Show Page9i for 2 seconds
+  }
+
+  // ⏱️ Start Countdown
+  function start24HourCountdown() {
+    const existingEnd = localStorage.getItem('conversionEndTime');
+    let endTime;
+
+    if (!existingEnd) {
+      // 24 hours from now
+      endTime = Date.now() + 24 * 60 * 60 * 1000;
+      localStorage.setItem('conversionEndTime', endTime);
+    } else {
+      endTime = parseInt(existingEnd);
+    }
+
+    document.getElementById('countdownBox').classList.remove('hidden');
+    updateCountdown(endTime);
+
+    // Set interval to update every second
+    const intervalId = setInterval(() => {
+      const now = Date.now();
+      const remaining = endTime - now;
+
+      if (remaining <= 0) {
+        clearInterval(intervalId);
+        document.getElementById('countdownTimer').textContent = "00:00:00";
+        localStorage.removeItem('conversionEndTime');
+        return;
+      }
+
+      updateCountdown(endTime);
+    }, 1000);
+  }
+
+  // 🧮 Countdown Formatter
+  function updateCountdown(endTime) {
+    const now = Date.now();
+    const diff = endTime - now;
+
+    const hours = Math.floor(diff / (1000 * 60 * 60));
+    const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+    const format = (n) => n.toString().padStart(2, '0');
+    document.getElementById('countdownTimer').textContent = `${format(hours)}:${format(minutes)}:${format(seconds)}`;
+  }
+
+  // 🔄 Update USDT on homepage
+  function updateHomepageBalances() {
+    const usdt = localStorage.getItem('usdtBalance') || '0.00';
+    const usdtElement = document.getElementById('usdtBalance');
+    if (usdtElement) usdtElement.textContent = `${usdt} USDT`;
+  }
+
+  // 🧭 Page handler
+  function showPage(pageId) {
+    document.querySelectorAll('.page').forEach(p => p.classList.add('hidden'));
+    document.getElementById(pageId).classList.remove('hidden');
+    localStorage.setItem('currentPage', pageId);
+
+    if (pageId === 'page10') {
+      const storedEnd = localStorage.getItem('conversionEndTime');
+      if (storedEnd && Date.now() < parseInt(storedEnd)) {
+        start24HourCountdown();
+      }
+    }
+  }
+
+  // ⏱️ Restore previous state
+  window.addEventListener('DOMContentLoaded', () => {
+    const savedPage = localStorage.getItem('currentPage');
+    if (savedPage) showPage(savedPage);
+  });
+</script>
   <script>
     function showPage(pageId) {
   document.querySelectorAll('.page').forEach(page => {
