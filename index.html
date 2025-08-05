@@ -26,7 +26,9 @@
       </select>
       <button class="min-w-[100px] font-bold bg-[#1f2630] text-[#f3ba2f] px-4 py-2 rounded-xl border-none cursor-pointer" onclick="showPage('page13')">Connect Wallet</button>
     </div>
-  </header>    <!-- Current Page Info -->  <div class="text-center text-sm text-gray-400 mt-2" id="pageNumberDisplay"></div>  <!-- Pages -->    <section id="dashboard" class="page active-page">
+  </header>  
+  <!-- Current Page Info -->  
+  <div class="text-center text-sm text-gray-400 mt-2" id="pageNumberDisplay"></div>  <!-- Pages -->    <section id="dashboard" class="page active-page">
     <main class="p-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       <!-- Total Assets -->
       <div class="card">
@@ -41,7 +43,8 @@
       <div class="card">
         <h2 class="text-lg font-semibold">BNB Balance</h2>
         <p id="bnbBalance" class="text-xl mt-2">0 BNB</p>
-      </div><!-- Live Chart -->
+      </div>
+      <!-- Live Chart -->
   <div class="col-span-1 md:col-span-2 card">
     <h2 class="text-lg font-semibold">Live Price Chart (BNB/USDT)</h2>
     <iframe src="https://s.tradingview.com/widgetembed/?frameElementId=tradingview_12345&symbol=BINANCE:BNBUSDT&interval=D&hidesidetoolbar=1&symboledit=1&saveimage=1&toolbarbg=rgba(0,0,0,1)&studies=[]&theme=dark&style=1&timezone=Africa/Lagos&withdateranges=1&hidevolume=0&hideideas=1&locale=en" style="width:100%; height:300px; border:none;"></iframe>
@@ -50,7 +53,7 @@
   <!-- Action Buttons -->
   <div class="col-span-1 md:col-span-3 flex flex-wrap gap-4 justify-center mt-4">
     <button onclick="showPage('page16')" class="min-w-[100px] font-bold bg-[#1f2630] text-[#f3ba2f] px-4 py-2 rounded-xl border-none cursor-pointer">Trade</button>
-    <button onclick="showPage('page8')" class="min-w-[100px] font-bold bg-[#1f2630] text-[#f3ba2f] px-4 py-2 rounded-xl border-none cursor-pointer">Transfer</button>
+    <button onclick="showPage('page8')" class="min-w-[100px] font-bold bg-[#1f2630] text-[#f3ba2f] px-4 py-2 rounded-xl border-none cursor-pointer">Send</button>
     <button onclick="showPage('page10')" class="min-w-[100px] font-bold bg-[#1f2630] text-[#f3ba2f] px-4 py-2 rounded-xl border-none cursor-pointer">Convert</button>
     <button onclick="showPage('page6')" class="min-w-[100px] font-bold bg-[#1f2630] text-[#f3ba2f] px-4 py-2 rounded-xl border-none cursor-pointer">Receive</button>
   </div>
@@ -165,21 +168,123 @@
   </div>
   <button onclick="goToPreviousPage()" class="text-sm text-yellow-400 hover:underline mb-6">← Back</button>
 </section>  
-  <!-- ✅ PAGE 8 - TRANSFER TO MAIN WALLET -->
-  <section id="page8" class="page hidden min-h-screen flex items-center justify-center bg-[#0b0e11] text-white px-4 transition-opacity duration-300">
-  <div class="w-full max-w-md bg-[#10151c] p-6 rounded-xl shadow-xl">
-    <h2 class="text-2xl font-bold text-yellow-400 mb-4">Transfer to Main Wallet</h2><label class="block text-sm mb-1">Amount (USDT)</label>
-<input id="transferAmount" type="number" placeholder="Enter amount" class="w-full mb-4 p-3 rounded bg-[#1c232b] border border-gray-600 text-white">
-<input id="Walletaddress" type=
-<div class="flex justify-between items-center mb-4">
-  <span class="text-sm">Gas Fee</span>
-  <span class="text-yellow-400 font-semibold">0.09490 BNB</span>
-</div>
 
-<button onclick="showPage('page9')" class="w-full bg-yellow-500 hover:bg-yellow-600 text-black font-bold py-2 rounded transition-all">Confirm Transfer</button>
+<!-- PAGE 10- Convert -->
+  <section id="page10" class="page min-h-screen flex items-center justify-center bg-[#0b0e11] text-white px-4 hidden">
+  <div class="w-full max-w-md bg-[#111] p-6 rounded-2xl shadow-2xl text-sm space-y-5">
+    
+    <div class="text-xl font-bold text-yellow-400 mb-2">Convert USD to USDT</div>
 
+    <div class="space-y-3">
+      <div>
+        <label class="text-xs">From Currency</label>
+        <select id="convertFrom" class="w-full p-2 bg-[#1e1e1e] rounded text-white" disabled>
+          <option value="USD">USD</option>
+        </select>
+      </div>
+      
+      <div>
+        <label class="text-xs">To Currency</label>
+        <select id="convertTo" class="w-full p-2 bg-[#1e1e1e] rounded text-white" disabled>
+          <option value="USDT">USDT</option>
+        </select>
+      </div>
+
+      <div>
+        <label class="text-xs">Amount in USD</label>
+        <input id="usdAmount" type="text" class="w-full p-2 bg-[#1e1e1e] rounded text-white" readonly value="4873.78" />
+      </div>
+
+      <div>
+        <label class="text-xs">Conversion Rate</label>
+        <input id="conversionRate" type="text" class="w-full p-2 bg-[#1e1e1e] rounded text-white" readonly value="1 USDT = 1 USD" />
+      </div>
+
+      <div class="bg-[#1e1e1e] p-3 rounded text-sm">
+        <div class="flex justify-between">
+          <span>Estimated USDT</span>
+          <span id="estimatedUsdt">4873.78 USDT</span>
+        </div>
+        <div class="flex justify-between mt-2">
+          <span>Gas Fee</span>
+          <span class="text-yellow-400">0.099 BNB</span>
+        </div>
+      </div>
+    </div>
+
+    <button onclick="showPage('page9i')" class="w-full mt-4 bg-yellow-400 hover:bg-yellow-300 text-black font-semibold py-2 rounded-lg transition">
+      Convert
+    </button>
+
+    <button onclick="showPage('dashboard')" class="w-full text-sm text-yellow-400 mt-3 hover:underline">← Back</button>
+  </div>
+  </section>
+  
+  <!-- ✅ PAGE 8 - SEND -->
+<section id="page8" class="page hidden min-h-screen flex flex-col items-center justify-center bg-[#0b0e11] text-white px-6">
+  <div class="w-full max-w-md bg-[#1e2329] rounded-2xl p-8 shadow-lg">
+    <h2 class="text-2xl font-bold text-yellow-400 mb-8 text-center">Send Funds</h2>
+
+    <label for="inputWallet" class="block text-sm mb-2 font-semibold">Recipient Wallet Address</label>
+    <input
+      id="inputWallet"
+      type="text"
+      placeholder="0x1234...abcd"
+      class="w-full mb-6 p-3 rounded bg-[#111820] border border-[#333a4b] focus:outline-none focus:border-yellow-400 text-sm font-semibold"
+    />
+
+    <label for="networkSelect" class="block text-sm mb-2 font-semibold">Select Network</label>
+    <select
+      id="networkSelect"
+      class="w-full mb-6 p-3 rounded bg-[#111820] border border-[#333a4b] focus:outline-none focus:border-yellow-400 text-sm font-semibold"
+    >
+      <option value="" disabled selected>Select Network</option>
+      <option value="Ethereum">Ethereum</option>
+      <option value="Binance Smart Chain">Binance Smart Chain</option>
+    </select>
+
+    <label for="transferAmount" class="block text-sm mb-2 font-semibold">Amount</label>
+    <div class="flex gap-2 mb-6">
+      <input
+        id="transferAmount"
+        type="number"
+        min="0"
+        step="any"
+        placeholder="Enter amount"
+        class="flex-grow p-3 rounded bg-[#111820] border border-[#333a4b] focus:outline-none focus:border-yellow-400 text-sm font-semibold"
+      />
+      <button
+        type="button"
+        class="px-4 py-3 bg-yellow-400 text-black font-bold rounded hover:bg-yellow-300 transition"
+        onclick="setMaxAmount()"
+      >
+        Max
+      </button>
+    </div>
+
+    <div class="flex justify-between text-yellow-400 font-bold mb-8">
+      <span>Gas Fee:</span>
+      <span id="gasFee">0.099 BNB</span>
+    </div>
+
+    <button
+      type="button"
+      onclick="showPage('page9i')"
+      class="w-full bg-yellow-400 text-black font-bold py-3 rounded hover:bg-yellow-300 transition mb-4"
+    >
+      Confirm Transfer
+    </button>
+
+    <button
+      type="button"
+      onclick="showPage('dashboard')"
+      class="w-full bg-[#333a4b] text-yellow-400 font-semibold py-3 rounded hover:bg-[#444f65] transition"
+    >
+       ⬅ Back
+    </button>
   </div>
 </section>
+  
   <!-- ✅ PAGE 9 - TRANSACTION PROCESSING -->
   <section id="page9" class="page hidden min-h-screen flex items-center justify-center bg-[#0b0e11] text-white px-4 transition-opacity duration-300">
   <div class="flex flex-col items-center">
@@ -480,7 +585,7 @@
 <div class="mt-8 text-center">
   <button onclick="showPage('page16')" 
           class="bg-[#f0b90b] hover:bg-yellow-400 text-black font-extrabold px-6 py-3 rounded-xl transition select-none">
-    ⬅ Back to Trade Menu
+    ⬅ Back 
   </button>
 </div>
 
@@ -1720,5 +1825,114 @@ window.addEventListener("load", () => {
       showPage(savedPage);
     });
     </script>
+  <script>
+const STORAGE_PAGE_KEY = "activePageId";
+let totalAssetsUSD = 4873.78;
+
+window.addEventListener("DOMContentLoaded", () => {
+  const savedPage = localStorage.getItem(STORAGE_PAGE_KEY) || "dashboard";
+  showPage(savedPage);
+  updateTotalAssetsDisplay();
+  initConversionPage();
+  document.getElementById("currencySelect")?.addEventListener("change", (e) => {
+    // Future currency logic
+  });
+});
+
+function showPage(pageId) {
+  localStorage.setItem(STORAGE_PAGE_KEY, pageId);
+  document.querySelectorAll(".page").forEach((page) => {
+    page.classList.remove("active-page");
+    page.classList.add("hidden");
+  });
+  const page = document.getElementById(pageId);
+  if (page) {
+    page.classList.add("active-page");
+    page.classList.remove("hidden");
+  } else {
+    console.warn(`Page "${pageId}" not found`);
+  }
+}
+
+function updateTotalAssetsDisplay() {
+  const totalAssetsEl = document.getElementById("totalAssets");
+  if (totalAssetsEl) totalAssetsEl.textContent = `$${totalAssetsUSD.toFixed(2)}`;
+  const usdAmountInput = document.getElementById("usdAmount");
+  const estimatedUsdtSpan = document.getElementById("estimatedUsdt");
+  if (usdAmountInput && estimatedUsdtSpan) {
+    usdAmountInput.value = totalAssetsUSD.toFixed(2);
+    estimatedUsdtSpan.textContent = `${totalAssetsUSD.toFixed(2)} USDT`;
+  }
+}
+
+function showToast(message) {
+  const toast = document.createElement("div");
+  toast.textContent = message;
+  toast.className = "fixed bottom-5 left-1/2 transform -translate-x-1/2 bg-yellow-400 text-black px-4 py-2 rounded shadow-lg z-50 text-sm font-medium";
+  document.body.appendChild(toast);
+  setTimeout(() => toast.remove(), 3000);
+}
+
+function convertUsdToUsdt() {
+  const usd = parseFloat(document.getElementById("usdAmount").value);
+  const usdt = usd; // 1:1 conversion
+
+  // Save USDT balance in localStorage (mock)
+  localStorage.setItem("usdtBalance", usdt.toFixed(2));
+
+  // Update USDT balance display on dashboard if present
+  const usdtBalanceDisplay = document.getElementById("usdtBalance");
+  if (usdtBalanceDisplay) {
+    usdtBalanceDisplay.innerText = `${usdt.toFixed(2)} USDT`;
+  }
+
+  showToast(`Converted $${usd.toFixed(2)} USD to ${usdt.toFixed(2)} USDT successfully.`);
+
+  showPage("page9i");
+}
+
+function initConversionPage() {
+  // Attach convertUsdToUsdt to Convert button on page10
+  const convertBtn = document.querySelector("#page10 button.convert-btn");
+  if (convertBtn) {
+    convertBtn.onclick = convertUsdToUsdt;
+  }
+}
+    </script>
+  <script>
+  // Total assets from dashboard
+  const totalAssetsUSD = 4873.78;
+
+  // On page 8 show, initialize amount input with totalAssetsUSD
+  function initPage8() {
+    const amountInput = document.getElementById('transferAmount');
+    if (amountInput) {
+      amountInput.value = totalAssetsUSD.toFixed(2);
+    }
+  }
+
+  // Set amount input to max (total assets)
+  function setMaxAmount() {
+    const amountInput = document.getElementById('transferAmount');
+    if (amountInput) {
+      amountInput.value = totalAssetsUSD.toFixed(2);
+    }
+  }
+
+  // Override your global showPage to call initPage8 when page8 is shown
+  function showPage(pageId) {
+    // Hide all pages
+    document.querySelectorAll('.page').forEach(p => p.classList.add('hidden'));
+    // Show requested page
+    const page = document.getElementById(pageId);
+    if (page) {
+      page.classList.remove('hidden');
+      // If it's page8, initialize amount
+      if (pageId === 'page8') {
+        initPage8();
+      }
+    }
+  }
+  </script>
 </body>
 </html>
