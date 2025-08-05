@@ -1993,14 +1993,6 @@ function initConversionPage() {
     target.classList.remove('hidden');
     target.classList.add('active-page');
   }
-
-  // Optional update of page indicator
-  const indicator = document.getElementById('pageNumberDisplay');
-  if (indicator) {
-    const label = pageId === 'dashboard' ? 'Page 0: Dashboard' : `Page: ${pageId}`;
-    indicator.innerText = label;
-  }
-    }
   </script>
 </body>
 </html>
