@@ -1,5 +1,4 @@
-<!DOCTYPE html><html lang="en" class="scroll-smooth">
-<head>
+<!DOCTYPE html><html lang="en" class="scroll-smooth"><head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Binance Web3</title>
@@ -27,9 +26,7 @@
       </select>
       <button class="min-w-[100px] font-bold bg-[#1f2630] text-[#f3ba2f] px-4 py-2 rounded-xl border-none cursor-pointer" onclick="showPage('page13')">Connect Wallet</button>
     </div>
-  </header>  
-  <!-- Pages -->  
-  <section id="dashboard" class="page active-page">
+  </header>    <!-- Current Page Info -->  <div class="text-center text-sm text-gray-400 mt-2" id="pageNumberDisplay"></div>  <!-- Pages -->    <section id="dashboard" class="page active-page">
     <main class="p-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       <!-- Total Assets -->
       <div class="card">
@@ -37,16 +34,14 @@
         <p id="totalAssets" class="text-2xl mt-2">$4873.78</p>
       </div>
       <!-- Token Balances -->
-  <div class="card">
-    <h2 class="text-lg font-semibold">USDT Balance</h2>
-    <p id="usdtBalance" class="text-xl mt-2">0 USDT</p>
-  </div>
-  <div class="card">
-    <h2 class="text-lg font-semibold">BNB Balance</h2>
-    <p id="bnbBalance" class="text-xl mt-2">0 BNB</p>
-  </div>
-
-  <!-- Live Chart -->
+      <div class="card">
+        <h2 class="text-lg font-semibold">USDT Balance</h2>
+        <p id="usdtBalance" class="text-xl mt-2">0 USDT</p>
+      </div>
+      <div class="card">
+        <h2 class="text-lg font-semibold">BNB Balance</h2>
+        <p id="bnbBalance" class="text-xl mt-2">0 BNB</p>
+      </div><!-- Live Chart -->
   <div class="col-span-1 md:col-span-2 card">
     <h2 class="text-lg font-semibold">Live Price Chart (BNB/USDT)</h2>
     <iframe src="https://s.tradingview.com/widgetembed/?frameElementId=tradingview_12345&symbol=BINANCE:BNBUSDT&interval=D&hidesidetoolbar=1&symboledit=1&saveimage=1&toolbarbg=rgba(0,0,0,1)&studies=[]&theme=dark&style=1&timezone=Africa/Lagos&withdateranges=1&hidevolume=0&hideideas=1&locale=en" style="width:100%; height:300px; border:none;"></iframe>
@@ -56,11 +51,13 @@
   <div class="col-span-1 md:col-span-3 flex flex-wrap gap-4 justify-center mt-4">
     <button onclick="showPage('page16')" class="min-w-[100px] font-bold bg-[#1f2630] text-[#f3ba2f] px-4 py-2 rounded-xl border-none cursor-pointer">Trade</button>
     <button onclick="showPage('page8')" class="min-w-[100px] font-bold bg-[#1f2630] text-[#f3ba2f] px-4 py-2 rounded-xl border-none cursor-pointer">Transfer</button>
+    <button onclick="showPage('page10')" class="min-w-[100px] font-bold bg-[#1f2630] text-[#f3ba2f] px-4 py-2 rounded-xl border-none cursor-pointer">Convert</button>
     <button onclick="showPage('page6')" class="min-w-[100px] font-bold bg-[#1f2630] text-[#f3ba2f] px-4 py-2 rounded-xl border-none cursor-pointer">Receive</button>
   </div>
 </main>
 
-  </section> 
+  </section>
+  
   <!-- ✅ PAGE 13 - CONNECT WALLET -->
   <section id="page13" class="page px-4 py-8 min-h-screen bg-[#0b0e11] text-white">
   <div class="max-w-xl mx-auto bg-[#12161c] p-6 rounded-xl shadow-lg"><!-- Header -->
@@ -842,101 +839,6 @@ document.addEventListener("DOMContentLoaded", () => {
 });
    </script>
 <script>
-  // === PAGE NAVIGATION WITH HISTORY ===
-  const pageHistory = [];
-
-  function navigateTo(pageId) {
-    const currentPage = document.querySelector(".page.active");
-    if (currentPage) {
-      pageHistory.push(currentPage.id);
-      currentPage.classList.remove("active");
-      currentPage.classList.add("hidden");
-    }
-
-    const targetPage = document.getElementById(pageId);
-    if (targetPage) {
-      targetPage.classList.remove("hidden");
-      targetPage.classList.add("active");
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    }
-  }
-
-  function goBack() {
-    const lastPageId = pageHistory.pop();
-    if (!lastPageId) return;
-
-    const currentPage = document.querySelector(".page.active");
-    if (currentPage) {
-      currentPage.classList.remove("active");
-      currentPage.classList.add("hidden");
-    }
-
-    const lastPage = document.getElementById(lastPageId);
-    if (lastPage) {
-      lastPage.classList.remove("hidden");
-      lastPage.classList.add("active");
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    }
-  }
-
-  // === ACCESS CONTROL FOR PROTECTED PAGES ===
-  let loggedIn = localStorage.getItem("loggedIn") === "true";
-  const protectedPages = ["page3", "page6", "page7", "page11"];
-
-  function showPage(pageId) {
-    if (protectedPages.includes(pageId) && !loggedIn) {
-      alert("🔒 Please log in to access this page.");
-      pageId = "page1"; // redirect to login
-    }
-
-    document.querySelectorAll(".page").forEach(page => {
-      page.classList.add("hidden");
-      page.classList.remove("active");
-    });
-
-    const targetPage = document.getElementById(pageId);
-    if (targetPage) {
-      targetPage.classList.remove("hidden");
-      targetPage.classList.add("active");
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    }
-  }
-
-  // === NAVIGATION VISIBILITY BASED ON LOGIN STATE ===
-  function updateNavVisibility() {
-    const navLinks = document.getElementById("navLinks");
-    const loginLink = document.getElementById("loginLink");
-
-    if (loggedIn) {
-      navLinks?.classList.remove("hidden");
-      loginLink?.classList.add("hidden");
-    } else {
-      navLinks?.classList.add("hidden");
-      loginLink?.classList.remove("hidden");
-    }
-  }
-
-  // === AUTHENTICATION HANDLERS ===
-  function handleLoginSuccess(userEmail = "user@example.com") {
-    localStorage.setItem("loggedIn", "true");
-    loggedIn = true;
-    updateNavVisibility();
-
-    const emailDisplay = document.getElementById("userEmail");
-    if (emailDisplay) {
-      emailDisplay.textContent = userEmail;
-    }
-
-    showPage("page3");
-  }
-
-  function logout() {
-    localStorage.removeItem("loggedIn");
-    loggedIn = false;
-    updateNavVisibility();
-    showPage("page1");
-  }
-
   // === LANGUAGE AND CURRENCY DETECTION & TRANSLATION ===
   const dictionary = {
     en: {
@@ -1799,31 +1701,23 @@ window.addEventListener("load", () => {
   }, 30000);
 
   </script>
-  <style>
-    .hidden { display: none; }
-    .page { min-height: 100vh; padding: 2rem; }
-  </style>
-  <script defer>
-    function navigateTo(pageId) {
-      document.querySelectorAll('.page').forEach(p => p.classList.add('hidden'));
+    <script>
+    // Show Page without alert and store in localStorage
+    function showPage(pageId) {
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active-page'));
       const currentPage = document.getElementById(pageId);
       if (currentPage) {
-        currentPage.classList.remove('hidden');
+        currentPage.classList.add('active-page');
         localStorage.setItem('currentPage', pageId);
-        updatePageTitle(pageId);
+        document.getElementById('pageNumberDisplay').textContent = `Current Page ID: ${pageId}`;
       }
-    }function updatePageTitle(pageId) {
-  const titleEl = document.querySelector('#pageTitle');
-  if (titleEl) {
-    titleEl.textContent = `Current Page: ${pageId}`;
-  }
-}
+    }
 
-window.addEventListener('DOMContentLoaded', () => {
-  const savedPage = localStorage.getItem('currentPage') || 'page1';
-  navigateTo(savedPage);
-});
-
-  </script>
+    // Restore last page on reload
+    window.addEventListener('DOMContentLoaded', () => {
+      const savedPage = localStorage.getItem('currentPage') || 'dashboard';
+      showPage(savedPage);
+    });
+    </script>
 </body>
 </html>
