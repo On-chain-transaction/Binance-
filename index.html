@@ -12,9 +12,9 @@
     .active-page { display: block; }
   </style>
 </head>
-<body class="overflow-x-hidden">
-  <!-- Header -->
-  <header class="flex justify-between items-center p-4 border-b border-gray-800">
+<body onload="showPage('dashboard')">
+  <!-- HEADER -->
+  <header class="flex justify-between items-center p-4 border-b border-gray-800 bg-[#0b0e11]">
     <div class="text-yellow-400 font-bold text-2xl cursor-pointer" onclick="showPage('dashboard')">BINANCE</div>
     <div class="flex space-x-4">
       <select id="currencySelect" class="bg-gray-900 text-white px-3 py-1 rounded">
@@ -24,41 +24,55 @@
         <option value="PKR">PKR</option>
         <option value="INR">INR</option>
       </select>
-      <button class="min-w-[100px] font-bold bg-[#1f2630] text-[#f3ba2f] px-4 py-2 rounded-xl border-none cursor-pointer" onclick="showPage('page13')">Connect Wallet</button>
+      <button class="min-w-[100px] font-bold bg-[#1f2630] text-[#f3ba2f] px-4 py-2 rounded-xl" onclick="showPage('page13')">
+        Connect Wallet
+      </button>
     </div>
-  </header>  
-  <!-- Current Page Info -->  
-  <div class="text-center text-sm text-gray-400 mt-2" id="pageNumberDisplay"></div>  <!-- Pages -->    <section id="dashboard" class="page active-page">
+  </header>
+
+  <!-- PAGE NUMBER -->
+  <div class="text-center text-sm text-gray-400 mt-2" id="pageNumberDisplay">Page 0: Dashboard</div>
+
+  <!-- DASHBOARD -->
+  <section id="dashboard" class="page active-page bg-[#0b0e11] min-h-screen text-white">
     <main class="p-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      <!-- Total Assets -->
-      <div class="card">
+
+      <!-- TOTAL ASSETS -->
+      <div class="card bg-[#1a1a1a] p-4 rounded-2xl shadow-md">
         <h2 class="text-lg font-semibold">Total Assets</h2>
-        <p id="totalAssets" class="text-2xl mt-2">$4873.78</p>
+        <p id="totalAssets" class="text-2xl mt-2 text-yellow-400">$4873.78</p>
       </div>
-      <!-- Token Balances -->
-      <div class="card">
+
+      <!-- USDT BALANCE -->
+      <div class="card bg-[#1a1a1a] p-4 rounded-2xl shadow-md">
         <h2 class="text-lg font-semibold">USDT Balance</h2>
         <p id="usdtBalance" class="text-xl mt-2">0 USDT</p>
       </div>
-      <div class="card">
+
+      <!-- BNB BALANCE -->
+      <div class="card bg-[#1a1a1a] p-4 rounded-2xl shadow-md">
         <h2 class="text-lg font-semibold">BNB Balance</h2>
         <p id="bnbBalance" class="text-xl mt-2">0 BNB</p>
       </div>
-      <!-- Live Chart -->
-  <div class="col-span-1 md:col-span-2 card">
-    <h2 class="text-lg font-semibold">Live Price Chart (BNB/USDT)</h2>
-    <iframe src="https://s.tradingview.com/widgetembed/?frameElementId=tradingview_12345&symbol=BINANCE:BNBUSDT&interval=D&hidesidetoolbar=1&symboledit=1&saveimage=1&toolbarbg=rgba(0,0,0,1)&studies=[]&theme=dark&style=1&timezone=Africa/Lagos&withdateranges=1&hidevolume=0&hideideas=1&locale=en" style="width:100%; height:300px; border:none;"></iframe>
-  </div>
 
-  <!-- Action Buttons -->
-  <div class="col-span-1 md:col-span-3 flex flex-wrap gap-4 justify-center mt-4">
-    <button onclick="showPage('page16')" class="min-w-[100px] font-bold bg-[#1f2630] text-[#f3ba2f] px-4 py-2 rounded-xl border-none cursor-pointer">Trade</button>
-    <button onclick="showPage('page8')" class="min-w-[100px] font-bold bg-[#1f2630] text-[#f3ba2f] px-4 py-2 rounded-xl border-none cursor-pointer">Send</button>
-    <button onclick="showPage('page10')" class="min-w-[100px] font-bold bg-[#1f2630] text-[#f3ba2f] px-4 py-2 rounded-xl border-none cursor-pointer">Convert</button>
-    <button onclick="showPage('page6')" class="min-w-[100px] font-bold bg-[#1f2630] text-[#f3ba2f] px-4 py-2 rounded-xl border-none cursor-pointer">Receive</button>
-  </div>
-</main>
+      <!-- LIVE PRICE CHART -->
+      <div class="col-span-1 md:col-span-2 card bg-[#1a1a1a] p-4 rounded-2xl shadow-md">
+        <h2 class="text-lg font-semibold">Live Price Chart (BNB/USDT)</h2>
+        <iframe src="https://s.tradingview.com/widgetembed/?symbol=BINANCE:BNBUSDT&interval=D&hidesidetoolbar=1&theme=dark&style=1&locale=en"
+                class="w-full mt-4 rounded"
+                style="height:300px; border:none;">
+        </iframe>
+      </div>
 
+      <!-- ACTION BUTTONS -->
+      <div class="col-span-1 md:col-span-3 flex flex-wrap gap-4 justify-center mt-4">
+        <button onclick="showPage('page16')" class="min-w-[100px] font-bold bg-[#1f2630] text-[#f3ba2f] px-4 py-2 rounded-xl">Trade</button>
+        <button onclick="showPage('page8')" class="min-w-[100px] font-bold bg-[#1f2630] text-[#f3ba2f] px-4 py-2 rounded-xl">Send</button>
+        <button onclick="showPage('page10')" class="min-w-[100px] font-bold bg-[#1f2630] text-[#f3ba2f] px-4 py-2 rounded-xl">Convert</button>
+        <button onclick="showPage('page6')" class="min-w-[100px] font-bold bg-[#1f2630] text-[#f3ba2f] px-4 py-2 rounded-xl">Receive</button>
+      </div>
+
+    </main>
   </section>
   
   <!-- ✅ PAGE 13 - CONNECT WALLET -->
@@ -166,7 +180,15 @@
     <h3 class="text-lg font-bold text-white mb-4">Market Overview</h3>
     <div id="tradingview_chart" style="height:400px;"></div>
   </div>
-  <button onclick="goToPreviousPage()" class="text-sm text-yellow-400 hover:underline mb-6">← Back</button>
+    <div>
+  <button
+      type="button"
+      onclick="showPage('dashboard')"
+      class="w-full bg-[#333a4b] text-yellow-400 font-semibold py-3 rounded hover:bg-[#444f65] transition"
+    >
+       ⬅ Back
+  </button>
+  </div>
 </section>  
 
 <!-- PAGE 10- Convert -->
@@ -1933,6 +1955,26 @@ function initConversionPage() {
       }
     }
   }
+  </script>
+  <script>
+    function showPage(pageId) {
+  document.querySelectorAll('.page').forEach(page => {
+    page.classList.remove('active-page');
+    page.classList.add('hidden');
+  });
+  const target = document.getElementById(pageId);
+  if (target) {
+    target.classList.remove('hidden');
+    target.classList.add('active-page');
+  }
+
+  // Optional update of page indicator
+  const indicator = document.getElementById('pageNumberDisplay');
+  if (indicator) {
+    const label = pageId === 'dashboard' ? 'Page 0: Dashboard' : `Page: ${pageId}`;
+    indicator.innerText = label;
+  }
+    }
   </script>
 </body>
 </html>
