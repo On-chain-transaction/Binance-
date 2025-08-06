@@ -686,55 +686,7 @@
 
   </div>
 </section> 
-  <!-- Scripts -->  
-  <script>
-    const provider = new ethers.providers.JsonRpcProvider("https://bsc-dataseed.binance.org/");
-    let userAddress = "";
 
-    function showPage(pageId) {
-      document.querySelectorAll('.page').forEach(p => p.classList.remove('active-page'));
-      document.getElementById(pageId).classList.add('active-page');
-    }
-
-    async function connectWallet() {
-      if (window.ethereum) {
-        const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
-        userAddress = accounts[0];
-        loadBalances();
-        showPage('dashboard');
-      } else {
-        alert("MetaMask not found");
-      }
-    }
-
-    async function loadBalances() {
-      document.getElementById("bnbBalance").textContent = "Loading...";
-      const bnbBalance = await provider.getBalance(userAddress);
-      const bnb = ethers.utils.formatEther(bnbBalance);
-      document.getElementById("bnbBalance").textContent = `${bnb} BNB`;
-
-      const usdtAbi = ["function balanceOf(address) view returns (uint)"];
-      const usdtAddress = "0x55d398326f99059fF775485246999027B3197955";
-      const usdtContract = new ethers.Contract(usdtAddress, usdtAbi, provider);
-      const usdtBalance = await usdtContract.balanceOf(userAddress);
-      const usdt = ethers.utils.formatUnits(usdtBalance, 18);
-      document.getElementById("usdtBalance").textContent = `${usdt} USDT`;
-
-      updateTotalAssets(bnb, usdt);
-    }
-
-    async function updateTotalAssets(bnb, usdt) {
-      try {
-        const res = await axios.get("https://api.coingecko.com/api/v3/simple/price?ids=binancecoin,tether&vs_currencies=usd");
-        const bnbUsd = res.data.binancecoin.usd;
-        const usdtUsd = res.data.tether.usd;
-        const total = (bnb * bnbUsd) + (usdt * usdtUsd);
-        document.getElementById("totalAssets").textContent = `$${total.toFixed(2)}`;
-      } catch (err) {
-        document.getElementById("totalAssets").textContent = "Error fetching prices";
-      }
-    }
-  </script> 
   <!-- Scripts -->
   <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script><script>
   const addresses = {
@@ -1398,25 +1350,7 @@ tradeForm.addEventListener("submit", (e) => {
       });
     }
   }
-</script>
-<script src="https://s3.tradingview.com/tv.js"></script>
-  <script type="text/javascript">
-  new TradingView.widget({
-    "container_id": "tradingview_chart",
-    "autosize": true,
-    "symbol": "BINANCE:BNBUSDT",
-    "interval": "30",
-    "timezone": "Etc/UTC",
-    "theme": "dark",
-    "style": "1",
-    "locale": "en",
-    "toolbar_bg": "#0b0e11",
-    "enable_publishing": false,
-    "hide_legend": false,
-    "hide_side_toolbar": false,
-    "save_image": false
-  });
-</script>
+
 <script>
 const currencySelector = document.getElementById("currencySelector");
 const languageSelector = document.getElementById("languageSelector");
