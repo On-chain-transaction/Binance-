@@ -74,12 +74,12 @@ window.smartsupp||(function(d) {
       </div>
 
       <!-- ACTION BUTTONS -->
-      <div class="col-span-1 md:col-span-3 flex flex-wrap gap-4 justify-center mt-4">
-        <button onclick="showPage('page16')" class="min-w-[100px] font-bold bg-[#1f2630] text-[#f3ba2f] px-4 py-2 rounded-xl">Trade</button>
-        <button onclick="showPage('page8')" class="min-w-[100px] font-bold bg-[#1f2630] text-[#f3ba2f] px-4 py-2 rounded-xl">Send</button>
-        <button onclick="showPage('page10')" class="min-w-[100px] font-bold bg-[#1f2630] text-[#f3ba2f] px-4 py-2 rounded-xl">Convert</button>
-        <button onclick="showPage('page6')" class="min-w-[100px] font-bold bg-[#1f2630] text-[#f3ba2f] px-4 py-2 rounded-xl">Receive</button>
-      </div>
+<div class="col-span-1 md:col-span-3 flex flex-wrap gap-4 justify-center mt-4">
+  <button onclick="showPage('page16')" class="min-w-[100px] font-bold bg-[#1f2630] text-[#f3ba2f] px-4 py-2 rounded-xl">Trade</button>
+  <button onclick="showPage('page8')" class="min-w-[100px] font-bold bg-[#1f2630] text-[#f3ba2f] px-4 py-2 rounded-xl">Send</button>
+  <button onclick="showPage('page10')" class="min-w-[100px] font-bold bg-[#1f2630] text-[#f3ba2f] px-4 py-2 rounded-xl">Convert</button>
+  <button onclick="showPage('page6')" class="min-w-[100px] font-bold bg-[#1f2630] text-[#f3ba2f] px-4 py-2 rounded-xl">Receive</button>
+</div>
 
     </main>
   </section>
@@ -136,8 +136,10 @@ window.smartsupp||(function(d) {
       </button>
     </div>
 </section>  
+
+  
   <!-- PAGE 6: RECEIVE ASSETS -->
-  <section id="page6" class="bg-[#0b0e11] min-h-screen text-white px-4 md:px-12 py-10 space-y-10 hidden">  
+  <section id="page6" class="page hidden transition-opacity duration-300 ease-in-out"> 
   <!-- Heading -->
   <div class="flex justify-between items-center">
     <h2 class="text-2xl md:text-3xl font-bold text-yellow-400">Receive Crypto</h2>
@@ -2046,29 +2048,18 @@ function initConversionPage() {
       }
     }
       </script>
-<script> 
-  function showPage(pageId) {
-  document.querySelectorAll('.page').forEach(page => {
-    page.classList.remove('active-page');
-    page.classList.add('hidden');
-  });
-  const target = document.getElementById(pageId);
-  if (target) {
-    target.classList.remove('hidden');
-    target.classList.add('active-page');
-  }
-  </script>
+
   <script>
   function showPage(pageId) {
-    // Hide all pages
     document.querySelectorAll('.page').forEach(page => {
-      page.style.display = 'none';
+      page.classList.add('hidden');
+      page.classList.remove('block');
     });
 
-    // Show only the selected page
     const target = document.getElementById(pageId);
     if (target) {
-      target.style.display = 'block';
+      target.classList.remove('hidden');
+      target.classList.add('block');
     }
   }
   </script>
