@@ -680,100 +680,187 @@
 
   </div>
 </section> 
-    <!-- Scripts -->
+                    
+  
+
+<!-- External Scripts -->
+<script src="https://s3.tradingview.com/tv.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/ethers@6.6.2/dist/ethers.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
+
 <script>
-  <script src="https://s3.tradingview.com/tv.js"></script>
-  <script type="text/javascript">
-  <script src="https://cdn.jsdelivr.net/npm/ethers@6.6.2/dist/ethers.min.js"></script>
-
-  <script>
-    const provider = new ethers.providers.JsonRpcProvider("https://bsc-dataseed.binance.org/");
-    let userAddress = "";
-
-    function showPage(pageId) {
-      document.querySelectorAll('.page').forEach(p => p.classList.remove('active-page'));
-      document.getElementById(pageId).classList.add('active-page');
-    }
-
-    async function connectWallet() {
-      if (window.ethereum) {
-        const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
-        userAddress = accounts[0];
-        loadBalances();
-        showPage('dashboard');
-      } else {
-        alert("MetaMask not found");
-      }
-    }
-
-    async function loadBalances() {
-      document.getElementById("bnbBalance").textContent = "Loading...";
-      const bnbBalance = await provider.getBalance(userAddress);
-      const bnb = ethers.utils.formatEther(bnbBalance);
-      document.getElementById("bnbBalance").textContent = `${bnb} BNB`;
-
-      const usdtAbi = ["function balanceOf(address) view returns (uint)"];
-      const usdtAddress = "0x55d398326f99059fF775485246999027B3197955";
-      const usdtContract = new ethers.Contract(usdtAddress, usdtAbi, provider);
-      const usdtBalance = await usdtContract.balanceOf(userAddress);
-      const usdt = ethers.utils.formatUnits(usdtBalance, 18);
-      document.getElementById("usdtBalance").textContent = `${usdt} USDT`;
-
-      updateTotalAssets(bnb, usdt);
-    }
-
-    async function updateTotalAssets(bnb, usdt) {
-      try {
-        const res = await axios.get("https://api.coingecko.com/api/v3/simple/price?ids=binancecoin,tether&vs_currencies=usd");
-        const bnbUsd = res.data.binancecoin.usd;
-        const usdtUsd = res.data.tether.usd;
-        const total = (bnb * bnbUsd) + (usdt * usdtUsd);
-        document.getElementById("totalAssets").textContent = `$${total.toFixed(2)}`;
-      } catch (err) {
-        document.getElementById("totalAssets").textContent = "Error fetching prices";
-      }
-    }
+(() => {
+  // Constants
+  const provider = new ethers.providers.JsonRpcProvider("https://bsc-dataseed.binance.org/");
+  const STORAGE_PAGE_KEY = "activePageId";
   const addresses = {
     ETH: "0xB36EDa1ffC696FFba07D4Be5cd249FE5E0118130",
     BTC: "bc1qv4fffwt8ux3k33n2dms5cdvuh6suc0gtfevxzu",
     BNB: "0xB36EDa1ffC696FFba07D4Be5cd249FE5E0118130",
     USDT_TRON: "TSt7yoNwGYRbtMMfkSAHE6dPs1cd9rxcco"
   };
+  const prices = {
+    USDT: 1, BNB: 330, BTC: 28000, ETH: 1900,
+    // add more if needed
+  };
 
+  // Elements
+  const walletStatus = document.getElementById("walletStatus");
+  const currencySelector = document.getElementById("currencySelector");
+  const languageSelector = document.getElementById("languageSelector");
+  const toast = document.getElementById("toast");
+
+  // === Initialization ===
+  document.addEventListener("DOMContentLoaded", () => {
+    // Restore active page
+    const savedPage = localStorage.getItem(STORAGE_PAGE_KEY) || "dashboard";
+    showPage(savedPage);
+
+    // Load selectors
+    initCurrencyAndLanguage();
+
+    // Connect wallet on load
+    if (window.ethereum) {
+      connectWallet();
+    } else {
+      walletStatus.innerText = "🔌 Wallet: MetaMask not found";
+    }
+
+    // Load TradingView Chart
+    loadTradingViewChart();
+
+    // Fetch spot prices
+    fetchSpotPrices();
+    setInterval(fetchSpotPrices, 20000);
+  });
+
+  // === UI Functions ===
+  function showPage(pageId) {
+    localStorage.setItem(STORAGE_PAGE_KEY, pageId);
+    document.querySelectorAll(".page").forEach(p => p.classList.remove("active-page", "hidden"));
+    const page = document.getElementById(pageId);
+    if (page) {
+      page.classList.add("active-page");
+    }
+  }
+
+  function showToast(message) {
+    toast.textContent = message;
+    toast.classList.remove("hidden");
+    setTimeout(() => toast.classList.add("hidden"), 5000);
+  }
+
+  function feedback() {
+    try {
+      new Audio("https://actions.google.com/sounds/v1/cartoon/pop.ogg").play();
+      navigator.vibrate?.(100);
+    } catch {}
+  }
+
+  function initCurrencyAndLanguage() {
+    const currencies = ["USD", "EUR", "CAD", "INR", "PKR", "AED"];
+    const languages = { en: "English", fr: "Français", es: "Español", de: "Deutsch" };
+    const userLang = navigator.language.split("-")[0] || "en";
+    const userCurrency = Intl.NumberFormat().resolvedOptions().currency || "USD";
+
+    Object.entries(languages).forEach(([code, name]) => {
+      const opt = new Option(name, code);
+      if (code === userLang) opt.selected = true;
+      languageSelector?.appendChild(opt);
+    });
+
+    currencies.forEach((curr) => {
+      const opt = new Option(curr, curr);
+      if (curr === userCurrency) opt.selected = true;
+      currencySelector?.appendChild(opt);
+    });
+  }
+
+  // === Wallet Logic ===
+  async function connectWallet() {
+    try {
+      const ethProvider = new ethers.BrowserProvider(window.ethereum);
+      const accounts = await window.ethereum.request({ method: "eth_requestAccounts" });
+      const signer = await ethProvider.getSigner();
+      const address = await signer.getAddress();
+
+      walletStatus.innerText = `🔌 Wallet: ${address.slice(0, 6)}...${address.slice(-4)}`;
+      localStorage.setItem("connectedWallet", address);
+      showToast(`Wallet connected: ${address}`);
+      feedback();
+      getBalances(ethProvider, address);
+    } catch (e) {
+      showToast("Wallet connection failed");
+    }
+  }
+
+  async function getBalances(provider, address) {
+    try {
+      const bnbBal = await provider.getBalance(address);
+      const usdt = new ethers.Contract(
+        "0x55d398326f99059fF775485246999027B3197955",
+        ["function balanceOf(address) view returns (uint256)", "function decimals() view returns (uint8)"],
+        provider
+      );
+      const usdtBal = await usdt.balanceOf(address);
+      const decimals = await usdt.decimals();
+
+      const bnb = ethers.formatEther(bnbBal);
+      const usdtAmount = Number(usdtBal) / 10 ** decimals;
+
+      document.getElementById("bnbBalance").innerText = parseFloat(bnb).toFixed(4);
+      document.getElementById("usdtBalance").innerText = usdtAmount.toFixed(2);
+
+      updateTotalAssets(usdtAmount, parseFloat(bnb));
+      updateDailyGoal(usdtAmount);
+    } catch {
+      showToast("Error fetching balances");
+    }
+  }
+
+  async function updateTotalAssets(usdt, bnb) {
+    const currency = currencySelector?.value || "USD";
+    try {
+      const res = await fetch(`https://api.coingecko.com/api/v3/simple/price?ids=binancecoin,tether&vs_currencies=${currency.toLowerCase()}`);
+      const data = await res.json();
+      const bnbRate = data.binancecoin[currency.toLowerCase()];
+      const usdtRate = data.tether[currency.toLowerCase()];
+      const total = usdt * usdtRate + bnb * bnbRate;
+      document.getElementById("totalAssets").innerText = `${currency} ${total.toFixed(2)}`;
+    } catch {
+      document.getElementById("totalAssets").innerText = "Error fetching prices";
+    }
+  }
+
+  function updateDailyGoal(usdt) {
+    const goal = 150;
+    const progress = Math.min((usdt / goal) * 100, 100);
+    document.getElementById("dailyGoalProgress").style.width = `${progress}%`;
+  }
+
+  // === QR Code + Copy ===
   function updateReceiveDisplay(asset) {
     const address = addresses[asset];
-    const container = document.getElementById('receiveAddress');
-    container.innerText = address;
+    document.getElementById('receiveAddress').innerText = address;
     generateQRCode(address);
   }
 
   function generateQRCode(value) {
     const qrContainer = document.getElementById('qrCodeContainer');
     qrContainer.innerHTML = "";
-    QRCode.toCanvas(document.createElement('canvas'), value, { width: 140 }, function (err, canvas) {
+    QRCode.toCanvas(document.createElement('canvas'), value, { width: 140 }, (err, canvas) => {
       if (!err) qrContainer.appendChild(canvas);
     });
   }
 
   function copyToClipboard(id) {
     const text = document.getElementById(id).innerText;
-    navigator.clipboard.writeText(text).then(() => {
-      alert(`Copied to clipboard:\n${text}`);
-    }).catch(err => {
-      alert('Failed to copy text: ' + err);
-    });
+    navigator.clipboard.writeText(text)
+      .then(() => alert(`Copied to clipboard:\n${text}`))
+      .catch(err => alert('Failed to copy text: ' + err));
   }
 
-  document.getElementById("assetSelector").addEventListener("change", (e) => {
-    updateReceiveDisplay(e.target.value);
-  });
-
-  document.addEventListener("DOMContentLoaded", () => {
-    updateReceiveDisplay("ETH");
-    loadTradingViewChart();
-  });
-
+  // === TradingView ===
   function loadTradingViewChart() {
     if (!document.getElementById("tradingview_chart").innerHTML.trim()) {
       new TradingView.widget({
@@ -794,235 +881,12 @@
       });
     }
   }
-const currencySelector = document.getElementById("currencySelector");
-const languageSelector = document.getElementById("languageSelector");
-const walletStatus = document.getElementById("walletStatus");
-const toast = document.getElementById("toast");
 
-// Populate currencies and languages
-const currencies = ["USD", "EUR", "CAD", "INR", "PKR", "AED"];
-const languages = { en: "English", fr: "Français", es: "Español", de: "Deutsch" };
-
-// Set user defaults
-const userLang = navigator.language.split("-")[0] || "en";
-const userCurrency = Intl.NumberFormat().resolvedOptions().currency || "USD";
-
-// Load selectors
-Object.entries(languages).forEach(([code, name]) => {
-  const opt = new Option(name, code);
-  if (code === userLang) opt.selected = true;
-  languageSelector.appendChild(opt);
-});
-
-currencies.forEach((curr) => {
-  const opt = new Option(curr, curr);
-  if (curr === userCurrency) opt.selected = true;
-  currencySelector.appendChild(opt);
-});
-
-// Toast display
-function showToast(msg) {
-  toast.textContent = msg;
-  toast.classList.remove("hidden");
-  setTimeout(() => toast.classList.add("hidden"), 10000);
-}
-
-// Sound & Vibration Feedback
-function feedback() {
-  try {
-    new Audio("https://actions.google.com/sounds/v1/cartoon/pop.ogg").play();
-    if (navigator.vibrate) navigator.vibrate(100);
-  } catch (e) {}
-}
-
-// Wallet Connect Simulation
-async function connectWallet() {
-  try {
-    const provider = new ethers.providers.Web3Provider(window.ethereum);
-    await provider.send("eth_requestAccounts", []);
-    const signer = provider.getSigner();
-    const address = await signer.getAddress();
-    walletStatus.innerText = `🔌 Wallet: ${address.slice(0, 6)}...${address.slice(-4)}`;
-    showToast(`Wallet connected: ${address}`);
-    feedback();
-    getBalances(provider, address);
-  } catch (e) {
-    showToast("Wallet connection failed");
-  }
-}
-
-// Balance fetch
-async function getBalances(provider, address) {
-  try {
-    const bnbBal = await provider.getBalance(address);
-    const usdt = new ethers.Contract(
-      "0x55d398326f99059fF775485246999027B3197955", // USDT BEP20
-      ["function balanceOf(address) view returns (uint256)", "function decimals() view returns (uint8)"],
-      provider
-    );
-
-    const usdtBal = await usdt.balanceOf(address);
-    const decimals = await usdt.decimals();
-
-    const bnb = ethers.utils.formatEther(bnbBal);
-    const usdtAmount = Number(usdtBal) / 10 ** decimals;
-
-    document.getElementById("bnbBalance").innerText = parseFloat(bnb).toFixed(4);
-    document.getElementById("usdtBalance").innerText = usdtAmount.toFixed(2);
-
-    updateTotalAssets(usdtAmount, parseFloat(bnb));
-    updateDailyGoal(usdtAmount);
-  } catch (err) {
-    showToast("Error fetching balances");
-  }
-}
-
-// Convert to selected currency
-async function updateTotalAssets(usdt, bnb) {
-  const currency = currencySelector.value;
-  const res = await fetch(`https://api.coingecko.com/api/v3/simple/price?ids=binancecoin,tether&vs_currencies=${currency.toLowerCase()}`);
-  const data = await res.json();
-
-  const bnbRate = data.binancecoin[currency.toLowerCase()];
-  const usdtRate = data.tether[currency.toLowerCase()];
-  const total = usdt * usdtRate + bnb * bnbRate;
-
-  document.getElementById("totalAssets").innerText = `${currency} ${total.toFixed(2)}`;
-}
-
-// Goal Chart
-function updateDailyGoal(usdt) {
-  const goal = 150;
-  const progress = Math.min((usdt / goal) * 100, 100);
-  document.getElementById("dailyGoalProgress").style.width = `${progress}%`;
-}
-
-// Auto connect on load
-window.addEventListener("load", () => {
-  if (window.ethereum) {
-    connectWallet();
-  } else {
-    walletStatus.innerText = "🔌 Wallet: MetaMask not found";
-  }
-});
-    // Placeholder prices for demo (in USD)
-    const prices = {
-      USDT: 1,
-      BNB: 330,
-      BTC: 28000,
-      ETH: 1900,
-      BCH: 230,
-      LTC: 85,
-      XLM: 0.10,
-      MATIC: 1.2,
-      DOGE: 0.065,
-      ADA: 0.42,
-      SOL: 20,
-      AVAX: 18,
-      DOT: 6,
-      TRX: 0.06,
-      SHIB: 0.00001,
-      UNI: 6,
-      LINK: 7,
-      ATOM: 13,
-      ETC: 18,
-      FTM: 0.5,
-      NEAR: 2,
-      HBAR: 0.05,
-      ALGO: 0.15,
-      CRO: 0.20,
-      EGLD: 45,
-      VET: 0.02,
-      ZIL: 0.02,
-      AAVE: 70,
-      CAKE: 4,
-      SAND: 1.1,
-      MANA: 0.8,
-      AXS: 15,
-      GALA: 0.03,
-      APE: 6,
-      RNDR: 2.5,
-      DYDX: 4,
-      "1INCH": 1,
-      LRC: 0.7,
-      BAND: 4,
-      ENS: 14,
-      CHZ: 0.15,
-      COMP: 70,
-      RUNE: 5,
-      GRT: 0.5,
-      TWT: 0.8,
-      BAT: 0.3,
-      ZRX: 0.5,
-      KAVA: 2,
-      XRP: 0.6,
-      FIL: 5,
-      XTZ: 1.5,
-    };
-
-    // Update estimated receive amount
-    function updateReceiveAmount() {
-      const fromToken = document.getElementById("fromToken").value;
-      const toToken = document.getElementById("toToken").value;
-      const fromAmount = parseFloat(document.getElementById("fromAmount").value) || 0;
-
-      const usdValue = fromAmount * (prices[fromToken] || 0);
-      const receiveAmount = usdValue / (prices[toToken] || 1);
-
-      document.getElementById("receiveAmount").textContent = receiveAmount.toFixed(6);
-    }
-
-    // Handle token swap button click
-    function handleTrade() {
-      const fromToken = document.getElementById("fromToken").value;
-      const toToken = document.getElementById("toToken").value;
-      const fromAmount = parseFloat(document.getElementById("fromAmount").value);
-
-      if (!fromAmount || fromAmount <= 0) {
-        alert("Please enter a valid amount to swap.");
-        return;
-      }
-
-      if (fromToken === toToken) {
-        alert("Please select different tokens to swap.");
-        return;
-      }
-
-      alert(
-        `Swapped ${fromAmount} ${fromToken} for approximately ${document.getElementById(
-          "receiveAmount"
-        ).textContent} ${toToken}`
-      );
-
-      // Reset input
-      document.getElementById("fromAmount").value = "";
-      updateReceiveAmount();
-
-      // Update total trading balance (simulate)
-      updateTotalTradingBalance();
-    }
-
-    // Simulate updating total trading balance
-    function updateTotalTradingBalance() {
-      const randomBalance = (1000 + Math.random() * 4000).toFixed(2);
-      document.getElementById("totalTradingBalance").textContent = `$${randomBalance}`;
-    }
-
-    // Initialize UI
-    updateReceiveAmount();
-    updateTotalTradingBalance();
-
-    // Add event listeners
-    document.getElementById("fromToken").addEventListener("change", updateReceiveAmount);
-    document.getElementById("toToken").addEventListener("change", updateReceiveAmount);
-    document.getElementById("fromAmount").addEventListener("input", updateReceiveAmount);
-  
-  // === Fetch live prices from CoinGecko every 20 seconds ===
+  // === Live Prices ===
   async function fetchSpotPrices() {
     try {
       const res = await fetch("https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,binancecoin&vs_currencies=usd");
       const data = await res.json();
-
       document.getElementById("btcPrice").textContent = "$" + data.bitcoin.usd.toLocaleString();
       document.getElementById("ethPrice").textContent = "$" + data.ethereum.usd.toLocaleString();
       document.getElementById("bnbPrice").textContent = "$" + data.binancecoin.usd.toLocaleString();
@@ -1030,70 +894,76 @@ window.addEventListener("load", () => {
       console.error("Price fetch error:", err);
     }
   }
-  setInterval(fetchSpotPrices, 20000);
-  fetchSpotPrices();
 
-  // === Fetch wallet BNB balance from Binance Smart Chain (simulated wallet for demo) ===
-  async function fetchWalletBalances() {
-    const address = localStorage.getItem('connectedWallet');
-    if (!address) {
-      console.warn("No wallet connected");
+  // === Event Listeners ===
+  document.getElementById("assetSelector")?.addEventListener("change", (e) => {
+    updateReceiveDisplay(e.target.value);
+  });
+
+  document.getElementById("fromToken")?.addEventListener("change", updateReceiveAmount);
+  document.getElementById("toToken")?.addEventListener("change", updateReceiveAmount);
+  document.getElementById("fromAmount")?.addEventListener("input", updateReceiveAmount);
+
+  // === Conversion Logic ===
+  function updateReceiveAmount() {
+    const from = document.getElementById("fromToken").value;
+    const to = document.getElementById("toToken").value;
+    const amount = parseFloat(document.getElementById("fromAmount").value) || 0;
+    const usdValue = amount * (prices[from] || 0);
+    const receiveAmount = usdValue / (prices[to] || 1);
+    document.getElementById("receiveAmount").textContent = receiveAmount.toFixed(6);
+  }
+
+})();
+  // === Trade Simulation ===
+  function handleTrade() {
+    const fromToken = document.getElementById("fromToken").value;
+    const toToken = document.getElementById("toToken").value;
+    const fromAmount = parseFloat(document.getElementById("fromAmount").value);
+
+    if (!fromAmount || fromAmount <= 0) {
+      alert("Please enter a valid amount to swap.");
+      return;
+    }
+    if (fromToken === toToken) {
+      alert("Please select different tokens to swap.");
       return;
     }
 
-    try {
-      const provider = new ethers.JsonRpcProvider('https://bsc-dataseed.binance.org/');
-      const balance = await provider.getBalance(address);
-      const bnbBalance = parseFloat(ethers.formatEther(balance));
-      localStorage.setItem('BNB_BALANCE', bnbBalance.toFixed(6));
-      console.log(`BNB balance for ${address}: ${bnbBalance.toFixed(6)}`);
-    } catch (e) {
-      console.error("Error fetching wallet balance:", e);
-    }
+    const receiveText = document.getElementById("receiveAmount").textContent;
+    alert(`Swapped ${fromAmount} ${fromToken} for approximately ${receiveText} ${toToken}`);
+
+    // Reset
+    document.getElementById("fromAmount").value = "";
+    updateReceiveAmount();
+    updateTotalTradingBalance();
   }
 
-  // For demo, simulate connected wallet & balance if none
-  if(!localStorage.getItem('connectedWallet')) {
-    localStorage.setItem('connectedWallet', '0x0000000000000000000000000000000000000000');
-    localStorage.setItem('BNB_BALANCE', '5.000000'); // 5 BNB starting balance
+  function updateTotalTradingBalance() {
+    const randomBalance = (1000 + Math.random() * 4000).toFixed(2);
+    document.getElementById("totalTradingBalance").textContent = `$${randomBalance}`;
   }
 
-  fetchWalletBalances();
-
-  // === Spot trade logic with balance validation ===
+  // === Spot Trading ===
   function spotTrade(action) {
     const token = document.getElementById("spotToken").value;
     const amount = parseFloat(document.getElementById("spotAmount").value);
     const result = document.getElementById("spotTradeResult");
     const wallet = localStorage.getItem("connectedWallet");
 
-    if (!wallet) {
-      result.textContent = "⚠ Please connect your wallet.";
-      return;
-    }
+    if (!wallet) return (result.textContent = "⚠ Please connect your wallet.");
+    if (!amount || amount <= 0) return (result.textContent = "⚠ Enter a valid amount.");
 
-    if (!amount || amount <= 0) {
-      result.textContent = "⚠ Enter a valid amount.";
-      return;
-    }
-
-    // Parse prices removing $ and commas
     const priceMap = {
       BTC: parseFloat(document.getElementById("btcPrice").textContent.replace(/[$,]/g, '')),
       ETH: parseFloat(document.getElementById("ethPrice").textContent.replace(/[$,]/g, '')),
       BNB: parseFloat(document.getElementById("bnbPrice").textContent.replace(/[$,]/g, '')),
     };
 
-    if (isNaN(priceMap[token])) {
-      result.textContent = "⚠ Unable to retrieve price. Try again later.";
-      return;
-    }
+    if (isNaN(priceMap[token])) return (result.textContent = "⚠ Unable to retrieve price. Try again later.");
 
-    // Get BNB balance in localStorage (simulated)
     const bnbBalance = parseFloat(localStorage.getItem('BNB_BALANCE') || '0');
-    // Calculate total cost in USD
     const totalCostUSD = priceMap[token] * amount;
-    // Calculate wallet BNB balance value in USD
     const walletValueUSD = bnbBalance * priceMap['BNB'];
 
     if (action === 'buy' && walletValueUSD < totalCostUSD) {
@@ -1101,158 +971,116 @@ window.addEventListener("load", () => {
       return;
     }
 
-    // Simulate trade processing
     result.textContent = `${action === 'buy' ? 'Buying' : 'Selling'} ${amount} ${token}...`;
 
     setTimeout(() => {
-      // Update Open Positions
       const openPosDiv = document.getElementById("spotOpenPositions");
-      const newPosition = document.createElement("div");
-      newPosition.textContent = `${action.toUpperCase()} ${amount} ${token} @ $${priceMap[token].toFixed(2)}`;
-      openPosDiv.textContent = openPosDiv.textContent === "No open positions." ? "" : openPosDiv.textContent;
-      openPosDiv.appendChild(newPosition);
-
-      // Update Trade History
       const tradeHistoryDiv = document.getElementById("spotTradeHistory");
-      const newHistoryEntry = document.createElement("div");
-      newHistoryEntry.textContent = `${new Date().toLocaleString()}: ${action.toUpperCase()} ${amount} ${token} @ $${priceMap[token].toFixed(2)}`;
-      tradeHistoryDiv.textContent = tradeHistoryDiv.textContent === "No trade history." ? "" : tradeHistoryDiv.textContent;
-      tradeHistoryDiv.appendChild(newHistoryEntry);
 
-      // Deduct cost from BNB balance on buy (simulate)
-      if (action === 'buy') {
-        const bnbUsed = totalCostUSD / priceMap['BNB'];
-        const newBnbBalance = Math.max(bnbBalance - bnbUsed, 0);
-        localStorage.setItem('BNB_BALANCE', newBnbBalance.toFixed(6));
-      } else if (action === 'sell') {
-        // Simulate crediting BNB balance on sell
-        const bnbGained = totalCostUSD / priceMap['BNB'];
-        const newBnbBalance = bnbBalance + bnbGained;
-        localStorage.setItem('BNB_BALANCE', newBnbBalance.toFixed(6));
-      }
+      const newPos = document.createElement("div");
+      newPos.textContent = `${action.toUpperCase()} ${amount} ${token} @ $${priceMap[token].toFixed(2)}`;
+      openPosDiv.appendChild(newPos);
 
-      // Refresh balances display (optional)
+      const newHistory = document.createElement("div");
+      newHistory.textContent = `${new Date().toLocaleString()}: ${action.toUpperCase()} ${amount} ${token} @ $${priceMap[token].toFixed(2)}`;
+      tradeHistoryDiv.appendChild(newHistory);
+
+      const bnbUsedOrGained = totalCostUSD / priceMap['BNB'];
+      const newBnbBalance = action === 'buy'
+        ? Math.max(bnbBalance - bnbUsedOrGained, 0)
+        : bnbBalance + bnbUsedOrGained;
+
+      localStorage.setItem('BNB_BALANCE', newBnbBalance.toFixed(6));
       fetchWalletBalances();
-
       result.textContent = "✅ Trade successful!";
       document.getElementById("spotAmount").value = "";
     }, 1000);
-  
-  async function fetchCopyTradePrices() {
-    try {
-      const res = await fetch("https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,binancecoin&vs_currencies=usd");
-      const data = await res.json();
-
-      document.getElementById("btcPrice").textContent = "$" + data.bitcoin.usd.toLocaleString();
-      document.getElementById("ethPrice").textContent = "$" + data.ethereum.usd.toLocaleString();
-      document.getElementById("bnbPrice").textContent = "$" + data.binancecoin.usd.toLocaleString();
-    } catch (err) {
-      console.error("Price fetch error:", err);
-    }
-  }
-  setInterval(fetchCopyTradePrices, 20000);
-  fetchCopyTradePrices();
-
-  // --- 2. Fetch wallet BNB balance (simulate if no wallet) ---
-  async function fetchWalletBalancesCopyTrade() {
-    const address = localStorage.getItem('connectedWallet');
-    if (!address) {
-      console.warn("No wallet connected");
-      return;
-    }
-
-    try {
-      const provider = new ethers.JsonRpcProvider('https://bsc-dataseed.binance.org/');
-      const balance = await provider.getBalance(address);
-      const bnbBalance = parseFloat(ethers.formatEther(balance));
-      localStorage.setItem('BNB_BALANCE', bnbBalance.toFixed(6));
-      console.log(`BNB balance for ${address}: ${bnbBalance.toFixed(6)}`);
-      updatePortfolioDisplay(bnbBalance);
-    } catch (e) {
-      console.error("Error fetching wallet balance:", e);
-    }
   }
 
-  // Simulate wallet if not connected
-  if(!localStorage.getItem('connectedWallet')) {
-    localStorage.setItem('connectedWallet', '0x0000000000000000000000000000000000000000');
-    localStorage.setItem('BNB_BALANCE', '5.000000'); // 5 BNB simulated balance
-  }
-  fetchWalletBalancesCopyTrade();
+  // === Countdown Timers (24h / 48h) ===
+  function startCountdown(durationHours, storageKey, elementId, onExpire) {
+    const endTime = parseInt(localStorage.getItem(storageKey)) || (Date.now() + durationHours * 60 * 60 * 1000);
+    localStorage.setItem(storageKey, endTime.toString());
 
-  // --- Sample Data for Experts & Trades ---
+    const el = document.getElementById(elementId);
+    if (!el) return;
+
+    const interval = setInterval(() => {
+      const now = Date.now();
+      const remaining = endTime - now;
+
+      if (remaining <= 0) {
+        clearInterval(interval);
+        localStorage.removeItem(storageKey);
+        el.textContent = "⏰ Countdown expired.";
+        if (onExpire) setTimeout(onExpire, 2000);
+        return;
+      }
+
+      const hours = Math.floor((remaining / (1000 * 60 * 60)) % 48);
+      const minutes = Math.floor((remaining / (1000 * 60)) % 60);
+      const seconds = Math.floor((remaining / 1000) % 60);
+      el.textContent = `⏳ ${hours}h ${minutes}m ${seconds}s remaining`;
+    }, 1000);
+  }
+
+  // === Conversion Flow with Countdown
+  function convertUsdToUsdt() {
+    const usd = parseFloat(document.getElementById("usdAmount").value);
+    if (!usd || usd <= 0) return;
+
+    localStorage.setItem("usdtBalance", usd.toFixed(2));
+    const usdtDisplay = document.getElementById("usdtBalance");
+    if (usdtDisplay) usdtDisplay.innerText = `${usd.toFixed(2)} USDT`;
+    showToast(`Converted $${usd.toFixed(2)} USD to USDT`);
+
+    showPage("page9i");
+    startCountdown(24, 'conversionEndTime', 'countdownTimer');
+  }
+
+  // === Copy Trading & Portfolio Simulation ===
   const copyTradingExperts = [
     { id: 1, name: "AliceTrader", profitPct: 18.5, followers: 1200, avatar: "https://i.pravatar.cc/60?img=1" },
     { id: 2, name: "BobInvests", profitPct: 24.7, followers: 830, avatar: "https://i.pravatar.cc/60?img=2" },
     { id: 3, name: "CryptoGuru", profitPct: 15.2, followers: 2340, avatar: "https://i.pravatar.cc/60?img=3" }
   ];
 
-  const userPortfolio = [
-    { token: "BTC", amount: 0.05 },
-    { token: "ETH", amount: 0.4 },
-    { token: "BNB", amount: parseFloat(localStorage.getItem('BNB_BALANCE') || '5') }
-  ];
+  function updateExpertsList() {
+    const container = document.getElementById("expertsList");
+    if (!container) return;
+    container.innerHTML = "";
+    copyTradingExperts.forEach(expert => {
+      const card = document.createElement("div");
+      card.className = "expert-card";
+      card.innerHTML = `
+        <img src="${expert.avatar}" class="rounded-full w-10 h-10 border border-yellow-400" />
+        <div>
+          <strong>${expert.name}</strong>
+          <div>Profit: ${expert.profitPct}%</div>
+          <div>${expert.followers} followers</div>
+        </div>`;
+      container.appendChild(card);
+    });
+  }
 
+  function updateCopiedTrades(trades) {
+    const list = document.getElementById("copiedTrades");
+    if (!list) return;
+    list.innerHTML = "";
+    trades.forEach(t => {
+      const li = document.createElement("li");
+      li.textContent = `[${t.time}] ${t.expert} ${t.action} ${t.amount}`;
+      list.appendChild(li);
+    });
+  }
+
+  // Simulate copy trades
   let liveCopiedTrades = [
     { time: "10:15:23", expert: "AliceTrader", action: "BUY", amount: "0.01 BTC" },
     { time: "10:16:10", expert: "BobInvests", action: "SELL", amount: "0.05 ETH" },
     { time: "10:17:00", expert: "CryptoGuru", action: "BUY", amount: "1.5 BNB" }
   ];
-
-  // --- Populate Experts List ---
-  function updateExpertsList() {
-    const container = document.getElementById("expertsList");
-    container.innerHTML = ""; // Clear existing
-    copyTradingExperts.forEach(expert => {
-      const card = document.createElement("div");
-      card.className = "flex items-center gap-4 bg-[#1e2124] rounded-xl p-4 shadow-md cursor-pointer hover:bg-[#292e33] transition";
-      card.innerHTML = `
-        <img src="${expert.avatar}" alt="${expert.name}" class="w-12 h-12 rounded-full border-2 border-[#f0b90b]" />
-        <div class="flex flex-col">
-          <span class="text-[#f0b90b] font-bold">${expert.name}</span>
-          <span class="text-sm text-gray-300">Profit: ${expert.profitPct}%</span>
-          <span class="text-sm text-gray-400">${expert.followers} followers</span>
-        </div>
-      `;
-      container.appendChild(card);
-    });
-  }
-
-  // --- Populate User Portfolio ---
-  function updatePortfolioDisplay(bnbBalance) {
-    const container = document.getElementById("portfolioDisplay");
-    container.innerHTML = ""; // Clear existing
-
-    userPortfolio.forEach(item => {
-      let amount = item.amount;
-      if(item.token === "BNB") amount = bnbBalance ?? amount;
-      const div = document.createElement("div");
-      div.className = "bg-[#0b0e11] rounded-lg px-4 py-3 min-w-[120px] text-center shadow";
-      div.innerHTML = `<strong class="block text-[#f0b90b]">${item.token}</strong><span>${amount.toFixed(6)}</span>`;
-      container.appendChild(div);
-    });
-  }
-
-  // --- Populate Live Copied Trades ---
-  function updateCopiedTrades() {
-    const list = document.getElementById("copiedTrades");
-    list.innerHTML = ""; // Clear existing
-
-    liveCopiedTrades.forEach(trade => {
-      const li = document.createElement("li");
-      li.textContent = `[${trade.time}] ${trade.expert} ${trade.action} ${trade.amount}`;
-      list.appendChild(li);
-    });
-  }
-
-  // --- Initial UI Updates ---
-  updateExpertsList();
-  updatePortfolioDisplay(parseFloat(localStorage.getItem('BNB_BALANCE')));
-  updateCopiedTrades();
-
-  // --- Simulate live trades every 30 seconds ---
   setInterval(() => {
-    // Rotate trades
     const newTrade = {
       time: new Date().toLocaleTimeString(),
       expert: copyTradingExperts[Math.floor(Math.random() * copyTradingExperts.length)].name,
@@ -1260,311 +1088,47 @@ window.addEventListener("load", () => {
       amount: (Math.random() * 0.1).toFixed(4) + " BTC"
     };
     liveCopiedTrades.unshift(newTrade);
-    if(liveCopiedTrades.length > 20) liveCopiedTrades.pop();
-    updateCopiedTrades();
+    if (liveCopiedTrades.length > 20) liveCopiedTrades.pop();
+    updateCopiedTrades(liveCopiedTrades);
   }, 30000);
-    // Show Page without alert and store in localStorage
-    function showPage(pageId) {
-      document.querySelectorAll('.page').forEach(p => p.classList.remove('active-page'));
-      const currentPage = document.getElementById(pageId);
-      if (currentPage) {
-        currentPage.classList.add('active-page');
-        localStorage.setItem('currentPage', pageId);
-        document.getElementById('pageNumberDisplay').textContent = `Current Page ID: ${pageId}`;
-      }
-    }
 
-    // Restore last page on reload
-    window.addEventListener('DOMContentLoaded', () => {
-      const savedPage = localStorage.getItem('currentPage') || 'dashboard';
-      showPage(savedPage);
-    });
-const STORAGE_PAGE_KEY = "activePageId";
-let totalAssetsUSD = 4873.78;
+  // === PWA Installation ===
+  let deferredPrompt;
+  const installBtn = document.getElementById("installBtn");
 
-window.addEventListener("DOMContentLoaded", () => {
-  const savedPage = localStorage.getItem(STORAGE_PAGE_KEY) || "dashboard";
-  showPage(savedPage);
-  updateTotalAssetsDisplay();
-  initConversionPage();
-  document.getElementById("currencySelect")?.addEventListener("change", (e) => {
-    // Future currency logic
-  });
-});
-
-function showPage(pageId) {
-  localStorage.setItem(STORAGE_PAGE_KEY, pageId);
-  document.querySelectorAll(".page").forEach((page) => {
-    page.classList.remove("active-page");
-    page.classList.add("hidden");
-  });
-  const page = document.getElementById(pageId);
-  if (page) {
-    page.classList.add("active-page");
-    page.classList.remove("hidden");
-  } else {
-    console.warn(`Page "${pageId}" not found`);
-  }
-}
-
-function updateTotalAssetsDisplay() {
-  const totalAssetsEl = document.getElementById("totalAssets");
-  if (totalAssetsEl) totalAssetsEl.textContent = `$${totalAssetsUSD.toFixed(2)}`;
-  const usdAmountInput = document.getElementById("usdAmount");
-  const estimatedUsdtSpan = document.getElementById("estimatedUsdt");
-  if (usdAmountInput && estimatedUsdtSpan) {
-    usdAmountInput.value = totalAssetsUSD.toFixed(2);
-    estimatedUsdtSpan.textContent = `${totalAssetsUSD.toFixed(2)} USDT`;
-  }
-}
-
-function showToast(message) {
-  const toast = document.createElement("div");
-  toast.textContent = message;
-  toast.className = "fixed bottom-5 left-1/2 transform -translate-x-1/2 bg-yellow-400 text-black px-4 py-2 rounded shadow-lg z-50 text-sm font-medium";
-  document.body.appendChild(toast);
-  setTimeout(() => toast.remove(), 3000);
-}
-
-function convertUsdToUsdt() {
-  const usd = parseFloat(document.getElementById("usdAmount").value);
-  const usdt = usd; // 1:1 conversion
-
-  // Save USDT balance in localStorage (mock)
-  localStorage.setItem("usdtBalance", usdt.toFixed(2));
-
-  // Update USDT balance display on dashboard if present
-  const usdtBalanceDisplay = document.getElementById("usdtBalance");
-  if (usdtBalanceDisplay) {
-    usdtBalanceDisplay.innerText = `${usdt.toFixed(2)} USDT`;
-  }
-
-  showToast(`Converted $${usd.toFixed(2)} USD to ${usdt.toFixed(2)} USDT successfully.`);
-
-  showPage("page9i");
-}
-
-function initConversionPage() {
-  // Attach convertUsdToUsdt to Convert button on page10
-  const convertBtn = document.querySelector("#page10 button.convert-btn");
-  if (convertBtn) {
-    convertBtn.onclick = convertUsdToUsdt;
-  }
-   // After short delay, show page10 again with countdown
+  window.addEventListener("beforeinstallprompt", (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
     setTimeout(() => {
-      showPage('page10');
-      start24HourCountdown();
-    }, 2000); // Show Page9i for 2 seconds
-  }
+      deferredPrompt.prompt();
+      deferredPrompt.userChoice.then(({ outcome }) => {
+        console.log(outcome === "accepted" ? "✅ PWA installed" : "❌ Installation dismissed");
+        installBtn.style.display = "none";
+      });
+    }, 1000);
+    installBtn.style.display = "inline-block";
+  });
 
-  // ⏱️ Start Countdown
-  function start24HourCountdown() {
-    const existingEnd = localStorage.getItem('conversionEndTime');
-    let endTime;
-
-    if (!existingEnd) {
-      // 24 hours from now
-      endTime = Date.now() + 24 * 60 * 60 * 1000;
-      localStorage.setItem('conversionEndTime', endTime);
+  installBtn?.addEventListener("click", () => {
+    if (deferredPrompt) {
+      deferredPrompt.prompt();
+      deferredPrompt.userChoice.then(({ outcome }) => {
+        if (outcome === "accepted") installBtn.style.display = "none";
+        deferredPrompt = null;
+      });
     } else {
-      endTime = parseInt(existingEnd);
-    }
-
-    document.getElementById('countdownBox').classList.remove('hidden');
-    updateCountdown(endTime);
-
-    // Set interval to update every second
-    const intervalId = setInterval(() => {
-      const now = Date.now();
-      const remaining = endTime - now;
-
-      if (remaining <= 0) {
-        clearInterval(intervalId);
-        document.getElementById('countdownTimer').textContent = "00:00:00";
-        localStorage.removeItem('conversionEndTime');
-        return;
-      }
-
-      updateCountdown(endTime);
-    }, 1000);
-  }
-
-  // 🧮 Countdown Formatter
-  function updateCountdown(endTime) {
-    const now = Date.now();
-    const diff = endTime - now;
-
-    const hours = Math.floor(diff / (1000 * 60 * 60));
-    const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-    const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-
-    const format = (n) => n.toString().padStart(2, '0');
-    document.getElementById('countdownTimer').textContent = `${format(hours)}:${format(minutes)}:${format(seconds)}`;
-  }
-  // Total assets from dashboard
-  const totalAssetsUSD = 4873.78;
-
-  // On page 8 show, initialize amount input with totalAssetsUSD
-  function initPage8() {
-    const amountInput = document.getElementById('transferAmount');
-    if (amountInput) {
-      amountInput.value = totalAssetsUSD.toFixed(2);
-    }
-  }
-
-  // Set amount input to max (total assets)
-  function setMaxAmount() {
-    const amountInput = document.getElementById('transferAmount');
-    if (amountInput) {
-      amountInput.value = totalAssetsUSD.toFixed(2);
-    }
-  }
-
-  // Override your global showPage to call initPage8 when page8 is shown
-  function showPage(pageId) {
-    // Hide all pages
-    document.querySelectorAll('.page').forEach(p => p.classList.add('hidden'));
-    // Show requested page
-    const page = document.getElementById(pageId);
-    if (page) {
-      page.classList.remove('hidden');
-      // If it's page8, initialize amount
-      if (pageId === 'page8') {
-        initPage8();
-      }
-    }
-  function showPage(pageId) {
-    // Hide all pages and remove active class
-    document.querySelectorAll('.page').forEach(page => {
-      page.classList.remove('active-page');
-      page.classList.add('hidden');
-    });
-
-    // Show the selected page and add active class
-    const target = document.getElementById(pageId);
-    if (target) {
-      target.classList.remove('hidden');
-      target.classList.add('active-page');
-    }
-  }
-  var _smartsupp = _smartsupp || {};
-  _smartsupp.key = '3ab3e4c3fcd21f84344cc872db2a35d9e40245a6';
-  window.smartsupp || (function(d) {
-    var s, c, o = smartsupp = function() { o._.push(arguments); };
-    o._ = [];
-    s = d.getElementsByTagName('script')[0];
-    c = d.createElement('script');
-    c.type = 'text/javascript';
-    c.charset = 'utf-8';
-    c.async = true;
-    c.src = 'https://www.smartsuppchat.com/loader.js?';
-    s.parentNode.insertBefore(c, s);
-  })(document);
-  
-  // ✅ Set max amount  
-  function setMaxAmount() {  
-    const totalAssets = 4873.78;  
-    const amountInput = document.getElementById("transferAmount");  
-    if (amountInput) {  
-      amountInput.value = totalAssets.toFixed(2);  
-    }  
-  }  
-  
-  // ✅ Handle Confirm Withdrawal + Timer  
-  function confirmWithdrawal() {  
-    // Show page 9i  
-    showPage('page9i');  
-  
-    // Set countdown timestamp (48 hours = 172800000ms)  
-    const now = new Date().getTime();  
-    const countdownEnd = now + 48 * 60 * 60 * 1000;  
-  
-    // Save to localStorage  
-    localStorage.setItem('countdownEnd', countdownEnd.toString());  
-  
-    // Optionally start the display updater immediately if on page9i  
-    if (typeof updateCountdownDisplay === "function") {  
-      updateCountdownDisplay();  
-    }  
-  }  
-  function updateCountdownDisplay() {
-    const countdownElement = document.getElementById('countdownTimer');
-    const countdownEnd = parseInt(localStorage.getItem('countdownEnd'));
-
-    if (!countdownEnd || !countdownElement) return;
-
-    const interval = setInterval(() => {
-      const now = new Date().getTime();
-      const remaining = countdownEnd - now;
-
-      if (remaining <= 0) {
-        countdownElement.innerText = "⏰ Countdown expired.";
-
-        // Clear interval and storage
-        clearInterval(interval);
-        localStorage.removeItem('countdownEnd');
-
-        // Redirect to page8iii after 2s
-        setTimeout(() => {
-          showPage('page8iii');
-        }, 2000);
-
-        return;
-      }
-
-      const hours = Math.floor((remaining / (1000 * 60 * 60)) % 48);
-      const minutes = Math.floor((remaining / (1000 * 60)) % 60);
-      const seconds = Math.floor((remaining / 1000) % 60);
-
-      countdownElement.innerText = `⏳ ${hours}h ${minutes}m ${seconds}s remaining`;
-    }, 1000);
-  }
-
-  // ✅ Auto-start countdown if page9i is active
-  document.addEventListener("DOMContentLoaded", () => {
-    const currentPage = document.querySelector(".active-page");
-    if (currentPage && currentPage.id === "page9i") {
-      updateCountdownDisplay();
+      alert("⚠️ Install not supported or already installed.");
     }
   });
-    // Register service worker
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('sw.js').then(() => {
-        console.log("✅ Service Worker Registered");
-      });
-    }
 
-    // Auto-trigger Install Prompt
-    let deferredPrompt;
-    const installBtn = document.getElementById("installBtn");
-
-    window.addEventListener("beforeinstallprompt", (e) => {
-      e.preventDefault(); // Prevent default mini-infobar
-      deferredPrompt = e;
-
-      // Automatically show prompt
-      setTimeout(async () => {
-        deferredPrompt.prompt();
-        const { outcome } = await deferredPrompt.userChoice;
-        console.log(outcome === 'accepted' ? "✅ User accepted install" : "❌ User dismissed install");
-        deferredPrompt = null;
-      }, 1000);
-
-      // Show fallback install button
-      installBtn.style.display = "inline-block";
+  // === Service Worker ===
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('sw.js').then(() => {
+      console.log("✅ Service Worker Registered");
     });
+  }
 
-    installBtn.addEventListener("click", async () => {
-      if (!deferredPrompt) {
-        alert("⚠️ Install not supported or already installed.");
-        return;
-      }
-      deferredPrompt.prompt();
-      const { outcome } = await deferredPrompt.userChoice;
-      console.log(outcome === 'accepted' ? "✅ User accepted install" : "❌ User dismissed install");
-      installBtn.style.display = "none";
-      deferredPrompt = null;
-    });
-  </script>
+})();
+</script>
 </body>
 </html>
