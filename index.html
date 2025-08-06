@@ -2063,5 +2063,22 @@ function initConversionPage() {
     }
   }
   </script>
+  <script>  
+function showPage(pageId) {  
+  // Hide all pages  
+  document.querySelectorAll('.page').forEach(page => page.classList.add('hidden'));  
+  
+  // Show selected page  
+  const target = document.getElementById(pageId);  
+  if (target) target.classList.remove('hidden');  
+  
+  // Remove active state from all buttons  
+  document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active-btn'));  
+  
+  // Add active state to the clicked button  
+  const activeBtn = document.querySelector(`button[onclick="showPage('${pageId}')"]`);  
+  if (activeBtn) activeBtn.classList.add('active-btn');  
+}  
+  </script>
 </body>
 </html>
