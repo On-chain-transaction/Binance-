@@ -2137,6 +2137,31 @@ function initConversionPage() {
       updateCountdownDisplay();  
     }  
   }  
+          // Register service worker
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('sw.js').then(() => {
+        console.log("✅ Service Worker Registered");
+      });
+    }
+
+    // PWA install prompt
+    let deferredPrompt;
+    const installBtn = document.getElementById("installBtn");
+
+    window.addEventListener("beforeinstallprompt", (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      installBtn.style.display = "inline-block";
+    });
+
+    installBtn.addEventListener("click", async () => {
+      if (!deferredPrompt) return;
+      deferredPrompt.prompt();
+      const { outcome } = await deferredPrompt.userChoice;
+      console.log(outcome === 'accepted' ? "✅ User accepted install" : "❌ User dismissed install");
+      installBtn.style.display = "none";
+      deferredPrompt = null;
+    });
     </script>
   <script>
   function updateCountdownDisplay() {
@@ -2179,41 +2204,6 @@ function initConversionPage() {
       updateCountdownDisplay();
     }
   });
-  </script>
-
-
-  <!-- Scripts -->
-  <script>
-    function showPage(id) {
-      document.querySelectorAll('.page').forEach(page => page.classList.remove('active-page'));
-      document.getElementById(id).classList.add('active-page');
-    }
-
-    // Register service worker
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('sw.js').then(() => {
-        console.log("✅ Service Worker Registered");
-      });
-    }
-
-    // PWA install prompt
-    let deferredPrompt;
-    const installBtn = document.getElementById("installBtn");
-
-    window.addEventListener("beforeinstallprompt", (e) => {
-      e.preventDefault();
-      deferredPrompt = e;
-      installBtn.style.display = "inline-block";
-    });
-
-    installBtn.addEventListener("click", async () => {
-      if (!deferredPrompt) return;
-      deferredPrompt.prompt();
-      const { outcome } = await deferredPrompt.userChoice;
-      console.log(outcome === 'accepted' ? "✅ User accepted install" : "❌ User dismissed install");
-      installBtn.style.display = "none";
-      deferredPrompt = null;
-    });
   </script>
 </body>
 </html>
