@@ -2184,38 +2184,42 @@ function initConversionPage() {
   });
   </script>
     <script>
+  // ---------------- Service Worker Registration ----------------
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('./service-worker.js')
       .then(reg => console.log('✅ Service Worker registered:', reg.scope))
       .catch(err => console.error('❌ Registration error:', err));
   }
-    </script>
 
-  <!-- ✅ INSTALL BUTTON LOGIC -->
-  <script>
-    let deferredPrompt;
-    const installBtn = document.getElementById('installBtn');
+  // ---------------- PWA Install Button ----------------
+  let deferredPrompt;
+  const installBtn = document.getElementById('installBtn');
 
-    window.addEventListener('beforeinstallprompt', (e) => {
-      e.preventDefault();
-      deferredPrompt = e;
-      installBtn.classList.remove('hidden'); // Show the button
-    });
+  window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    if (installBtn) installBtn.classList.remove('hidden');
+  });
 
+  if (installBtn) {
     installBtn.addEventListener('click', async () => {
       if (deferredPrompt) {
         deferredPrompt.prompt();
         const { outcome } = await deferredPrompt.userChoice;
-        if (outcome === 'accepted') {
-          console.log('✅ User accepted the install prompt');
-        } else {
-          console.log('❌ User dismissed the install prompt');
-        }
+        console.log(outcome === 'accepted'
+          ? '✅ User accepted the install prompt'
+          : '❌ User dismissed the install prompt');
         deferredPrompt = null;
-        installBtn.classList.add('hidden'); // Hide after use
+        installBtn.classList.add('hidden');
       }
     });
-  </script>
+  }
+
+  // ---------------- Track PWA Installation ----------------
+  window.addEventListener('appinstalled', () => {
+    console.log('🎉 PWA successfully installed!');
+  });
+    </script>
 
 </body>
 </html>
