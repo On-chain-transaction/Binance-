@@ -1109,52 +1109,7 @@ document.addEventListener("DOMContentLoaded", () => {
     showPage("page0");
   });
       </script>
-    <script>
-  const pageHistory = [];
-
-  function showPage(pageNumber) {
-    document.querySelectorAll('.page').forEach((page) => {
-      page.classList.add('hidden');
-      page.classList.remove('active');
-    });
-
-    const targetPage = document.getElementById(`page${pageNumber}`);
-    if (targetPage) {
-      targetPage.classList.remove('hidden');
-      targetPage.classList.add('active');
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-
-      if (!pageHistory.includes(`page${pageNumber}`)) {
-        pageHistory.push(`page${pageNumber}`);
-      }
-    } else {
-      console.error(`Page with id "page${pageNumber}" not found.`);
-    }
-  }
-
-  function goBack() {
-    if (pageHistory.length > 1) {
-      pageHistory.pop(); // remove current
-      const previousPage = pageHistory[pageHistory.length - 1];
-      const previousNumber = previousPage.replace("page", "");
-      showPage(previousNumber);
-    }
-  }
-
-  window.addEventListener('DOMContentLoaded', () => {
-    showPage(0); // Default to Landing Page (page0)
-  });
-
-  // Optional: Add this function to handle navigation buttons
-  document.querySelectorAll('[data-goto]').forEach((btn) => {
-    btn.addEventListener('click', (e) => {
-      const target = e.currentTarget.getAttribute('data-goto');
-      if (target) showPage(target);
-    });
-  });
-    </script>
-
-  <script>
+   <script>
   function openWalletModal() {
     document.getElementById('walletModal').classList.remove('hidden');
   }
