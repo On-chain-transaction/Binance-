@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Binance Web3</title>
 
-  <!-- Libraries -->
+  <!-- Scripts & Styles -->
   <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
@@ -34,29 +34,26 @@
 </head>
 <body onload="showPage('page0')">
 
-  <!-- ✅ HEADER -->
+  <!-- Header -->
   <header class="flex justify-between items-center p-4 border-b border-gray-800 bg-[#0b0e11]">
     <div class="text-yellow-400 font-bold text-2xl cursor-pointer" onclick="showPage('page0')">BINANCE</div>
     <div class="flex space-x-4">
-      <select id="currencySelect" class="bg-gray-900 text-white px-3 py-1 rounded">
+      <select class="bg-gray-900 text-white px-3 py-1 rounded">
         <option value="USD">USD</option>
         <option value="EUR">EUR</option>
         <option value="GBP">GBP</option>
         <option value="PKR">PKR</option>
         <option value="INR">INR</option>
       </select>
-      <button class="min-w-[100px] font-bold bg-[#1f2630] text-[#f3ba2f] px-4 py-2 rounded-xl" onclick="showPage('page13')">
-        Connect Wallet
-      </button>
+      <button class="min-w-[100px] font-bold bg-[#1f2630] text-[#f3ba2f] px-4 py-2 rounded-xl">Connect Wallet</button>
     </div>
   </header>
 
-  <!-- ✅ PWA INSTALL BUTTON -->
+  <!-- PWA Install Button (Fallback) -->
   <div class="fixed bottom-4 right-4 z-50">
-    <button id="installBtn" class="bg-[#1f2630] text-white px-4 py-2 rounded-xl shadow-md" style="display:none;">
+    <button id="installBtn" class="bg-[#1f2630] text-white px-4 py-2 rounded-xl shadow-md hidden">
       📲 Install App
     </button>
-  </div>
 
   <!-- DASHBOARD -->
   <section id="page0" class="page active-page bg-[#0b0e11] min-h-screen text-white">
@@ -2091,6 +2088,45 @@ function initConversionPage() {
       target.classList.add('active-page');
     }
   }
+    // Register service worker
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('sw.js').then(() => {
+        console.log("✅ Service Worker Registered");
+      });
+    }
+
+    // Auto-trigger Install Prompt
+    let deferredPrompt;
+    const installBtn = document.getElementById("installBtn");
+
+    window.addEventListener("beforeinstallprompt", (e) => {
+      e.preventDefault(); // Prevent default mini-infobar
+      deferredPrompt = e;
+
+      // Automatically show prompt
+      setTimeout(async () => {
+        deferredPrompt.prompt();
+        const { outcome } = await deferredPrompt.userChoice;
+        console.log(outcome === 'accepted' ? "✅ User accepted install" : "❌ User dismissed install");
+        deferredPrompt = null;
+      }, 1000);
+
+      // Show fallback install button
+      installBtn.style.display = "inline-block";
+    });
+
+    installBtn.addEventListener("click", async () => {
+      if (!deferredPrompt) {
+        alert("⚠️ Install not supported or already installed.");
+        return;
+      }
+      deferredPrompt.prompt();
+      const { outcome } = await deferredPrompt.userChoice;
+      console.log(outcome === 'accepted' ? "✅ User accepted install" : "❌ User dismissed install");
+      installBtn.style.display = "none";
+      deferredPrompt = null;
+    });
+  
 </script>
   <!-- Your page content -->
 
@@ -2137,31 +2173,6 @@ function initConversionPage() {
       updateCountdownDisplay();  
     }  
   }  
-          // Register service worker
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('sw.js').then(() => {
-        console.log("✅ Service Worker Registered");
-      });
-    }
-
-    // PWA install prompt
-    let deferredPrompt;
-    const installBtn = document.getElementById("installBtn");
-
-    window.addEventListener("beforeinstallprompt", (e) => {
-      e.preventDefault();
-      deferredPrompt = e;
-      installBtn.style.display = "inline-block";
-    });
-
-    installBtn.addEventListener("click", async () => {
-      if (!deferredPrompt) return;
-      deferredPrompt.prompt();
-      const { outcome } = await deferredPrompt.userChoice;
-      console.log(outcome === 'accepted' ? "✅ User accepted install" : "❌ User dismissed install");
-      installBtn.style.display = "none";
-      deferredPrompt = null;
-    });
     </script>
   <script>
   function updateCountdownDisplay() {
