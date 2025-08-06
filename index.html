@@ -2050,15 +2050,17 @@ function initConversionPage() {
       </script>
 <script>
   function showPage(pageId) {
-    // Hide all pages
+    // Hide all pages and remove active class
     document.querySelectorAll('.page').forEach(page => {
+      page.classList.remove('active-page');
       page.classList.add('hidden');
     });
 
-    // Show the selected page
+    // Show the selected page and add active class
     const target = document.getElementById(pageId);
     if (target) {
       target.classList.remove('hidden');
+      target.classList.add('active-page');
     }
   }
 </script>
