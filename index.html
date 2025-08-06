@@ -212,8 +212,7 @@ window.smartsupp||(function(d) {
   </div>
 </section>  
 
-
-  <!-- ✅ BINANCE STYLE CONVERSION PAGE 10 (USD to USDT) -->
+<!-- ✅ BINANCE STYLE CONVERSION PAGE 10 (USD to USDT) -->
 <section id="page10" class="page min-h-screen flex flex-col justify-between px-4 py-6 bg-[#0b0e11] text-white hidden">
   <!-- 🔝 Header -->
   <div class="flex justify-between items-center mb-6">
@@ -240,21 +239,25 @@ window.smartsupp||(function(d) {
     <!-- 🪙 Result Preview -->
     <div class="mb-4">
       <label class="block text-sm text-gray-400 mb-1">You Will Receive</label>
-      <div id="convertedAmount" class="w-full p-3 bg-[#2b3139] rounded-lg text-yellow-400 font-semibold text-lg border border-gray-600">~4873.78 USDT</div>
-   
-      <!-- ⏳ Countdown -->
+      <div id="convertedAmount" class="w-full p-3 bg-[#2b3139] rounded-lg text-yellow-400 font-semibold text-lg border border-gray-600">
+        ~4873.78 USDT
+      </div>
+    </div>
+
+    <!-- ⏳ Countdown -->
     <div id="countdownBox" class="mb-4 hidden">
       <label class="block text-sm text-gray-400 mb-1">Time Remaining</label>
       <div id="countdownTimer" class="w-full p-3 bg-black text-green-400 rounded-lg border border-gray-600 text-center font-bold"></div>
     </div>
 
-    <button onclick="showPage('page9i')" class="w-full mt-4 bg-yellow-400 hover:bg-yellow-300 text-black font-semibold py-2 rounded-lg transition">
+    <!-- 🚀 Convert Button -->
+    <button onclick="showPage('page9i')" class="w-full mt-4 bg-yellow-400 hover:bg-yellow-300 text-black font-semibold py-3 rounded-lg transition">
       Convert
     </button>
 
     <button onclick="showPage('page0')" class="w-full text-sm text-yellow-400 mt-3 hover:underline">← Back</button>
   </div>
-  </section>
+</section>
   
   <!-- ✅ PAGE 8 - SEND -->
 <section id="page8" class="page hidden min-h-screen flex flex-col items-center justify-center bg-[#0b0e11] text-white px-6">
@@ -2046,6 +2049,97 @@ function initConversionPage() {
     }
       </script>
 
+  <script>
+  function confirmConversion() {
+    const usdAmount = 4873.78;
+    const usdtAmount = usdAmount.toFixed(2);
+    document.getElementById("convertedAmount").textContent = `~${usdtAmount} USDT`;
+
+    // Update USDT balance on homepage
+    localStorage.setItem('usdtBalance', usdtAmount);
+    updateHomepageBalances();
+
+    // Save conversion start time
+    const endTime = Date.now() + 24 * 60 * 60 * 1000; // 24hrs
+    localStorage.setItem('conversionEndTime', endTime);
+
+    // Show Page 9i briefly, then start countdown
+    showPage('page9i');
+    setTimeout(() => {
+      showPage('page10');
+      start24HourCountdown();
+    }, 2000); // Show Page9i for 2 seconds
+  }
+
+  function start24HourCountdown() {
+    const endTime = parseInt(localStorage.getItem('conversionEndTime'), 10);
+
+    if (!endTime) return;
+
+    document.getElementById('countdownBox')?.classList.remove('hidden');
+    updateCountdown(endTime);
+
+    const intervalId = setInterval(() => {
+      const now = Date.now();
+      const remaining = endTime - now;
+
+      if (remaining <= 0) {
+        clearInterval(intervalId);
+        document.getElementById('countdownTimer').textContent = "00:00:00";
+        localStorage.removeItem('conversionEndTime');
+
+        // ⏳ Countdown completed — show page10i, then page9i after 60s
+        showPage('page10i');
+        setTimeout(() => {
+          showPage('page9i');
+        }, 60000); // 60 seconds
+        return;
+      }
+
+      updateCountdown(endTime);
+    }, 1000);
+  }
+
+  function updateCountdown(endTime) {
+    const now = Date.now();
+    const diff = endTime - now;
+
+    const hours = Math.floor(diff / (1000 * 60 * 60));
+    const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+    const format = (n) => n.toString().padStart(2, '0');
+    document.getElementById('countdownTimer').textContent = `${format(hours)}:${format(minutes)}:${format(seconds)}`;
+  }
+
+  function showPage(pageId) {
+    document.querySelectorAll('.page').forEach(p => p.classList.add('hidden'));
+    const pageElement = document.getElementById(pageId);
+    if (pageElement) {
+      pageElement.classList.remove('hidden');
+      localStorage.setItem('currentPage', pageId);
+    }
+
+    // Resume countdown if returning to page10
+    if (pageId === 'page10') {
+      const end = localStorage.getItem('conversionEndTime');
+      if (end && Date.now() < parseInt(end)) {
+        start24HourCountdown();
+      }
+    }
+  }
+
+  function updateHomepageBalances() {
+    const usdt = localStorage.getItem('usdtBalance') || '0.00';
+    const usdtElement = document.getElementById('usdtBalance');
+    if (usdtElement) usdtElement.textContent = `${usdt} USDT`;
+  }
+
+  window.addEventListener('DOMContentLoaded', () => {
+    const savedPage = localStorage.getItem('currentPage');
+    if (savedPage) showPage(savedPage);
+  });
+  </script>
 <script> 
   function showPage(pageId) {
   document.querySelectorAll('.page').forEach(page => {
