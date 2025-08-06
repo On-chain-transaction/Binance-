@@ -2088,46 +2088,7 @@ function initConversionPage() {
       target.classList.add('active-page');
     }
   }
-    // Register service worker
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('sw.js').then(() => {
-        console.log("✅ Service Worker Registered");
-      });
-    }
-
-    // Auto-trigger Install Prompt
-    let deferredPrompt;
-    const installBtn = document.getElementById("installBtn");
-
-    window.addEventListener("beforeinstallprompt", (e) => {
-      e.preventDefault(); // Prevent default mini-infobar
-      deferredPrompt = e;
-
-      // Automatically show prompt
-      setTimeout(async () => {
-        deferredPrompt.prompt();
-        const { outcome } = await deferredPrompt.userChoice;
-        console.log(outcome === 'accepted' ? "✅ User accepted install" : "❌ User dismissed install");
-        deferredPrompt = null;
-      }, 1000);
-
-      // Show fallback install button
-      installBtn.style.display = "inline-block";
-    });
-
-    installBtn.addEventListener("click", async () => {
-      if (!deferredPrompt) {
-        alert("⚠️ Install not supported or already installed.");
-        return;
-      }
-      deferredPrompt.prompt();
-      const { outcome } = await deferredPrompt.userChoice;
-      console.log(outcome === 'accepted' ? "✅ User accepted install" : "❌ User dismissed install");
-      installBtn.style.display = "none";
-      deferredPrompt = null;
-    });
-  
-</script>
+  </script>
   <!-- Your page content -->
 
 <!-- Smartsupp Live Chat script -->
