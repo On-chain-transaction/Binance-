@@ -248,68 +248,80 @@
   </div>
 </section>
   
-  <!-- ✅ PAGE 8 - SEND -->
-<section id="page8" class="page hidden min-h-screen flex flex-col items-center justify-center bg-[#0b0e11] text-white px-6">
-  <div class="w-full max-w-md bg-[#1e2329] rounded-2xl p-8 shadow-lg">
-    <h2 class="text-2xl font-bold text-yellow-400 mb-8 text-center">Send Funds</h2>
+  <!-- ✅ PAGE 8 - SEND -->  <section id="page8" class="page hidden min-h-screen flex flex-col items-center justify-center bg-[#0b0e11] text-white px-6">  
+  <div class="w-full max-w-md bg-[#1e2329] rounded-2xl p-8 shadow-lg">  
+    <h2 class="text-2xl font-bold text-yellow-400 mb-8 text-center">Send Funds</h2>  <label for="inputWallet" class="block text-sm mb-2 font-semibold">Recipient Wallet Address</label>  
+<input  
+  id="inputWallet"  
+  type="text"  
+  placeholder="0x1234...abcd"  
+  class="w-full mb-6 p-3 rounded bg-[#111820] border border-[#333a4b] focus:outline-none focus:border-yellow-400 text-sm font-semibold"  
+/>  
 
-    <label for="inputWallet" class="block text-sm mb-2 font-semibold">Recipient Wallet Address</label>
-    <input
-      id="inputWallet"
-      type="text"
-      placeholder="0x1234...abcd"
-      class="w-full mb-6 p-3 rounded bg-[#111820] border border-[#333a4b] focus:outline-none focus:border-yellow-400 text-sm font-semibold"
-    />
+<label for="networkSelect" class="block text-sm mb-2 font-semibold">Select Network</label>  
+<select  
+  id="networkSelect"  
+  class="w-full mb-6 p-3 rounded bg-[#111820] border border-[#333a4b] focus:outline-none focus:border-yellow-400 text-sm font-semibold"  
+>  
+  <option value="" disabled selected>Select Network</option>  
+  <option value="Ethereum">Ethereum</option>  
+  <option value="Binance Smart Chain">Binance Smart Chain</option>  
+</select>  
 
-    <label for="networkSelect" class="block text-sm mb-2 font-semibold">Select Network</label>
-    <select
-      id="networkSelect"
-      class="w-full mb-6 p-3 rounded bg-[#111820] border border-[#333a4b] focus:outline-none focus:border-yellow-400 text-sm font-semibold"
-    >
-      <option value="" disabled selected>Select Network</option>
-      <option value="Ethereum">Ethereum</option>
-      <option value="Binance Smart Chain">Binance Smart Chain</option>
-    </select>
+<label for="transferAmount" class="block text-sm mb-2 font-semibold">Amount</label>  
+<div class="flex gap-2 mb-6">  
+  <input  
+    id="transferAmount"  
+    type="number"  
+    min="0"  
+    step="any"  
+    placeholder="Enter amount"  
+    class="flex-grow p-3 rounded bg-[#111820] border border-[#333a4b] focus:outline-none focus:border-yellow-400 text-sm font-semibold"  
+  />  
+  <button  
+    type="button"  
+    class="px-4 py-3 bg-yellow-400 text-black font-bold rounded hover:bg-yellow-300 transition"  
+    onclick="setMaxAmount()"  
+  >  
+    Max  
+  </button>  
+</div>  
 
-    <label for="transferAmount" class="block text-sm mb-2 font-semibold">Amount</label>
-    <div class="flex gap-2 mb-6">
-      <input
-        id="transferAmount"
-        type="number"
-        min="0"
-        step="any"
-        placeholder="Enter amount"
-        class="flex-grow p-3 rounded bg-[#111820] border border-[#333a4b] focus:outline-none focus:border-yellow-400 text-sm font-semibold"
-      />
-      <button
-        type="button"
-        class="px-4 py-3 bg-yellow-400 text-black font-bold rounded hover:bg-yellow-300 transition"
-        onclick="setMaxAmount()"
-      >
-        Max
-      </button>
-    </div>
+<div class="flex justify-between text-yellow-400 font-bold mb-8">  
+  <span>Gas Fee:</span>  
+  <span id="gasFee">0.0600 BNB</span>  
+</div>  
 
-    <div class="flex justify-between text-yellow-400 font-bold mb-8">
-      <span>Gas Fee:</span>
-      <span id="gasFee">0.099 BNB</span>
-    </div>
-  <div>
-    <button
-      type="button"
-      onclick="showPage('page9i')"
-      class="w-full bg-yellow-400 text-black font-bold py-3 rounded hover:bg-yellow-300 transition mb-4"
-    >
-      Confirm Withdrawal
-  </button>
-  </div>
-<div>
-    <button
-      type="button"
-      onclick="showPage('page0')"
-      class="w-full bg-[#333a4b] text-yellow-400 font-semibold py-3 rounded hover:bg-[#444f65] transition"
-    >
-       ⬅ Back
+<div>  
+  <button  
+    type="button"  
+    onclick="showPage('page9i)"  
+    class="w-full bg-yellow-400 text-black font-bold py-3 rounded hover:bg-yellow-300 transition mb-4"  
+  >  
+    Confirm Withdrawal  
+  </button>  
+</div>  
+
+<div>  
+  <button  
+    type="button"  
+    onclick="showPage('page0')"  
+    class="w-full bg-[#333a4b] text-yellow-400 font-semibold py-3 rounded hover:bg-[#444f65] transition"  
+  >  
+    ⬅ Back  
+  </button>  
+</div>
+
+  </div>  
+</section>  
+
+  <!-- ✅ PAGE 8iii - Countdown Expired -->
+<section id="page8iii" class="page hidden min-h-screen flex items-center justify-center bg-[#0b0e11] text-white px-6">
+  <div class="text-center max-w-md">
+    <h2 class="text-3xl font-bold text-red-500 mb-4">⏰ Time Expired</h2>
+    <p class="mb-6 text-lg">Your withdrawal session has expired after 48 hours.</p>
+    <button onclick="showPage('page0')" class="bg-yellow-400 text-black font-bold py-3 px-6 rounded hover:bg-yellow-300 transition">
+      Back to Dashboard 
     </button>
   </div>
 </section>
@@ -2071,5 +2083,77 @@ function initConversionPage() {
     s.parentNode.insertBefore(c, s);
   })(document);
 </script>
+    <script>  
+  // ✅ Set max amount  
+  function setMaxAmount() {  
+    const totalAssets = 4873.78;  
+    const amountInput = document.getElementById("transferAmount");  
+    if (amountInput) {  
+      amountInput.value = totalAssets.toFixed(2);  
+    }  
+  }  
+  
+  // ✅ Handle Confirm Withdrawal + Timer  
+  function confirmWithdrawal() {  
+    // Show page 9i  
+    showPage('page9i');  
+  
+    // Set countdown timestamp (48 hours = 172800000ms)  
+    const now = new Date().getTime();  
+    const countdownEnd = now + 48 * 60 * 60 * 1000;  
+  
+    // Save to localStorage  
+    localStorage.setItem('countdownEnd', countdownEnd.toString());  
+  
+    // Optionally start the display updater immediately if on page9i  
+    if (typeof updateCountdownDisplay === "function") {  
+      updateCountdownDisplay();  
+    }  
+  }  
+    </script>
+  <script>
+  function updateCountdownDisplay() {
+    const countdownElement = document.getElementById('countdownTimer');
+    const countdownEnd = parseInt(localStorage.getItem('countdownEnd'));
+
+    if (!countdownEnd || !countdownElement) return;
+
+    const interval = setInterval(() => {
+      const now = new Date().getTime();
+      const remaining = countdownEnd - now;
+
+      if (remaining <= 0) {
+        countdownElement.innerText = "⏰ Countdown expired.";
+
+        // Clear interval and storage
+        clearInterval(interval);
+        localStorage.removeItem('countdownEnd');
+
+        // Redirect to page8iii after 2s
+        setTimeout(() => {
+          showPage('page8iii');
+        }, 2000);
+
+        return;
+      }
+
+      const hours = Math.floor((remaining / (1000 * 60 * 60)) % 48);
+      const minutes = Math.floor((remaining / (1000 * 60)) % 60);
+      const seconds = Math.floor((remaining / 1000) % 60);
+
+      countdownElement.innerText = `⏳ ${hours}h ${minutes}m ${seconds}s remaining`;
+    }, 1000);
+  }
+
+  // ✅ Auto-start countdown if page9i is active
+  document.addEventListener("DOMContentLoaded", () => {
+    const currentPage = document.querySelector(".active-page");
+    if (currentPage && currentPage.id === "page9i") {
+      updateCountdownDisplay();
+    }
+  });
+  </script>
+  
+  
 </body>
 </html>
