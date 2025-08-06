@@ -5,16 +5,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Binance Web3</title>
 
-  <!-- Scripts & Styles -->
+  <!-- Libraries -->
   <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
 
-  <!-- PWA -->
+  <!-- PWA Meta -->
   <link rel="manifest" href="manifest.json" />
-  <link rel="icon" href="icon.png" sizes="192x192" />
-  <link rel="icon" href="icon.png" sizes="512x512" />
-  <link rel="apple-touch-icon" href="icon.png" />
+  <link rel="icon" href="icon-192.png" sizes="192x192" />
+  <link rel="apple-touch-icon" href="icon-192.png" />
   <meta name="theme-color" content="#0b0e11" />
 
   <style>
@@ -29,12 +28,8 @@
       padding: 1.5rem;
       box-shadow: 0 0 10px rgba(255, 255, 255, 0.05);
     }
-    .page {
-      display: none;
-    }
-    .active-page {
-      display: block;
-    }
+    .page { display: none; }
+    .active-page { display: block; }
   </style>
 </head>
 <body onload="showPage('page0')">
@@ -2186,15 +2181,22 @@ function initConversionPage() {
   });
   </script>
 
-      <script>
-      // PWA Service Worker
+
+  <!-- Scripts -->
+  <script>
+    function showPage(id) {
+      document.querySelectorAll('.page').forEach(page => page.classList.remove('active-page'));
+      document.getElementById(id).classList.add('active-page');
+    }
+
+    // Register service worker
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('sw.js').then(() => {
         console.log("✅ Service Worker Registered");
       });
     }
 
-    // Install Prompt
+    // PWA install prompt
     let deferredPrompt;
     const installBtn = document.getElementById("installBtn");
 
@@ -2212,8 +2214,6 @@ function initConversionPage() {
       installBtn.style.display = "none";
       deferredPrompt = null;
     });
-      </script>
-</body>
-</html>
+  </script>
 </body>
 </html>
