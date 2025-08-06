@@ -57,33 +57,36 @@
   </header>
 
   <!-- ✅ PWA INSTALL BUTTON -->
-<div class="fixed bottom-4 right-4 z-50">
-  <button id="installBtn" style="display:none;">📲 Install App</button>
-</div>
+  <div class="fixed bottom-4 right-4 z-50">
+    <button id="installBtn" class="bg-[#1f2630] text-white px-4 py-2 rounded-xl shadow-md" style="display:none;">
+      📲 Install App
+    </button>
+  </div>
+
   <!-- DASHBOARD -->
   <section id="page0" class="page active-page bg-[#0b0e11] min-h-screen text-white">
     <main class="p-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
 
       <!-- TOTAL ASSETS -->
-      <div class="card bg-[#1a1a1a] p-4 rounded-2xl shadow-md">
+      <div class="card">
         <h2 class="text-lg font-semibold">Total Assets</h2>
         <p id="totalAssets" class="text-2xl mt-2 text-yellow-400">$4873.78</p>
       </div>
 
       <!-- USDT BALANCE -->
-      <div class="card bg-[#1a1a1a] p-4 rounded-2xl shadow-md">
+      <div class="card">
         <h2 class="text-lg font-semibold">USDT Balance</h2>
         <p id="usdtBalance" class="text-xl mt-2">0 USDT</p>
       </div>
 
       <!-- BNB BALANCE -->
-      <div class="card bg-[#1a1a1a] p-4 rounded-2xl shadow-md">
+      <div class="card">
         <h2 class="text-lg font-semibold">BNB Balance</h2>
         <p id="bnbBalance" class="text-xl mt-2">0 BNB</p>
       </div>
 
       <!-- LIVE PRICE CHART -->
-      <div class="col-span-1 md:col-span-2 card bg-[#1a1a1a] p-4 rounded-2xl shadow-md">
+      <div class="col-span-1 md:col-span-2 card">
         <h2 class="text-lg font-semibold">Live Price Chart (BNB/USDT)</h2>
         <iframe src="https://s.tradingview.com/widgetembed/?symbol=BINANCE:BNBUSDT&interval=D&hidesidetoolbar=1&theme=dark&style=1&locale=en"
                 class="w-full mt-4 rounded"
@@ -92,12 +95,12 @@
       </div>
 
       <!-- ACTION BUTTONS -->
-<div class="col-span-1 md:col-span-3 flex flex-wrap gap-4 justify-center mt-4">
-  <button onclick="showPage('page16')" class="min-w-[100px] font-bold bg-[#1f2630] text-[#f3ba2f] px-4 py-2 rounded-xl">Trade</button>
-  <button onclick="showPage('page8')" class="min-w-[100px] font-bold bg-[#1f2630] text-[#f3ba2f] px-4 py-2 rounded-xl">Send</button>
-  <button onclick="showPage('page10')" class="min-w-[100px] font-bold bg-[#1f2630] text-[#f3ba2f] px-4 py-2 rounded-xl">Convert</button>
-  <button onclick="showPage('page6')" class="min-w-[100px] font-bold bg-[#1f2630] text-[#f3ba2f] px-4 py-2 rounded-xl">Receive</button>
-</div>
+      <div class="col-span-1 md:col-span-3 flex flex-wrap gap-4 justify-center mt-4">
+        <button onclick="showPage('page16')" class="min-w-[100px] font-bold bg-[#1f2630] text-[#f3ba2f] px-4 py-2 rounded-xl">Trade</button>
+        <button onclick="showPage('page8')" class="min-w-[100px] font-bold bg-[#1f2630] text-[#f3ba2f] px-4 py-2 rounded-xl">Send</button>
+        <button onclick="showPage('page10')" class="min-w-[100px] font-bold bg-[#1f2630] text-[#f3ba2f] px-4 py-2 rounded-xl">Convert</button>
+        <button onclick="showPage('page6')" class="min-w-[100px] font-bold bg-[#1f2630] text-[#f3ba2f] px-4 py-2 rounded-xl">Receive</button>
+      </div>
 
     </main>
   </section>
@@ -2182,7 +2185,8 @@ function initConversionPage() {
     }
   });
   </script>
-    <script>
+
+      <script>
       // PWA Service Worker
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('sw.js').then(() => {
@@ -2208,7 +2212,8 @@ function initConversionPage() {
       installBtn.style.display = "none";
       deferredPrompt = null;
     });
-  </script>
-
+      </script>
+</body>
+</html>
 </body>
 </html>
