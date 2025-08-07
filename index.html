@@ -1874,35 +1874,7 @@ function start24HourCountdown() {
       countdownTimer.textContent = `${format(hours)}:${format(minutes)}:${format(seconds)}`;
     }
   }, 1000);
-}
-
-// The showPage function should be updated to also call updateCountdownDisplay()
-function showPage(pageId) {
-  document.querySelectorAll(".page").forEach((page) => {
-    page.classList.remove("active-page");
-    page.classList.add("hidden");
-  });
-  const targetPage = document.getElementById(pageId);
-  if (targetPage) {
-    targetPage.classList.remove("hidden");
-    targetPage.classList.add("active-page");
-    localStorage.setItem(STORAGE_PAGE_KEY, pageId);
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  } else {
-    console.warn(`Page "${pageId}" not found.`);
-    return;
   }
-  
-  if (!pageHistory.includes(pageId)) {
-    pageHistory.push(pageId);
-  }
-  
-  // This is the new part for the countdown display
-  const countdownPages = ['page10', 'page10i', 'page10ii', 'page10iii'];
-  if (countdownPages.includes(pageId)) {
-    updateCountdownDisplay();
-  }
-   }
    // =====================================
     //  9. CONFIGURATION & UTILITIES
     // =====================================
