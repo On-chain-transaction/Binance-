@@ -1,12 +1,11 @@
 {
-  "name": "Binance Web3",
-  "short_name": "BinanceWeb3",
-  "description": "Experience seamless crypto trading, wallet management, and real-time market tracking with Binance Web3 — your secure and intuitive blockchain gateway.",
-  "start_url": "/index.html",
+  "name": "Binance Wallet",
+  "short_name": "Binance",
+  "start_url": "./",
   "display": "standalone",
-  "background_color": "#0b0e11",
-  "theme_color": "#0b0e11",
-  "orientation": "portrait",
+  "background_color": "#1E2329",
+  "theme_color": "#FCD535",
+  "description": "The official Binance Wallet Progressive Web App.",
   "icons": [
     {
       "src": "icon-192.png",
