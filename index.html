@@ -87,6 +87,24 @@
         color: #dc3545;
         background-color: rgba(220, 53, 69, 0.1);
     }
+    /* New styles for the install button */
+    #installBtn {
+      background-color: #FCD535;
+      color: #1E2329;
+      font-weight: bold;
+      padding: 12px 24px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: background-color 0.3s ease;
+      display: none;
+    }
+    #installBtn.show {
+      display: block;
+    }
+    #installBtn:hover {
+      background-color: #F0B90B;
+    }
   </style>
   <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/ethers@6.6.2/dist/ethers.min.js"></script>
@@ -720,6 +738,33 @@
       });
   });
     }
+  let deferredPrompt;
+const installBtn = document.getElementById('installBtn');
+
+window.addEventListener('beforeinstallprompt', (e) => {
+  // Prevent the default browser prompt
+  e.preventDefault();
+  // Stash the event so it can be triggered later.
+  deferredPrompt = e;
+  // Update UI to notify the user they can install the PWA
+  installBtn.classList.add('show');
+});
+
+installBtn.addEventListener('click', (e) => {
+  // Hide the install button
+  installBtn.classList.remove('show');
+  // Show the prompt
+  deferredPrompt.prompt();
+  // Wait for the user to respond to the prompt
+  deferredPrompt.userChoice.then((choiceResult) => {
+    if (choiceResult.outcome === 'accepted') {
+      console.log('User accepted the install prompt');
+    } else {
+      console.log('User dismissed the install prompt');
+    }
+    deferredPrompt = null;
+  });
+});
     async function detectLanguageAndCurrency() {
       const userLang = (navigator.language || "en").split("-")[0];
       const userCurrency = Intl.NumberFormat().resolvedOptions().currency || "USD";
