@@ -682,8 +682,15 @@
     </div>
   </div>
 </section>
-  
+
+
+
+
+
 <script src="https://s3.tradingview.com/tv.js"></script>
+<script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
     // =====================================
     //  1. PWA INSTALLATION & SERVICE WORKER
@@ -860,7 +867,7 @@
         updateReceiveDisplay("BNB"); // Default to BNB
       } else {
         document.getElementById("receiveAddress").innerText = "Please connect wallet first";
-        document.getElementById("qrCodeCanvas").innerHTML = "";
+        document.getElementById("qrCodeContainer").innerHTML = "";
       }
     }
 
@@ -870,17 +877,13 @@
       if (container) container.innerText = address;
       generateQRCode(address);
     }
-
+    
     function generateQRCode(value) {
-      const qrCanvas = document.getElementById("qrCodeCanvas");
-      if (qrCanvas && window.QRCode) {
-        QRCode.toCanvas(qrCanvas, value, { width: 140 }, (err, canvas) => {
-          if (err) {
-            console.error(err);
-            qrCanvas.innerHTML = `<div class="text-red-500 text-center">Error generating QR code.</div>`;
-          }
-        });
-      }
+      const qrContainer = document.getElementById('qrCodeContainer');
+      qrContainer.innerHTML = "";
+      QRCode.toCanvas(document.createElement('canvas'), value, { width: 140 }, function (err, canvas) {
+        if (!err) qrContainer.appendChild(canvas); 
+      });
     }
 
     // =====================================
@@ -1420,6 +1423,7 @@
       }, 1000);
     }
 
+   
     // =====================================
     //  9. CONFIGURATION & UTILITIES
     // =====================================
@@ -1523,7 +1527,7 @@
           if (curr === userCurrency) opt.selected = true;
           currencySelector?.appendChild(opt);
         });
-      }
+      });
     }
 
     function feedback() {
@@ -1577,6 +1581,7 @@
       loadCopyTradeChart();
     });
 </script>
+
 </body>
  </html>
           
