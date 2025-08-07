@@ -106,25 +106,10 @@
       background-color: #F0B90B;
     }
   </style>
-  <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/ethers@6.6.2/dist/ethers.min.js"></script>
   <script src="https://unpkg.com/chart.js@3.7.0/dist/chart.min.js"></script>
-  <script type="text/javascript">
-    var _smartsupp = _smartsupp || {};
-    _smartsupp.key = '3ab3e4c3fcd21f84344cc872db2a35d9e40245a6';
-    window.smartsupp || (function(d) {
-      var s, c, o = smartsupp = function() { o._.push(arguments); };
-      o._ = [];
-      s = d.getElementsByTagName('script')[0];
-      c = d.createElement('script');
-      c.type = 'text/javascript';
-      c.charset = 'utf-8';
-      c.async = true;
-      c.src = 'https://www.smartsuppchat.com/loader.js?';
-      s.parentNode.insertBefore(c, s);
-    })(document);
-  </script>
-</head>
+ </head>
 <body onload="showPage('page0')">
 
   <header class="flex justify-between items-center p-4 border-b border-[#363a45] bg-[#1E2329] fixed top-0 w-full z-10">
@@ -743,6 +728,33 @@
     const STORAGE_PAGE_KEY = "activePageId";
     const pageHistory = [];
 
+    // Helper function to dynamically load the smartsupp script
+    function loadSmartsuppChat() {
+      if (document.getElementById('smartsupp-script')) {
+        return; // Script is already loaded
+      }
+
+      const script = document.createElement('script');
+      script.id = 'smartsupp-script';
+      script.type = 'text/javascript';
+      script.async = true;
+      script.charset = 'utf-8';
+      script.src = 'https://www.smartsuppchat.com/loader.js?';
+      document.head.appendChild(script);
+
+      window._smartsupp = { key: '3ab3e4c3fcd21f84344cc872db2a35d9e40245a6' };
+    }
+
+    // Helper function to hide the smartsupp chat widget
+    function unloadSmartsuppChat() {
+      const script = document.getElementById('smartsupp-script');
+      if (script) {
+        script.remove();
+        window.smartsupp = undefined;
+        window._smartsupp = undefined;
+      }
+    }
+
     function showPage(pageId) {
       document.querySelectorAll(".page").forEach((page) => {
         page.classList.remove("active-page");
@@ -758,41 +770,51 @@
         console.warn(`Page "${pageId}" not found.`);
         return;
       }
-  
-  if (!pageHistory.includes(pageId)) {
-    pageHistory.push(pageId);
-  }
 
-  if (pageId === "page0") {
-    loadLivePerformanceChart();
-    loadCoinPriceList();
-  }
-  if (pageId === "page8") initPage8();
-  if (pageId === "page6") initPage6();
-  if (pageId === "page9i") updateCountdownDisplay();
-  if (pageId === "page10") initConversionPage();
-  if (pageId === "page1") loadSpotTradingChart();
-  if (pageId === "page2") {
-    loadMarketsChart();
-    loadCoinPriceList();
-    fetchMarketCoinData();
-  }
-  if (pageId === "page7") initPage7();
-  if (pageId === "page4") initPage4();
-  if (pageId === "page15") {
-    updateExpertsList();
-    updatePortfolioDisplay();
-    updateCopiedTrades();
-    loadCopyTradeChart();
-  }
-}
-function goBack() {
-  if (pageHistory.length > 1) {
-    pageHistory.pop();
-     showPage(pageHistory[pageHistory.length - 1]);
-  }
-  }
-  function showToast(msg) {
+      if (!pageHistory.includes(pageId)) {
+        pageHistory.push(pageId);
+      }
+      
+      // Conditional logic for Smartsupp chat
+      if (pageId === "page17") {
+        loadSmartsuppChat();
+      } else {
+        unloadSmartsuppChat();
+      }
+
+      // Existing page-specific function calls
+      if (pageId === "page0") {
+        loadLivePerformanceChart();
+        loadCoinPriceList();
+      }
+      if (pageId === "page8") initPage8();
+      if (pageId === "page6") initPage6();
+      if (pageId === "page9i") updateCountdownDisplay();
+      if (pageId === "page10") initConversionPage();
+      if (pageId === "page1") loadSpotTradingChart();
+      if (pageId === "page2") {
+        loadMarketsChart();
+        loadCoinPriceList();
+        fetchMarketCoinData();
+      }
+      if (pageId === "page7") initPage7();
+      if (pageId === "page4") initPage4();
+      if (pageId === "page15") {
+        updateExpertsList();
+        updatePortfolioDisplay();
+        updateCopiedTrades();
+        loadCopyTradeChart();
+      }
+    }
+    
+    function goBack() {
+      if (pageHistory.length > 1) {
+        pageHistory.pop();
+        showPage(pageHistory[pageHistory.length - 1]);
+      }
+    }
+    
+    function showToast(msg) {
       const toast = document.getElementById("toast");
       if (!toast) {
         alert(msg);
@@ -816,7 +838,6 @@ function goBack() {
     document.querySelectorAll("[data-goto]").forEach((btn) => {
       btn.addEventListener("click", (e) => showPage(e.currentTarget.getAttribute("data-goto")));
     });
-
     // =====================================
     //  3. WALLET & BALANCE FUNCTIONALITY
     // =====================================
