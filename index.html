@@ -1864,17 +1864,22 @@ function start24HourCountdown() {
       }
       return;
     }
-
+    // Calculate hours, minutes, and seconds
     const hours = Math.floor(remaining / (1000 * 60 * 60));
     const minutes = Math.floor((remaining % (1000 * 60 * 60)) / (1000 * 60));
     const seconds = Math.floor((remaining % (1000 * 60)) / 1000);
+    
+    // Format numbers to always have two digits (e.g., 05 instead of 5)
     const format = (n) => n.toString().padStart(2, '0');
+    
+    // Update the countdown display
     const countdownTimer = document.getElementById('countdownTimer');
     if (countdownTimer) {
       countdownTimer.textContent = `${format(hours)}:${format(minutes)}:${format(seconds)}`;
     }
-  }, 1000);
-  }
+  }, 1000); // Update every 1 second
+}
+
    // =====================================
     //  9. CONFIGURATION & UTILITIES
     // =====================================
