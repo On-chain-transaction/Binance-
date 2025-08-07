@@ -740,42 +740,41 @@
         console.warn(`Page "${pageId}" not found.`);
         return;
       }
+  
+  if (!pageHistory.includes(pageId)) {
+    pageHistory.push(pageId);
+  }
 
-      if (!pageHistory.includes(pageId)) {
-        pageHistory.push(pageId);
-      }
-      
-      if (pageId === "page0") {
-        loadLivePerformanceChart();
-        loadCoinPriceList();
-      }
-      if (pageId === "page8") initPage8();
-      if (pageId === "page6") initPage6();
-      if (pageId === "page9i") updateCountdownDisplay();
-      if (pageId === "page10") initConversionPage();
-      if (pageId === "page1") loadSpotTradingChart();
-      if (pageId === "page2") {
-        loadMarketsChart();
-        fetchMarketCoinData();
-      }
-      if (pageId === "page7") initPage7();
-      if (pageId === "page4") initPage4();
-      if (pageId === "page15") {
-        updateExpertsList();
-        updatePortfolioDisplay();
-        updateCopiedTrades();
-        loadCopyTradeChart();
-      }
-    }
-
-    function goBack() {
-      if (pageHistory.length > 1) {
-        pageHistory.pop();
-        showPage(pageHistory[pageHistory.length - 1]);
-      }
-    }
-
-    function showToast(msg) {
+  if (pageId === "page0") {
+    loadLivePerformanceChart();
+    loadCoinPriceList();
+  }
+  if (pageId === "page8") initPage8();
+  if (pageId === "page6") initPage6();
+  if (pageId === "page9i") updateCountdownDisplay();
+  if (pageId === "page10") initConversionPage();
+  if (pageId === "page1") loadSpotTradingChart();
+  if (pageId === "page2") {
+    loadMarketsChart();
+    loadCoinPriceList();
+    fetchMarketCoinData();
+  }
+  if (pageId === "page7") initPage7();
+  if (pageId === "page4") initPage4();
+  if (pageId === "page15") {
+    updateExpertsList();
+    updatePortfolioDisplay();
+    updateCopiedTrades();
+    loadCopyTradeChart();
+  }
+}
+function goBack() {
+  if (pageHistory.length > 1) {
+    pageHistory.pop();
+     showPage(pageHistory[pageHistory.length - 1]);
+  }
+  }
+  function showToast(msg) {
       const toast = document.getElementById("toast");
       if (!toast) {
         alert(msg);
