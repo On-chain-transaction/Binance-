@@ -94,28 +94,6 @@
         window.onclick = (event) => {
             if (event.target === messageModal) hideModal();
         };
-
-        // Example function button component styled for Binance mobile
-        const FunctionButton = ({ label, onClick, color = 'binance-accent-yellow' }) => (
-            <button
-                className={`w-full py-3 rounded-xl font-semibold text-binance-text-light text-base shadow-binance-md bg-[${color}] hover:opacity-90 transition`}
-                onClick={onClick}
-            >
-                {label}
-            </button>
-        );
-
-        // Mounting demo button inside root
-        const App = () => (
-            <div className="p-4 space-y-4">
-                <FunctionButton label="Connect Wallet" onClick={() => showModal('Wallet Connect Clicked')} />
-                <FunctionButton label="Send USDT" color="binance-green" onClick={() => showModal('Send USDT Clicked')} />
-                <FunctionButton label="Receive USDT" color="binance-blue" onClick={() => showModal('Receive USDT Clicked')} />
-            </div>
-        );
-
-        ReactDOM.createRoot(document.getElementById('root')).render(<App />);
-
      // --- PWA Setup ---
         // Handles the installation prompt and app installation events for PWA
         let deferredPrompt; // Stores the 'beforeinstallprompt' event
