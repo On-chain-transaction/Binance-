@@ -1,9 +1,9 @@
-
 <!DOCTYPE html>
 <html lang="en" class="dark scroll-smooth">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Reduce mobile body view -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <title>Binance Web3 Wallet</title>
 
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -28,7 +28,7 @@
                         'binance-gradient-dark-blue': '#0A0A38',
                         'binance-gradient-dark-purple': '#4B0082',
                     },
-                    fontFamily: {sans: ['Inter', 'sans-serif']},
+                    fontFamily: { sans: ['Inter', 'sans-serif'] },
                     boxShadow: {
                         'binance-sm': '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
                         'binance-md': '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
@@ -39,8 +39,8 @@
                         'fade-in-down': 'fadeInDown 0.5s ease-out forwards',
                     },
                     keyframes: {
-                        fadeInUp: {'0%': {opacity: '0', transform: 'translateY(20px)'}, '100%': {opacity: '1', transform: 'translateY(0)'}},
-                        fadeInDown: {'0%': {opacity: '0', transform: 'translateY(-20px)'}, '100%': {opacity: '1', transform: 'translateY(0)'}},
+                        fadeInUp: { '0%': { opacity: '0', transform: 'translateY(20px)' }, '100%': { opacity: '1', transform: 'translateY(0)' } },
+                        fadeInDown: { '0%': { opacity: '0', transform: 'translateY(-20px)' }, '100%': { opacity: '1', transform: 'translateY(0)' } },
                     },
                 }
             }
@@ -56,19 +56,33 @@
 
     <script src="https://cdn.jsdelivr.net/npm/qrcode.js@1.0.0/qrcode.min.js"></script>
 
+    <style>
+        /* Reduce mobile view padding and width */
+        @media (max-width: 640px) {
+            body {
+                padding: 0 8px;
+            }
+            .container-main {
+                max-width: 95% !important;
+            }
+            .modal-container {
+                width: 90% !important;
+                padding: 1rem !important;
+            }
+        }
+    </style>
 </head>
 <body class="font-sans antialiased text-binance-text-light bg-binance-bg-primary transition-colors duration-300">
-<div class="max-w-[1280px] min-w-[320px] min-h-screen mx-auto bg-binance-bg-primary">
+<div class="container-main max-w-[1100px] min-w-[300px] min-h-screen mx-auto bg-binance-bg-primary">
     <div id="root"></div>
 
     <div id="message-modal" class="hidden fixed inset-0 z-[1000] bg-black bg-opacity-40 flex items-center justify-center">
-        <div class="bg-binance-bg-secondary p-6 rounded-xl shadow-lg w-11/12 max-w-sm text-center relative">
+        <div class="modal-container bg-binance-bg-secondary p-6 rounded-xl shadow-lg w-11/12 max-w-sm text-center relative">
             <span class="close-button absolute top-3 right-5 text-binance-text-muted hover:text-binance-text-light text-3xl cursor-pointer" id="close-modal-button">&times;</span>
             <p id="modal-message" class="text-lg text-binance-text-light mt-4"></p>
         </div>
     </div>
 </div>
-
  
   <!-- Main application script, using Babel for JSX processing -->
     <script type="text/babel">
