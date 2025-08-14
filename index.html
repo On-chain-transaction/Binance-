@@ -1,56 +1,64 @@
-<!DOCTYPE html>
-<html lang="en" class="scroll-smooth">
-<head>
-<meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width=280" />
-  <title>Binance Web3 Wallet</title>
-
-  <!-- Tailwind CSS CDN -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      darkMode: 'class',
-      theme: {
-        extend: {
-          colors: {
-            'binance-bg-primary': '#1E2329',
-            'binance-bg-secondary': '#2B3139',
-            'binance-surface-elevated': '#1A1D22',
-            'binance-accent-yellow': '#FCD535',
-            'binance-text-light': '#FFFFFF',
-            'binance-text-muted': '#848E9C',
-            'binance-border': '#363A45',
-            'binance-green': '#16C784',
-            'binance-red': '#EA3943',
-            'binance-blue': '#1874D0',
-            'binance-gradient-dark-blue': '#0A0A38',
-            'binance-gradient-dark-purple': '#4B0082',
-          },
-          fontFamily: {
-            sans: ['Inter', 'sans-serif'],
-          },
-          boxShadow: {
-            'binance-sm': '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
-            'binance-md': '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
-            'binance-lg': '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
-          },
-          animation: {
-            'fade-in-up': 'fadeInUp 0.5s ease-out forwards',
-            'fade-in-down': 'fadeInDown 0.5s ease-out forwards',
-          },
-          keyframes: {
-            fadeInUp: {
-              '0%': { opacity: '0', transform: 'translateY(20px)' },
-              '100%': { opacity: '1', transform: 'translateY(0)' },
-            },
-            fadeInDown: {
-              '0%': { opacity: '0', transform: 'translateY(-20px)' },
-              '100%': { opacity: '1', transform: 'translateY(0)' },
-            },
-          }
+<!DOCTYPE html>            
+<html lang="en" class="dark">            
+<head>            
+    <meta charset="UTF-8">            
+    <meta name="viewport" content="width=device-width=1280">         
+    <title>Binance Web3 Wallet</title>            
+            
+    <!-- Tailwind CSS CDN -->            
+    <script src="https://cdn.tailwindcss.com"></script>            
+    <!-- Tailwind CSS configuration must come AFTER the Tailwind CDN script -->            
+    <script>            
+        tailwind.config = {            
+            darkMode: 'class', // Enables dark mode based on the 'dark' class on the html element            
+            theme: {            
+                extend: {            
+                    colors: {            
+                        // Official Binance Dark Mode Colors (from inspection of binance.com)            
+                        'binance-bg-primary': '#1E2329', // Main background (Binance Black Team Color)            
+                        'binance-bg-secondary': '#2B3139', // Card/panel background            
+                        'binance-surface-elevated': '#1A1D22', // Deeper elements, hover states            
+                        'binance-accent-yellow': '#FCD535', // Primary accent color            
+                        'binance-text-light': '#FFFFFF', // White text            
+                        'binance-text-muted': '#848E9C', // Muted gray text            
+                        'binance-border': '#363A45', // Border color            
+            
+                        // Specific action colors            
+                        'binance-green': '#16C784', // Green for gains/buy            
+                        'binance-red': '#EA3943',   // Red for losses/sell            
+                        'binance-blue': '#1874D0',  // General action/info blue            
+            
+                        // For gradients (derived from Binance Web3 Wallet landing page)            
+                        'binance-gradient-dark-blue': '#0A0A38',            
+                        'binance-gradient-dark-purple': '#4B0082',            
+                    },            
+                    fontFamily: {            
+                        // Inter font for a clean, modern look            
+                        sans: ['Inter', 'sans-serif'],            
+                    },            
+                    boxShadow: {            
+                        // Custom shadow to match Binance's subtle UI elevations            
+                        'binance-sm': '0 1px 2px 0 rgba(0, 0, 0, 0.05)',            
+                        'binance-md': '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',            
+                        'binance-lg': '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',            
+                    },            
+                     animation: {            
+                        'fade-in-up': 'fadeInUp 0.5s ease-out forwards',            
+                        'fade-in-down': 'fadeInDown 0.5s ease-out forwards',            
+                    },            
+                    keyframes: {            
+                        fadeInUp: {            
+                            '0%': { opacity: '0', transform: 'translateY(20px)' },            
+                            '100%': { opacity: '1', transform: 'translateY(0)' },            
+                        },            
+                        fadeInDown: {            
+                            '0%': { opacity: '0', transform: 'translateY(-20px)' },            
+                            '100%': { opacity: '1', transform: 'translateY(0)' },            
+                        },            
+                    }            
+                }            
+            }            
         }
-      }
-    }
  </script>
     <!-- Link to Inter font from Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
