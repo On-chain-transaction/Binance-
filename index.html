@@ -1,77 +1,107 @@
+
 <!DOCTYPE html>
 <html lang="en" class="dark">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width">
-    <title>Binance Web3 Wallet</title>
+  <meta charset="UTF-8">
+  <!-- Desktop width instead of mobile scaling -->
+  <meta name="viewport" content="width=1280">
+  <title>Binance Web3 Wallet - Desktop Mode</title>
 
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    colors: {
-                        'binance-bg-primary': '#1E2329',
-                        'binance-bg-secondary': '#2B3139',
-                        'binance-surface-elevated': '#1A1D22',
-                        'binance-accent-yellow': '#FCD535',
-                        'binance-text-light': '#FFFFFF',
-                        'binance-text-muted': '#848E9C',
-                        'binance-border': '#363A45',
-                        'binance-green': '#16C784',
-                        'binance-red': '#EA3943',
-                        'binance-blue': '#1874D0',
-                        'binance-gradient-dark-blue': '#0A0A38',
-                        'binance-gradient-dark-purple': '#4B0082',
-                    },
-                    fontFamily: { sans: ['Inter', 'sans-serif'] },
-                    boxShadow: {
-                        'binance-sm': '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
-                        'binance-md': '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
-                        'binance-lg': '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
-                    },
-                    animation: {
-                        'fade-in-up': 'fadeInUp 0.5s ease-out forwards',
-                        'fade-in-down': 'fadeInDown 0.5s ease-out forwards',
-                    },
-                    keyframes: {
-                        fadeInUp: {
-                            '0%': { opacity: '0', transform: 'translateY(20px)' },
-                            '100%': { opacity: '1', transform: 'translateY(0)' },
-                        },
-                        fadeInDown: {
-                            '0%': { opacity: '0', transform: 'translateY(-20px)' },
-                            '100%': { opacity: '1', transform: 'translateY(0)' },
-                        },
-                    },
-                },
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            'binance-bg-primary': '#1E2329',
+            'binance-bg-secondary': '#2B3139',
+            'binance-surface-elevated': '#1A1D22',
+            'binance-accent-yellow': '#FCD535',
+            'binance-text-light': '#FFFFFF',
+            'binance-text-muted': '#848E9C',
+            'binance-border': '#363A45',
+            'binance-green': '#16C784',
+            'binance-red': '#EA3943',
+            'binance-blue': '#1874D0',
+            'binance-gradient-dark-blue': '#0A0A38',
+            'binance-gradient-dark-purple': '#4B0082',
+          },
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+          },
+          boxShadow: {
+            'binance-sm': '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
+            'binance-md': '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
+            'binance-lg': '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
+          },
+          animation: {
+            'fade-in-up': 'fadeInUp 0.5s ease-out forwards',
+            'fade-in-down': 'fadeInDown 0.5s ease-out forwards',
+          },
+          keyframes: {
+            fadeInUp: {
+              '0%': { opacity: '0', transform: 'translateY(20px)' },
+              '100%': { opacity: '1', transform: 'translateY(0)' },
             },
+            fadeInDown: {
+              '0%': { opacity: '0', transform: 'translateY(-20px)' },
+              '100%': { opacity: '1', transform: 'translateY(0)' },
+            },
+          }
         }
-    </script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-
-    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
-    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-
-    <script src="https://unpkg.com/@walletconnect/web3-provider@1.8.0/dist/umd/index.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/web3@1.7.0/dist/web3.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/qrcode.js@1.0.0/qrcode.min.js"></script>
+      }
+    }
+  </script>
 </head>
-<body class="font-sans antialiased text-binance-text-light bg-binance-bg-primary transition-colors duration-300">
 
-    <div id="root"></div>
+<body class="bg-binance-bg-primary text-binance-text-light font-sans">
+  <!-- Desktop Top Navigation -->
+  <nav class="bg-binance-bg-secondary shadow-binance-md">
+    <div class="max-w-7xl mx-auto px-6 py-3 flex justify-between items-center">
+      <div class="flex items-center gap-3">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/1/12/Binance_logo.svg" alt="Binance Logo" class="h-8">
+        <span class="font-semibold text-lg">Web3 Wallet</span>
+      </div>
+      <div class="flex gap-6 text-sm text-binance-text-muted">
+        <a href="#" class="hover:text-binance-accent-yellow">Markets</a>
+        <a href="#" class="hover:text-binance-accent-yellow">Trade</a>
+        <a href="#" class="hover:text-binance-accent-yellow">Earn</a>
+        <a href="#" class="hover:text-binance-accent-yellow">Wallet</a>
+      </div>
+    </div>
+  </nav>
 
-    <!-- Mobile-style Modal -->
-    <div id="message-modal" class="hidden fixed inset-0 z-[1000] bg-black bg-opacity-50 flex items-center justify-center p-4">
-        <div class="bg-binance-bg-secondary rounded-xl shadow-lg w-full max-w-xs p-5 text-center relative animate-fade-in-down">
-            <span id="close-modal-button" class="absolute top-3 right-3 text-binance-text-muted hover:text-binance-text-light text-2xl cursor-pointer">&times;</span>
-            <p id="modal-message" class="text-base mt-4"></p>
+  <!-- Main Desktop Content -->
+  <div class="max-w-7xl mx-auto px-6 py-8">
+    <!-- Wallet Overview -->
+    <div class="bg-binance-bg-secondary rounded-lg shadow-binance-lg p-6 mb-8">
+      <div class="flex justify-between items-center">
+        <div>
+          <h2 class="text-xl font-semibold">Wallet Balance</h2>
+          <p class="text-binance-text-muted text-sm">0.0000 USDT</p>
         </div>
+        <div class="flex gap-3">
+          <button class="bg-binance-accent-yellow text-black px-4 py-2 text-sm rounded-md font-semibold hover:opacity-90">Deposit</button>
+          <button class="bg-binance-green text-black px-4 py-2 text-sm rounded-md font-semibold hover:opacity-90">Buy</button>
+          <button class="bg-binance-red text-white px-4 py-2 text-sm rounded-md font-semibold hover:opacity-90">Sell</button>
+          <button class="bg-binance-blue text-white px-4 py-2 text-sm rounded-md font-semibold hover:opacity-90">Swap</button>
+        </div>
+      </div>
     </div>
 
+    <!-- Action Buttons Row -->
+    <div class="bg-binance-bg-secondary rounded-lg shadow-binance-lg p-6">
+      <div class="flex gap-3 justify-start">
+        <button class="bg-binance-accent-yellow text-black px-4 py-2 text-sm rounded-md font-semibold hover:opacity-90">Connect Wallet</button>
+        <button class="bg-binance-green text-black px-4 py-2 text-sm rounded-md font-semibold hover:opacity-90">Send</button>
+        <button class="bg-binance-blue text-white px-4 py-2 text-sm rounded-md font-semibold hover:opacity-90">Receive</button>
+        <button class="bg-binance-red text-white px-4 py-2 text-sm rounded-md font-semibold hover:opacity-90">Withdraw</button>
+        <button class="bg-binance-bg-primary text-binance-text-light px-4 py-2 text-sm rounded-md font-semibold border border-binance-border hover:opacity-90">Transactions</button>
+      </div>
+    </div>
+  </div>
     <script type="text/babel">
         const { useState, useEffect, useCallback, createContext, useContext, useRef } = React;
 
