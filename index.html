@@ -1,82 +1,76 @@
+
 <!DOCTYPE html>
 <html lang="en" class="dark scroll-smooth">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Binance Web3 Wallet</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Binance Web3 Wallet</title>
 
-  <!-- Inter Font -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
-  <!-- Tailwind CSS CDN -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      darkMode: 'class',
-      theme: {
-        extend: {
-          colors: {
-            'binance-bg-primary': '#1E2329',
-            'binance-bg-secondary': '#2B3139',
-            'binance-surface-elevated': '#1A1D22',
-            'binance-accent-yellow': '#FCD535',
-            'binance-text-light': '#FFFFFF',
-            'binance-text-muted': '#848E9C',
-            'binance-border': '#363A45',
-            'binance-green': '#16C784',
-            'binance-red': '#EA3943',
-            'binance-blue': '#1874D0',
-            'binance-gradient-dark-blue': '#0A0A38',
-            'binance-gradient-dark-purple': '#4B0082',
-          },
-          fontFamily: { sans: ['Inter', 'sans-serif'] },
-          boxShadow: {
-            'binance-sm': '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
-            'binance-md': '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
-            'binance-lg': '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
-          },
-          animation: {
-            'fade-in-up': 'fadeInUp 0.5s ease-out forwards',
-            'fade-in-down': 'fadeInDown 0.5s ease-out forwards',
-          },
-          keyframes: {
-            fadeInUp: { '0%': { opacity: '0', transform: 'translateY(20px)' }, '100%': { opacity: '1', transform: 'translateY(0)' } },
-            fadeInDown: { '0%': { opacity: '0', transform: 'translateY(-20px)' }, '100%': { opacity: '1', transform: 'translateY(0)' } },
-          },
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        'binance-bg-primary': '#1E2329',
+                        'binance-bg-secondary': '#2B3139',
+                        'binance-surface-elevated': '#1A1D22',
+                        'binance-accent-yellow': '#FCD535',
+                        'binance-text-light': '#FFFFFF',
+                        'binance-text-muted': '#848E9C',
+                        'binance-border': '#363A45',
+                        'binance-green': '#16C784',
+                        'binance-red': '#EA3943',
+                        'binance-blue': '#1874D0',
+                        'binance-gradient-dark-blue': '#0A0A38',
+                        'binance-gradient-dark-purple': '#4B0082',
+                    },
+                    fontFamily: {sans: ['Inter', 'sans-serif']},
+                    boxShadow: {
+                        'binance-sm': '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
+                        'binance-md': '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
+                        'binance-lg': '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
+                    },
+                    animation: {
+                        'fade-in-up': 'fadeInUp 0.5s ease-out forwards',
+                        'fade-in-down': 'fadeInDown 0.5s ease-out forwards',
+                    },
+                    keyframes: {
+                        fadeInUp: {'0%': {opacity: '0', transform: 'translateY(20px)'}, '100%': {opacity: '1', transform: 'translateY(0)'}},
+                        fadeInDown: {'0%': {opacity: '0', transform: 'translateY(-20px)'}, '100%': {opacity: '1', transform: 'translateY(0)'}},
+                    },
+                }
+            }
         }
-      }
-    }
-  </script>
+    </script>
 
-  <!-- React & ReactDOM -->
-  <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
-  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
-  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
-  <!-- WalletConnect & Web3.js -->
-  <script src="https://unpkg.com/@walletconnect/web3-provider@1.8.0/dist/umd/index.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/web3@1.7.0/dist/web3.min.js"></script>
+    <script src="https://unpkg.com/@walletconnect/web3-provider@1.8.0/dist/umd/index.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/web3@1.7.0/dist/web3.min.js"></script>
 
-  <!-- QRCode.js -->
-  <script src="https://cdn.jsdelivr.net/npm/qrcode.js@1.0.0/qrcode.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/qrcode.js@1.0.0/qrcode.min.js"></script>
 
-  <!-- PWA Manifest -->
-  <link rel="manifest" href="manifest.json">
 </head>
 <body class="font-sans antialiased text-binance-text-light bg-binance-bg-primary transition-colors duration-300">
 <div class="max-w-[1280px] min-w-[320px] min-h-screen mx-auto bg-binance-bg-primary">
-    <!-- React root -->
-<div id="root"></div>
+    <div id="root"></div>
 
-    <!-- Message modal -->
     <div id="message-modal" class="hidden fixed inset-0 z-[1000] bg-black bg-opacity-40 flex items-center justify-center">
-      <div class="bg-binance-bg-secondary p-6 rounded-xl shadow-lg w-11/12 max-w-sm text-center relative">
-        <span class="close-button absolute top-3 right-5 text-binance-text-muted hover:text-binance-text-light text-3xl cursor-pointer" id="close-modal-button">&times;</span>
-        <p id="modal-message" class="text-lg text-binance-text-light mt-4"></p>
-      </div>
+        <div class="bg-binance-bg-secondary p-6 rounded-xl shadow-lg w-11/12 max-w-sm text-center relative">
+            <span class="close-button absolute top-3 right-5 text-binance-text-muted hover:text-binance-text-light text-3xl cursor-pointer" id="close-modal-button">&times;</span>
+            <p id="modal-message" class="text-lg text-binance-text-light mt-4"></p>
+        </div>
     </div>
+</div>
+
  
-    <!-- Main application script, using Babel for JSX processing -->
+  <!-- Main application script, using Babel for JSX processing -->
     <script type="text/babel">
         // Destructuring React hooks and functions for easier use
         const { useState, useEffect, useCallback, createContext, useContext, useRef } = React;
