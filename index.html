@@ -93,24 +93,6 @@ function App() {
 
   closeModalButton.onclick = hideModal;
   window.onclick = (e) => { if(e.target === messageModal) hideModal(); };
-
-  // Dark Mode toggle
-  const toggleDarkMode = () => setIsDarkMode(prev => !prev);
-
-  // Horizontal scroll drag
-  let isDragging = false, startX, scrollLeft;
-  const startDrag = (e) => {
-    isDragging = true;
-    startX = e.type.includes("mouse") ? e.pageX : e.touches[0].pageX;
-    scrollLeft = scrollContainerRef.current.scrollLeft;
-  };
-  const stopDrag = () => { isDragging = false; };
-  const onDrag = (e) => {
-    if (!isDragging) return;
-    e.preventDefault();
-    const x = e.type.includes("mouse") ? e.pageX : e.touches[0].pageX;
-    scrollContainerRef.current.scrollLeft = scrollLeft - (x - startX);
-  };
     // --- PWA Setup ---
         // Handles the installation prompt and app installation events for PWA
         let deferredPrompt; // Stores the 'beforeinstallprompt' event
