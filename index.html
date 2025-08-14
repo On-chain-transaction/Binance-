@@ -371,109 +371,136 @@ const Header = ({
               <span className="text-xl font-bold text-binance-text-light">Binance</span>
           </div>
 
-                        {/* Main Navigation Links (hidden on small screens, shown for larger screens) */}
-                        <div className="hidden md:flex items-center space-x-6">
-                            <a href="#" onClick={() => navigate('walletPage')} className="text-binance-text-light hover:text-binance-accent-yellow font-medium transition-colors duration-200">Wallet</a>
-                            <a href="#" onClick={() => navigate('marketsPage')} className="text-binance-text-light hover:text-binance-accent-yellow font-medium transition-colors duration-200">Markets</a>
-                            <a href="#" onClick={() => navigate('tradePage')} className="text-binance-text-light hover:text-binance-accent-yellow font-medium transition-colors duration-200">Trade</a>
-                            <a href="#" onClick={() => navigate('earnPage')} className="text-binance-text-light hover:text-binance-accent-yellow font-medium transition-colors duration-200">Earn</a>
-                            <a href="#" onClick={() => navigate('copyTradePage')} className="text-binance-text-light hover:text-binance-accent-yellow font-medium transition-colors duration-200">Copy Trade</a>
-                        </div>
+        {/* Main Navigation Links (hidden on small screens, shown for larger screens) */}
+<div className="hidden md:flex items-center space-x-6">
+  <NavLink label="Wallet" page="walletPage" navigate={navigate} />
+  <NavLink label="Markets" page="marketsPage" navigate={navigate} />
+  <NavLink label="Trade" page="tradePage" navigate={navigate} />
+  <NavLink label="Earn" page="earnPage" navigate={navigate} />
+  <NavLink label="Copy Trade" page="copyTradePage" navigate={navigate} />
+</div>
 
-                        {/* Action Buttons (Wallet Status, Settings) and Dark Mode Toggle */}
-                        <div className="flex items-center space-x-3 sm:space-x-4">
-                            {userStatus.connectedWalletInfo ? (
-                                <div className="relative group">
-                                    <button
-                                        onClick={() => navigate('connectedWalletDetails')}
-                                        className="px-4 py-2 text-sm font-semibold bg-binance-green text-white rounded-lg hover:bg-green-600 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-binance-green"
-                                    >
-                                        Wallet Connected
-                                    </button>
-                                    <div className="absolute right-0 mt-2 w-48 bg-binance-bg-secondary rounded-lg shadow-xl py-1 hidden group-hover:block transition-all duration-300 origin-top-right border border-binance-border">
-                                        <div className="px-4 py-2 text-sm text-binance-text-muted break-all">
-                                            {/* Display truncated address */}
-                                            {userStatus.connectedWalletInfo.address ?
-                                                `${userStatus.connectedWalletInfo.address.substring(0, 6)}...${userStatus.connectedWalletInfo.address.substring(userStatus.connectedWalletInfo.address.length - 4)}`
-                                                : 'N/A'}
-                                        </div>
-                                        <button
-                                            onClick={handleDisconnectWallet}
-                                            className="block w-full text-left px-4 py-2 text-sm text-binance-red hover:bg-binance-surface-elevated transition-colors duration-200"
-                                        >
-                                            Disconnect
-                                        </button>
-                                    </div>
-                                </div>
-                            ) : (
-                                <button
-                                    onClick={() => navigate('walletConnectPage')}
-                                    className="px-4 py-2 text-sm font-semibold bg-binance-accent-yellow text-binance-bg-primary rounded-lg hover:opacity-90 transition-opacity duration-200 focus:outline-none focus:ring-2 focus:ring-binance-accent-yellow"
-                                >
-                                    Connect Wallet
-                                </button>
-                            )}
+{/* Action Buttons (Wallet Status, Settings, Dark Mode) */}
+<div className="flex items-center space-x-3 sm:space-x-4">
+  {userStatus.connectedWalletInfo ? (
+    <WalletDropdown
+      address={userStatus.connectedWalletInfo.address}
+      onDisconnect={handleDisconnectWallet}
+      navigate={navigate}
+    />
+  ) : (
+    <button
+      onClick={() => navigate('walletConnectPage')}
+      className="px-4 py-2 text-sm font-semibold bg-binance-accent-yellow text-binance-bg-primary rounded-lg hover:opacity-90 transition-opacity duration-200 focus:outline-none focus:ring-2 focus:ring-binance-accent-yellow"
+    >
+      Connect Wallet
+    </button>
+  )}
 
-                            {showInstallButton && (
-                                <button
-                                    onClick={handleInstallClick}
-                                    className="hidden md:block px-4 py-2 text-sm font-semibold bg-binance-accent-yellow text-binance-bg-primary rounded-lg hover:opacity-90 transition-opacity duration-200 focus:outline-none focus:ring-2 focus:ring-binance-accent-yellow"
-                                >
-                                    Get App
-                                </button>
-                            )}
+  {showInstallButton && (
+    <button
+      onClick={handleInstallClick}
+      className="hidden md:block px-4 py-2 text-sm font-semibold bg-binance-accent-yellow text-binance-bg-primary rounded-lg hover:opacity-90 transition-opacity duration-200 focus:outline-none focus:ring-2 focus:ring-binance-accent-yellow"
+    >
+      Get App
+    </button>
+  )}
 
-                            <button
-                                onClick={() => navigate('faqPage')}
-                                className="px-4 py-2 text-sm font-semibold text-binance-text-light rounded-lg hover:bg-binance-surface-elevated transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-binance-accent-yellow"
-                            >
-                                Need Help?
-                            </button>
+  <button
+    onClick={() => navigate('faqPage')}
+    className="px-4 py-2 text-sm font-semibold text-binance-text-light rounded-lg hover:bg-binance-surface-elevated transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-binance-accent-yellow"
+  >
+    Need Help?
+  </button>
 
-                            {userStatus.isLoggedIn && (
-                                <button
-                                    onClick={() => navigate('settingsPage')}
-                                    className="px-4 py-2 text-sm font-semibold text-binance-text-light rounded-lg hover:bg-binance-surface-elevated transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-binance-accent-yellow"
-                                >
-                                    Settings
-                                </button>
-                            )}
-                            <DarkModeToggle isDarkMode={isDarkMode} toggleDarkMode={toggleDarkMode} />
-                        </div>
-                    </nav>
-                </header>
-            );
-        };
+  {userStatus.isLoggedIn && (
+    <button
+      onClick={() => navigate('settingsPage')}
+      className="px-4 py-2 text-sm font-semibold text-binance-text-light rounded-lg hover:bg-binance-surface-elevated transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-binance-accent-yellow"
+    >
+      Settings
+    </button>
+  )}
 
-        // Footer component with site navigation and copyright
-        const Footer = ({ navigate }) => (
-            <footer className="flex justify-around items-center p-4 border-t border-binance-border bg-binance-bg-primary fixed bottom-0 w-full z-10 md:hidden">
-                <button onClick={() => navigate('walletPage')} className="flex flex-col items-center text-binance-accent-yellow">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M12 2l-10 9h2v11h6v-7h4v7h6v-11h2l-10-9z" />
-                    </svg>
-                    <span className="text-xs mt-1">Wallet</span>
-                </button>
-                <button onClick={() => navigate('marketsPage')} className="flex flex-col items-center text-binance-text-muted hover:text-binance-accent-yellow">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-6 h-6">
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m-4.5 4.5H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.615-2.23-1.666-2.75l-7.218-3.609a1.125 1.125 0 00-1.042 0L3.75 3.358c-1.051.52-1.666 1.615-1.666 2.75V19.5a2.25 2.25 0 002.25 2.25z" />
-                    </svg>
-                    <span className="text-xs mt-1">Markets</span>
-                </button>
-                <button onClick={() => navigate('tradePage')} className="flex flex-col items-center text-binance-text-muted hover:text-binance-accent-yellow">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 6h18M3 12h18m-12 6h12" />
-                    </svg>
-                    <span className="text-xs mt-1">Trade</span>
-                </button>
-                <button onClick={() => navigate('copyTradePage')} className="flex flex-col items-center text-binance-text-muted hover:text-binance-accent-yellow">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-6 h-6">
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 19.5a7.5 7.5 0 0114.998 0A8.25 8.25 0 0112 21.75a8.25 8.25 0 01-7.499-2.25z" />
-                    </svg>
-                    <span className="text-xs mt-1">Copy Trade</span>
-                </button>
-            </footer>
-        ); 
+  <DarkModeToggle isDarkMode={isDarkMode} toggleDarkMode={toggleDarkMode} />
+</div>
+</nav>
+</header>
+
+{/* Footer component with mobile navigation */}
+const Footer = ({ navigate }) => (
+  <footer className="flex justify-around items-center p-4 border-t border-binance-border bg-binance-bg-primary fixed bottom-0 w-full z-10 md:hidden">
+    <FooterButton label="Wallet" icon={WalletIcon} page="walletPage" navigate={navigate} />
+    <FooterButton label="Markets" icon={MarketsIcon} page="marketsPage" navigate={navigate} />
+    <FooterButton label="Trade" icon={TradeIcon} page="tradePage" navigate={navigate} />
+    <FooterButton label="Copy Trade" icon={CopyTradeIcon} page="copyTradePage" navigate={navigate} />
+  </footer>
+);
+
+/* Helper Components */
+const NavLink = ({ label, page, navigate }) => (
+  <a
+    href="#"
+    onClick={() => navigate(page)}
+    className="text-binance-text-light hover:text-binance-accent-yellow font-medium transition-colors duration-200"
+  >
+    {label}
+  </a>
+);
+
+const WalletDropdown = ({ address, onDisconnect, navigate }) => (
+  <div className="relative group">
+    <button
+      onClick={() => navigate('connectedWalletDetails')}
+      className="px-4 py-2 text-sm font-semibold bg-binance-green text-white rounded-lg hover:bg-green-600 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-binance-green"
+    >
+      Wallet Connected
+    </button>
+    <div className="absolute right-0 mt-2 w-48 bg-binance-bg-secondary rounded-lg shadow-xl py-1 hidden group-hover:block transition-all duration-300 origin-top-right border border-binance-border">
+      <div className="px-4 py-2 text-sm text-binance-text-muted break-all">
+        {address ? `${address.substring(0, 6)}...${address.substring(address.length - 4)}` : 'N/A'}
+      </div>
+      <button
+        onClick={onDisconnect}
+        className="block w-full text-left px-4 py-2 text-sm text-binance-red hover:bg-binance-surface-elevated transition-colors duration-200"
+      >
+        Disconnect
+      </button>
+    </div>
+  </div>
+);
+
+const FooterButton = ({ label, icon: Icon, page, navigate }) => (
+  <button onClick={() => navigate(page)} className="flex flex-col items-center text-binance-text-muted hover:text-binance-accent-yellow">
+    <Icon className="h-6 w-6" />
+    <span className="text-xs mt-1">{label}</span>
+  </button>
+);
+
+/* Icons for Footer Buttons */
+const WalletIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" viewBox="0 0 24 24" fill="currentColor">
+    <path d="M12 2l-10 9h2v11h6v-7h4v7h6v-11h2l-10-9z" />
+  </svg>
+);
+
+const MarketsIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-6 h-6">
+    <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m-4.5 4.5H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.615-2.23-1.666-2.75l-7.218-3.609a1.125 1.125 0 00-1.042 0L3.75 3.358c-1.051.52-1.666 1.615-1.666 2.75V19.5a2.25 2.25 0 002.25 2.25z" />
+  </svg>
+);
+
+const TradeIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 6h18M3 12h18m-12 6h12" />
+  </svg>
+);
+
+const CopyTradeIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-6 h-6">
+    <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 19.5a7.5 7.5 0 0114.998 0A8.25 8.25 0 0112 21.75a8.25 8.25 0 01-7.499-2.25z" />
+  </svg>
+);
         // --- TradingView Widget Component ---
         // This component dynamically embeds the TradingView Advanced Chart Widget.
         const TradingViewWidget = ({ symbol, interval = "1D", theme = "dark", height = 400 }) => {
