@@ -2049,93 +2049,317 @@ const Header = ({
         };
 
         // Deposit Page Component: Displays network addresses and QR codes for deposits
-        const DepositPage = ({ onClose }) => {
-            const addresses = {
-                ETH: "0xB36EDa1ffC696FFba07D4Be5cd249FE5E0118130",
-                BTC: "bc1qv4fffwt8ux3k33n2dms5cdvuh6suc0gtfevxzu",
-                BNB: "0xB36EDa1ffC696FFba07D4Be5cd249FE5E0118130", // Assuming same as ETH for simplicity as it's also EVM-compatible
-                USDT_TRON: "TSt7yoNwGYRbtMMfkSAHE6dPs1cd9rxcco",
-            };
+        import React, { useState, useEffect, useRef } from 'react'
 
-            const QRCodeDisplay = ({ id, address }) => {
-                const qrCodeRef = useRef(null);
-                const [showAddress, setShowAddress] = useState(false);
+    const App = () => {
+  const [showDepositPage, setShowDepositPage] = useState(true);
+  const [modalMessage, setModalMessage] = useState('');
+  const [showModal, setShowModal] = useState(false);
 
-                useEffect(() => {
-                    if (window.QRCode && qrCodeRef.current) {
-                        qrCodeRef.current.innerHTML = '';
-                        new window.QRCode(qrCodeRef.current, {
-                            text: address,
-                            width: 128,
-                            height: 128,
-                            colorDark: "#e0e0e0",
-                            colorLight: "#121212",
-                            correctLevel: window.QRCode.CorrectLevel.H
-                        });
-                    }
-                }, [address]);
+  // Function to display a temporary modal message
+  const showAppModal = (message) => {
+    setModalMessage(message);
+    setShowModal(true);
+    setTimeout(() => {
+      setShowModal(false);
+      setModalMessage('');
+    }, 2000); // Modal disappears after 2 seconds
+  };
 
-                const handleCopyClick = () => {
-                    const dummyTextArea = document.createElement("textarea");
-                    dummyTextArea.value = address;
-                    document.body.appendChild(dummyTextArea);
-                    dummyTextArea.select();
-                    document.execCommand('copy');
-                    document.body.removeChild(dummyTextArea);
-                    showModal('Address copied to clipboard!');
-                };
+  return (
+    <div className="min-h-screen bg-[#1C202B] text-gray-100 flex flex-col items-center justify-start py-8 font-inter">
+      <style>
+        {`
+          @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+          /* Custom styles to approximate Binance dark theme */
+          .bg-binance-dark-bg { background-color: #1C202B; }
+          .bg-binance-card { background-color: #242933; }
+          .text-binance-primary { color: #f0b90b; } /* Binance Yellow */
+          .text-binance-text-light { color: #eaecef; }
+          .text-binance-text-muted { color: #848e9c; }
+          .border-binance-border { border-color: #31373d; }
+          .btn-primary {
+            background-color: #f0b90b;
+            color: #1C202B; /* Text color for Binance Yellow buttons */
+            transition: background-color 0.2s;
+          }
+          .btn-primary:hover {
+            background-color: #e0ac00;
+          }
+          .animate-slide-in-up {
+            animation: slideInUp 0.3s ease-out forwards;
+          }
+          @keyframes slideInUp {
+            from {
+              transform: translateY(20px);
+              opacity: 0;
+            }
+            to {
+              transform: translateY(0);
+              opacity: 1;
+            }
+          }
+          .animate-fade-in {
+            animation: fadeIn 0.3s ease-out forwards;
+          }
+          @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+          }
+          /* QR code colors are handled directly in QRCodeDisplay component for better control */
+        `}
+      </style>
 
-                return (
-                    <div className="bg-binance-surface-elevated p-4 rounded-lg shadow-binance-sm border border-binance-border text-center flex flex-col items-center">
-                        <h3 className="text-xl font-semibold text-binance-text-light mb-3">{id}</h3>
-                        <div ref={qrCodeRef} className="mb-3 p-2 bg-binance-bg-primary rounded"></div>
-                        {showAddress && (
-                            <p className="text-sm text-binance-text-muted break-all font-mono mb-3 animate-fade-in-up">
-                                {address}
-                            </p>
-                        )}
-                        <button
-                            onClick={() => setShowAddress(!showAddress)}
-                            className="px-4 py-2 bg-binance-blue text-white font-semibold rounded-lg hover:bg-blue-600 transition-colors duration-200 mb-2 w-full"
-                        >
-                            {showAddress ? 'Hide Address' : 'Show Address'}
-                        </button>
-                        {showAddress && (
-                            <button
-                                onClick={handleCopyClick}
-                                className="px-4 py-2 bg-binance-green text-white font-semibold rounded-lg hover:bg-green-600 transition-colors duration-200 w-full"
-                            >
-                                Copy Address
-                            </button>
-                        )}
-                    </div>
-                );
-            };
+      {/* Main Deposit Page */}
+      {showDepositPage ? (
+        <DepositPage onClose={() => setShowDepositPage(false)} showModal={showAppModal} />
+      ) : (
+        <button
+          onClick={() => setShowDepositPage(true)}
+          className="mt-8 px-6 py-3 bg-binance-primary rounded-lg font-semibold text-lg hover:opacity-90 transition-opacity"
+        >
+          Open Deposit Page
+        </button>
+      )}
 
-            return (
-                <div className="py-2">
-                    <h1 className="text-3xl font-bold text-binance-text-light mb-4 text-center">Deposit Funds</h1>
-                    <p className="text-lg text-binance-text-muted mb-6 text-center">
-                        Select the cryptocurrency you wish to deposit. Scan the QR code or click 'Show Address' and copy.
-                        Ensure the network matches to avoid loss of funds.
-                    </p>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-4">
-                        {Object.entries(addresses).map(([networkName, addr]) => (
-                            <QRCodeDisplay key={networkName} id={networkName} address={addr} />
-                        ))}
-                    </div>
-                    <div className="text-center mt-6">
-                        <button
-                            onClick={onClose}
-                            className="px-6 py-3 w-48 bg-binance-accent-yellow text-binance-bg-primary font-semibold rounded-lg hover:opacity-90 transition-opacity duration-200"
-                        >
-                            Close
-                        </button>
-                    </div>
-                </div>
-            );
-        };
+      {/* Custom Modal */}
+      {showModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 animate-fade-in">
+          <div className="bg-binance-card p-6 rounded-xl shadow-lg flex flex-col items-center max-w-sm w-full mx-4">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-12 w-12 text-binance-primary mb-4"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth="2"
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <p className="text-lg text-binance-text-light font-medium text-center">{modalMessage}</p>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
 
+// Deposit Page Component: Displays network addresses and QR codes for deposits
+const DepositPage = ({ onClose, showModal }) => {
+  const [selectedCoin, setSelectedCoin] = useState('BTC');
+  const [selectedNetwork, setSelectedNetwork] = useState('BTC'); // Default to BTC network for BTC coin
+
+  // Define available coin options
+  const coinOptions = ['BTC', 'ETH', 'BNB', 'USDT'];
+
+  // Define networks available for each coin
+  const networkOptions = {
+    BTC: ['BTC'],
+    ETH: ['ERC20'],
+    BNB: ['BEP20 (BSC)', 'BNB Beacon Chain (BEP2)'],
+    USDT: ['ERC20', 'TRC20', 'BEP20 (BSC)'],
+  };
+
+  // Define example addresses for different coins and networks
+  const addresses = {
+    BTC: {
+      BTC: "bc1qv4fffwt8ux3k33n2dms5cdvuh6suc0gtfevxzu",
+    },
+    ETH: {
+      ERC20: "0xB36EDa1ffC696FFba07D4Be5cd249FE5E0118130",
+    },
+    BNB: {
+      'BEP20 (BSC)': "0xB36EDa1ffC696FFba07D4Be5cd249FE5E0118130",
+      'BNB Beacon Chain (BEP2)': "bnb1t7c6x4u2f4s5g6h7j8k9l0m1n2o3p4q5r6s7t8u", // Example BEP2 address
+    },
+    USDT: {
+      ERC20: "0x8974B4A9E22A2E6E2D8F9C4F07A3B7D0E6E9F2C1", // Example USDT ERC20
+      TRC20: "TSt7yoNwGYRbtMMfkSAHE6dPs1cd9rxcco", // Example USDT TRC20
+      'BEP20 (BSC)': "0x1234567890abcdef1234567890abcdef12345678", // Example USDT BEP20
+    },
+  };
+
+  // Get the current address based on selected coin and network
+  const currentAddress = addresses[selectedCoin]?.[selectedNetwork] || '';
+
+  // Reset network when the selected coin changes
+  useEffect(() => {
+    if (networkOptions[selectedCoin] && networkOptions[selectedCoin].length > 0) {
+      setSelectedNetwork(networkOptions[selectedCoin][0]);
+    } else {
+      setSelectedNetwork('');
+    }
+  }, [selectedCoin]);
+
+  // Component to display the QR code
+  const QRCodeDisplay = ({ address }) => {
+    const qrCodeRef = useRef(null);
+
+    useEffect(() => {
+      // Check if QRCode is available globally and ref is mounted, and an address is provided
+      if (window.QRCode && qrCodeRef.current && address) {
+        qrCodeRef.current.innerHTML = ''; // Clear any previously generated QR code
+        new window.QRCode(qrCodeRef.current, {
+          text: address,
+          width: 200, // Set a larger width for better scanability
+          height: 200,
+          colorDark: "#EAECEF", // Light color for the QR code modules (foreground)
+          colorLight: "#242933", // Dark color for the QR code background (background of the QR area)
+          correctLevel: window.QRCode.CorrectLevel.H, // High error correction level
+        });
+      }
+    }, [address]); // Regenerate QR code if the address changes
+
+    return (
+      <div className="flex justify-center items-center w-full min-h-[200px] mt-4 mb-6 p-4 bg-[#242933] rounded-lg border border-[#31373d]">
+        {address ? (
+          <div ref={qrCodeRef}></div>
+        ) : (
+          <p className="text-binance-text-muted text-center">Select a network to generate QR code.</p>
+        )}
+      </div>
+    );
+  };
+
+  // Handle copying the address to the clipboard
+  const handleCopyClick = () => {
+    if (currentAddress) {
+      const dummyTextArea = document.createElement("textarea");
+      dummyTextArea.value = currentAddress;
+      document.body.appendChild(dummyTextArea);
+      dummyTextArea.select();
+      document.execCommand('copy'); // Use document.execCommand for clipboard operations in iframe environments
+      document.body.removeChild(dummyTextArea);
+      showModal('Address copied!'); // Show success message via modal
+    } else {
+      showModal('No address to copy!'); // Inform user if no address is selected
+    }
+  };
+
+  return (
+    <div className="w-full max-w-md bg-binance-dark-bg rounded-lg shadow-xl overflow-hidden md:my-8 animate-slide-in-up">
+      {/* Header section with back button and title */}
+      <div className="flex items-center justify-between p-4 border-b border-binance-border">
+        <button onClick={onClose} className="text-binance-text-light hover:text-gray-400">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="h-6 w-6"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            strokeWidth="2"
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+          </svg>
+        </button>
+        <h2 className="text-xl font-semibold text-binance-text-light">Deposit Crypto</h2>
+        <div className="w-6"></div> {/* Spacer for alignment */}
+      </div>
+
+      {/* Main content area for coin, network, address, and QR */}
+      <div className="p-4 space-y-6">
+        {/* Coin Selection dropdown */}
+        <div>
+          <label htmlFor="coin-select" className="text-sm text-binance-text-muted mb-2 block">Coin</label>
+          <div className="relative">
+            <select
+              id="coin-select"
+              value={selectedCoin}
+              onChange={(e) => setSelectedCoin(e.target.value)}
+              className="w-full bg-binance-card border border-binance-border text-binance-text-light rounded-lg py-3 px-4 appearance-none focus:outline-none focus:ring-1 focus:ring-binance-primary"
+            >
+              {coinOptions.map((coin) => (
+                <option key={coin} value={coin}>{coin}</option>
+              ))}
+            </select>
+            <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-binance-text-muted">
+              <svg
+                className="fill-current h-5 w-5"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 20 20"
+              >
+                <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
+              </svg>
+            </div>
+          </div>
+        </div>
+
+        {/* Network Selection dropdown (only shown if networks are available for the selected coin) */}
+        {networkOptions[selectedCoin]?.length > 0 && (
+          <div>
+            <label htmlFor="network-select" className="text-sm text-binance-text-muted mb-2 block">Network</label>
+            <div className="relative">
+              <select
+                id="network-select"
+                value={selectedNetwork}
+                onChange={(e) => setSelectedNetwork(e.target.value)}
+                className="w-full bg-binance-card border border-binance-border text-binance-text-light rounded-lg py-3 px-4 appearance-none focus:outline-none focus:ring-1 focus:ring-binance-primary"
+              >
+                {networkOptions[selectedCoin].map((network) => (
+                  <option key={network} value={network}>{network}</option>
+                ))}
+              </select>
+              <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-binance-text-muted">
+                <svg
+                  className="fill-current h-5 w-5"
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 20 20"
+                >
+                  <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
+                </svg>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Display Area for QR Code and Address */}
+        <div className="bg-binance-card p-4 rounded-lg border border-binance-border">
+          <p className="text-sm text-binance-text-muted mb-2">Scan QR Code</p>
+          <QRCodeDisplay address={currentAddress} /> {/* Always show QR code */}
+
+          <p className="text-sm text-binance-text-muted mb-2">Deposit Address</p>
+          <div className="flex items-center justify-between bg-[#1C202B] p-3 rounded-lg border border-[#31373d]">
+            <span className="text-binance-text-light break-all text-sm font-mono flex-grow">
+              {currentAddress || 'Select a coin and network'} {/* Display address or prompt */}
+            </span>
+            <button
+              onClick={handleCopyClick}
+              className="ml-3 p-2 bg-gray-700 rounded-md text-binance-text-light hover:bg-gray-600 transition-colors"
+              title="Copy Address"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-5 w-5"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth="2"
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2.5a2.5 2.5 0 012.5 2.5v10.5c0 .713-.368 1.34-1 1.704M16 17v2.5a2.5 2.5 0 002.5 2.5h0a2.5 2.5 0 002.5-2.5V7a2 2 0 00-2-2h-3" />
+              </svg>
+            </button>
+          </div>
+
+          <p className="text-xs text-binance-text-muted mt-4 text-center">
+            Send only <span className="text-binance-primary font-medium">{selectedCoin}</span> to this deposit address. Sending any other coin will result in permanent loss.
+          </p>
+        </div>
+
+        {/* Important Notes Section */}
+        <div className="bg-binance-card p-4 rounded-lg border border-binance-border text-sm">
+          <p className="font-semibold text-binance-text-light mb-2">Important Notes</p>
+          <ul className="list-disc list-inside text-binance-text-muted space-y-1">
+            <li>Minimum deposit amount: 0.00000001 {selectedCoin}</li>
+            <li>Deposits will be credited after 1 network confirmation.</li>
+            <li>Ensure the network selected matches the network of the sending platform.</li>
+          </ul>
+        </div>
+      </div>
+        )}
+    </div> 
+     );
+      };
+        
         // Utility function to format countdown time
         const formatTime = (totalSeconds) => {
             const days = Math.floor(totalSeconds / (3600 * 24));
