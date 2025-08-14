@@ -382,66 +382,35 @@ const Header = ({
   );
 };
 
-// Footer component
-const Footer = ({ navigate }) => {
-  const navItems = [
-    {
-      label: 'Wallet',
-      route: 'walletPage',
-      icon: (
-        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" viewBox="0 0 24 24" fill="currentColor">
-          <path d="M12 2l-10 9h2v11h6v-7h4v7h6v-11h2l-10-9z" />
-        </svg>
-      ),
-      activeColor: 'text-binance-accent-yellow',
-    },
-    {
-      label: 'Markets',
-      route: 'marketsPage',
-      icon: (
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-6 h-6">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m-4.5 4.5H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.615-2.23-1.666-2.75l-7.218-3.609a1.125 1.125 0 00-1.042 0L3.75 3.358c-1.051.52-1.666 1.615-1.666 2.75V19.5a2.25 2.25 0 002.25 2.25z" />
-      </svg>
-    ),
-    activeColor: 'text-binance-accent-yellow',
-  },
-  {
-    label: 'Trade',
-    route: 'tradePage',
-    icon: (
-      <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 6h18M3 12h18m-12 6h12" />
-      </svg>
-    ),
-    activeColor: 'text-binance-accent-yellow',
-  },
-  {
-    label: 'Copy Trade',
-    route: 'copyTradePage',
-    icon: (
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-6 h-6">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 19.5a7.5 7.5 0 0114.998 0A8.25 8.25 0 0112 21.75a8.25 8.25 0 01-7.499-2.25z" />
-      </svg>
-    ),
-    activeColor: 'text-binance-accent-yellow',
-  },
-];
-
-return (
-  <footer className="flex justify-start md:justify-around items-center p-4 border-t border-binance-border bg-binance-bg-primary fixed bottom-0 w-full z-10 overflow-x-auto no-scrollbar space-x-4">
-    {navItems.map((item) => (
-      <button
-        key={item.label}
-        onClick={() => navigate(item.route)}
-        className={`flex flex-col items-center text-binance-text-muted hover:${item.activeColor} flex-shrink-0`}
-      >
-        {item.icon}
-        <span className="text-xs mt-1 whitespace-nowrap">{item.label}</span>
-      </button>
-    ))}
-  </footer>
-);
-};
+// Footer component with site navigation and copyright
+        const Footer = ({ navigate }) => (
+            <footer className="flex justify-around items-center p-4 border-t border-binance-border bg-binance-bg-primary fixed bottom-0 w-full z-10 md:hidden">
+                <button onClick={() => navigate('walletPage')} className="flex flex-col items-center text-binance-accent-yellow">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 2l-10 9h2v11h6v-7h4v7h6v-11h2l-10-9z" />
+                    </svg>
+                    <span className="text-xs mt-1">Wallet</span>
+                </button>
+                <button onClick={() => navigate('marketsPage')} className="flex flex-col items-center text-binance-text-muted hover:text-binance-accent-yellow">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-6 h-6">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m-4.5 4.5H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.615-2.23-1.666-2.75l-7.218-3.609a1.125 1.125 0 00-1.042 0L3.75 3.358c-1.051.52-1.666 1.615-1.666 2.75V19.5a2.25 2.25 0 002.25 2.25z" />
+                    </svg>
+                    <span className="text-xs mt-1">Markets</span>
+                </button>
+                <button onClick={() => navigate('tradePage')} className="flex flex-col items-center text-binance-text-muted hover:text-binance-accent-yellow">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 6h18M3 12h18m-12 6h12" />
+                    </svg>
+                    <span className="text-xs mt-1">Trade</span>
+                </button>
+                <button onClick={() => navigate('copyTradePage')} className="flex flex-col items-center text-binance-text-muted hover:text-binance-accent-yellow">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-6 h-6">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 19.5a7.5 7.5 0 0114.998 0A8.25 8.25 0 0112 21.75a8.25 8.25 0 01-7.499-2.25z" />
+                    </svg>
+                    <span className="text-xs mt-1">Copy Trade</span>
+                </button>
+            </footer>
+        );
    // --- TradingView Widget Component ---
         // This component dynamically embeds the TradingView Advanced Chart Widget.
         const TradingViewWidget = ({ symbol, interval = "1D", theme = "dark", height = 400 }) => {
