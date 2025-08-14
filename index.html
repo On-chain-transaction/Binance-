@@ -1,11 +1,9 @@
-
 <!DOCTYPE html>
 <html lang="en" class="dark">
 <head>
   <meta charset="UTF-8">
-  <!-- Desktop width instead of mobile scaling -->
-  <meta name="viewport" content="width=1280">
-  <title>Binance Web3 Wallet - Desktop Mode</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Binance Web3 Wallet</title>
 
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -28,9 +26,7 @@
             'binance-gradient-dark-blue': '#0A0A38',
             'binance-gradient-dark-purple': '#4B0082',
           },
-          fontFamily: {
-            sans: ['Inter', 'sans-serif'],
-          },
+          fontFamily: { sans: ['Inter', 'sans-serif'] },
           boxShadow: {
             'binance-sm': '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
             'binance-md': '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
@@ -41,90 +37,81 @@
             'fade-in-down': 'fadeInDown 0.5s ease-out forwards',
           },
           keyframes: {
-            fadeInUp: {
-              '0%': { opacity: '0', transform: 'translateY(20px)' },
-              '100%': { opacity: '1', transform: 'translateY(0)' },
-            },
-            fadeInDown: {
-              '0%': { opacity: '0', transform: 'translateY(-20px)' },
-              '100%': { opacity: '1', transform: 'translateY(0)' },
-            },
-          }
-        }
-      }
+            fadeInUp: { '0%': { opacity: '0', transform: 'translateY(20px)' }, '100%': { opacity: '1', transform: 'translateY(0)' } },
+            fadeInDown: { '0%': { opacity: '0', transform: 'translateY(-20px)' }, '100%': { opacity: '1', transform: 'translateY(0)' } },
+          },
+        },
+      },
     }
   </script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- React & Babel -->
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+  <!-- Web3 Wallet Dependencies -->
+  <script src="https://unpkg.com/@walletconnect/web3-provider@1.8.0/dist/umd/index.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/web3@1.7.0/dist/web3.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/qrcode.js@1.0.0/qrcode.min.js"></script>
 </head>
+<body class="font-sans antialiased text-binance-text-light bg-binance-bg-primary transition-colors duration-300">
 
-<body class="bg-binance-bg-primary text-binance-text-light font-sans">
-  <!-- Desktop Top Navigation -->
-  <nav class="bg-binance-bg-secondary shadow-binance-md">
-    <div class="max-w-7xl mx-auto px-6 py-3 flex justify-between items-center">
-      <div class="flex items-center gap-3">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/1/12/Binance_logo.svg" alt="Binance Logo" class="h-8">
-        <span class="font-semibold text-lg">Web3 Wallet</span>
-      </div>
-      <div class="flex gap-6 text-sm text-binance-text-muted">
-        <a href="#" class="hover:text-binance-accent-yellow">Markets</a>
-        <a href="#" class="hover:text-binance-accent-yellow">Trade</a>
-        <a href="#" class="hover:text-binance-accent-yellow">Earn</a>
-        <a href="#" class="hover:text-binance-accent-yellow">Wallet</a>
-      </div>
-    </div>
-  </nav>
+<div id="root"></div>
 
-  <!-- Main Desktop Content -->
-  <div class="max-w-7xl mx-auto px-6 py-8">
-    <!-- Wallet Overview -->
-    <div class="bg-binance-bg-secondary rounded-lg shadow-binance-lg p-6 mb-8">
-      <div class="flex justify-between items-center">
-        <div>
-          <h2 class="text-xl font-semibold">Wallet Balance</h2>
-          <p class="text-binance-text-muted text-sm">0.0000 USDT</p>
-        </div>
-        <div class="flex gap-3">
-          <button class="bg-binance-accent-yellow text-black px-4 py-2 text-sm rounded-md font-semibold hover:opacity-90">Deposit</button>
-          <button class="bg-binance-green text-black px-4 py-2 text-sm rounded-md font-semibold hover:opacity-90">Buy</button>
-          <button class="bg-binance-red text-white px-4 py-2 text-sm rounded-md font-semibold hover:opacity-90">Sell</button>
-          <button class="bg-binance-blue text-white px-4 py-2 text-sm rounded-md font-semibold hover:opacity-90">Swap</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- Action Buttons Row -->
-    <div class="bg-binance-bg-secondary rounded-lg shadow-binance-lg p-6">
-      <div class="flex gap-3 justify-start">
-        <button class="bg-binance-accent-yellow text-black px-4 py-2 text-sm rounded-md font-semibold hover:opacity-90">Connect Wallet</button>
-        <button class="bg-binance-green text-black px-4 py-2 text-sm rounded-md font-semibold hover:opacity-90">Send</button>
-        <button class="bg-binance-blue text-white px-4 py-2 text-sm rounded-md font-semibold hover:opacity-90">Receive</button>
-        <button class="bg-binance-red text-white px-4 py-2 text-sm rounded-md font-semibold hover:opacity-90">Withdraw</button>
-        <button class="bg-binance-bg-primary text-binance-text-light px-4 py-2 text-sm rounded-md font-semibold border border-binance-border hover:opacity-90">Transactions</button>
-      </div>
-    </div>
+<!-- Modal -->
+<div id="message-modal" class="hidden fixed inset-0 z-[1000] bg-black bg-opacity-50 flex items-center justify-center p-4">
+  <div class="bg-binance-bg-secondary rounded-xl shadow-lg w-full max-w-xs p-5 text-center relative animate-fade-in-down">
+    <span id="close-modal-button" class="absolute top-3 right-3 text-binance-text-muted hover:text-binance-text-light text-2xl cursor-pointer">&times;</span>
+    <p id="modal-message" class="text-base mt-4"></p>
   </div>
-    <script type="text/babel">
-        const { useState, useEffect, useCallback, createContext, useContext, useRef } = React;
+</div>
 
-        // Modal controls
-        const messageModal = document.getElementById('message-modal');
-        const modalMessage = document.getElementById('modal-message');
-        const closeModalButton = document.getElementById('close-modal-button');
+<script type="text/babel">
+const { useState, useEffect, useRef } = React;
 
-        const showModal = (message) => {
-            modalMessage.textContent = message;
-            messageModal.classList.remove('hidden');
-        };
+function App() {
+  const [userStatus, setUserStatus] = useState({ connectedWalletInfo: null, isLoggedIn: false });
+  const [showInstallButton, setShowInstallButton] = useState(true);
+  const [isDarkMode, setIsDarkMode] = useState(true);
+  const scrollContainerRef = useRef(null);
 
-        const hideModal = () => {
-            modalMessage.textContent = '';
-            messageModal.classList.add('hidden');
-        };
+  // Modal handlers
+  const messageModal = document.getElementById('message-modal');
+  const modalMessage = document.getElementById('modal-message');
+  const closeModalButton = document.getElementById('close-modal-button');
 
-        closeModalButton.onclick = hideModal;
-        window.onclick = (event) => {
-            if (event.target === messageModal) hideModal();
-        };
-     // --- PWA Setup ---
+  const showModal = (msg) => {
+    modalMessage.textContent = msg;
+    messageModal.classList.remove('hidden');
+  };
+  const hideModal = () => {
+    modalMessage.textContent = '';
+    messageModal.classList.add('hidden');
+  };
+
+  closeModalButton.onclick = hideModal;
+  window.onclick = (e) => { if(e.target === messageModal) hideModal(); };
+
+  // Dark Mode toggle
+  const toggleDarkMode = () => setIsDarkMode(prev => !prev);
+
+  // Horizontal scroll drag
+  let isDragging = false, startX, scrollLeft;
+  const startDrag = (e) => {
+    isDragging = true;
+    startX = e.type.includes("mouse") ? e.pageX : e.touches[0].pageX;
+    scrollLeft = scrollContainerRef.current.scrollLeft;
+  };
+  const stopDrag = () => { isDragging = false; };
+  const onDrag = (e) => {
+    if (!isDragging) return;
+    e.preventDefault();
+    const x = e.type.includes("mouse") ? e.pageX : e.touches[0].pageX;
+    scrollContainerRef.current.scrollLeft = scrollLeft - (x - startX);
+  };
+    // --- PWA Setup ---
         // Handles the installation prompt and app installation events for PWA
         let deferredPrompt; // Stores the 'beforeinstallprompt' event
 
@@ -192,7 +179,6 @@
         // --- User Context for Persistent Login State ---
 // Provides user authentication and wallet connection status throughout the app
 const UserContext = createContext(null);
-
 // --- Shared Components ---
 // Generic Modal Component
 const Modal = ({ isOpen, onClose, children, title }) => {
@@ -215,7 +201,7 @@ const Modal = ({ isOpen, onClose, children, title }) => {
   );
 };
 
-// Component to toggle between light and dark mode
+// Dark Mode Toggle Button
 const DarkModeToggle = ({ isDarkMode, toggleDarkMode }) => (
   <button
     onClick={toggleDarkMode}
@@ -234,7 +220,7 @@ const DarkModeToggle = ({ isDarkMode, toggleDarkMode }) => (
   </button>
 );
 
-// Header component for navigation and branding
+// Header component
 const Header = ({
   toggleDarkMode,
   isDarkMode,
@@ -257,7 +243,6 @@ const Header = ({
     }, 1500);
   };
 
-  // Landing Page Header
   if (isLandingPage) {
     return (
       <header className="bg-binance-bg-primary fixed top-0 left-0 right-0 z-50 py-4 px-4 sm:px-6">
@@ -276,7 +261,6 @@ const Header = ({
     );
   }
 
-  // Full App Header
   const navLinks = [
     { label: 'Wallet', route: 'walletPage' },
     { label: 'Markets', route: 'marketsPage' },
@@ -288,30 +272,27 @@ const Header = ({
   return (
     <header className="bg-binance-bg-secondary shadow-sm dark:shadow-md fixed top-0 left-0 right-0 z-50 transition-colors duration-300">
       <nav className="container mx-auto px-4 py-3 flex justify-between items-center">
-        {/* Back Button */}
         {showBackButton && (
           <button
             onClick={goBack}
             className="mr-3 p-2 rounded-full bg-binance-surface-elevated text-binance-text-light hover:bg-binance-surface-elevated/70 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-binance-accent-yellow"
             aria-label="Go back"
           >
-            <svg className="w-5 h-5 rtl:rotate-180" viewBox="0 0 14 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <svg className="w-5 h-5 rtl:rotate-180" viewBox="0 0 14 10" fill="none">
               <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 5H1m0 0 4 4m-4-4 4-4" />
             </svg>
           </button>
         )}
 
-        {/* Logo + Title */}
         <div className="flex items-center space-x-2 cursor-pointer" onClick={() => navigate('walletPage')}>
           <img
             src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAOEAAADhCAMAAAAJbSJIAAAAZlBMVEUzMzPwuQv1vQkrLjQuMDPXpxLyuwonLDQjKTQ8OTEwMjLirw/uuAtxXilIQS85NzJqWSpBPTBfUS1VSy42NTLoswxaTi0gKDXJnRXTpBJMRC/BlxeJbyUXIzVuXCo/OzFkVCx2YSm395DeAAAFKklEQVR4nO2d63baMBCEARtjTBqSBpoAbdO+/0vWNja+aaV1aoO0O9/f4HM80Y52dbG0WAAAAAAAAAAAAAAAAAAAAAAAAABfI0uzR7/CvMSHyyF+9EvMSbRfr9b76NGvMR/xdr1artZbsa0YL3KBy1ziQqjEOCsFFhIzkRKjbSWwkLgV6MV4fxNYSNyLa8VbiC6FBmp06AgsJB5EBWrLg41ESV6M+y1YtaKYQO15UJ4XDSEqK1BjSuBSSAFHhKicQK1qUVpi6DUq6UEpXuyUapTEkAs4qwcleDFyt2DVioEGqiVNDLwYZCsaSzVKYogFHMuDjcTwvOhME4NADcyLbA+2JAbViqNCtJYYUqCO6GTaEsPpbkZ6sJEYihcZpRolMYwC7gsebCSG4EVmqUa2oveBOjpN9CX6njQcA16ORL+HxP/hwUaiz15kpInE+R/wOWkw0kRy/JkkTom+Jg1GiCZP3399Y0j0M1AHiy8mgT82i/Q3Q6KPyzYcDy7fNvkv05eVW6J/XmQU23mIbsrfppxA9a0M53lwU/2aJdEvLzJKtdKDNekLp0f1KFAZpVpHIFOiPwXcuBC9ElSgMmrRZNkTWEhk9Kh+1KicNPH01hfIDVQPvDjegzWs1O+BF98/RnuwhuPFj/c76xkSPx/tr0m0YIGzFZPj8+PbcBE972ytWJVqZhwF3Gr37IEPc4nnHf2aZIhesQZqsjt7ITCX+EoGqiFNdLEkjeT46onAQiIRqMY00YVMGqudPwLJQLV0Mg1Ed+NPiF7Ju5vhazo8WGP0YuJJJ9Ng8CJToFGiTx6sGXiR4cGagRf98mBNz4vsFizotaJvHqzpBOoogT2Jjw/RODKXUnmgJjeBRC9KPdvqURMqRCPi2cmJPz/+mF//VsCRpVp0PhEBeCvgyFIt/Xv6vIvEYsBLtVCVNMgQzb26ojxWBSqZJvJWvs+QuJyyIPvJ0otkqVb2t2Q/WRZwpAfL/vYeExvViN4qwirf0pHkIuzy7zHqv43oLYG4pv5S1z10IH5zhPD8o/7WrBrZmcQZ0RM240iyM4mIme7WOHLeQO0svrDK6tazr62CgEwIZjrF+ZzLNr1ZtVFJvVe3jkrqvYpnPi8OFl9GSBwMr0YUZoPCfK5lG8PMNru4NgyR2cW1YYg8jxeNiy/MVjROczAD1Th6nGPZhpj4ZUk0Do+Zg1xiqmr6pEEuvjB6VEIgSyI5ozp1oFoWX5xeJKepGF60rG1MW6NaF18cE4aWqUanF63rU1MmDcc+GasXrdPFjqThWNeYbt9N5tqEkBdw1GvGZ+uUfxGoZ+o1I9eejTwvTnOMSHpxfrt0JN/y5Hz2RPx3sk/3ytQlnUSh/DaU70MFfamCfKigplFQlyoYWygYHxrH+OyZmiDG+ArmaRTMtSmYL1Uw561g3ULB2pOC9UMFa8AK1vEpBO3FMCN+P434PVHi97WJ35sofn+p+D3C4vd5i9+rL/57C/nfzCj47kn8t2vyvz9U8A2pgu+AFXzLreB7fAVnKig4F0PB2SYKzqdRcMaQgnOiFJz1peC8NgVn7ik4N1HB2ZcKzi9VcAatgnOEFZwFreA8bwVnsis4V1/B3QgK7rdQcEeJgntmFNwVpOC+JwV3dim4d03B3XkK7j9UcIelgntIFdwlq+A+YAV3Oiu4l1vB3eodL0rzYM0tUCWG6JWqRpVQi1KUBZyUUs1MMeoPeETPIT5cJFUyJrJ0osM6AAAAAAAAAAAAAAAAAAAAAAAAKOQfUZliHlImaHIAAAAASUVORK5CYII="
             alt="Binance Wallet Logo"
             className="w-8 h-8 rounded-full"
           />
-          <span className="text-xl font-bold text-binance-text-light">Binance Web3 Wallet</span>
+          <span className="text-xl font-bold text-binance-text-light">Binance</span>
         </div>
 
-        {/* Main Navigation Links */}
         <div className="hidden md:flex items-center space-x-6">
           {navLinks.map((link) => (
             <a
@@ -325,13 +306,15 @@ const Header = ({
           ))}
         </div>
 
-        {/* Action Buttons */}
-        <div className="flex items-center space-x-3 sm:space-x-4">
+        {/* Right-side buttons */}
+        <div className="flex items-center space-x-2 flex-nowrap overflow-x-auto no-scrollbar relative pr-2">
+          <div className="absolute top-0 right-0 h-full w-6 bg-gradient-to-l from-binance-bg-secondary pointer-events-none"></div>
+
           {userStatus.connectedWalletInfo ? (
-            <div className="relative group">
+            <div className="relative group flex-shrink-0">
               <button
                 onClick={() => navigate('connectedWalletDetails')}
-                className="px-4 py-2 text-sm font-semibold bg-binance-green text-white rounded-lg hover:bg-green-600 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-binance-green"
+                className="px-3 sm:px-4 py-2 text-sm font-semibold bg-binance-green text-white rounded-lg hover:bg-green-600 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-binance-green whitespace-nowrap"
               >
                 Wallet Connected
               </button>
@@ -352,7 +335,7 @@ const Header = ({
           ) : (
             <button
               onClick={() => navigate('walletConnectPage')}
-              className="px-4 py-2 text-sm font-semibold bg-binance-accent-yellow text-binance-bg-primary rounded-lg hover:opacity-90 transition-opacity duration-200 focus:outline-none focus:ring-2 focus:ring-binance-accent-yellow"
+              className="px-3 sm:px-4 py-2 text-sm font-semibold bg-binance-accent-yellow text-binance-bg-primary rounded-lg hover:opacity-90 transition-opacity duration-200 focus:outline-none focus:ring-2 focus:ring-binance-accent-yellow flex-shrink-0 whitespace-nowrap"
             >
               Connect Wallet
             </button>
@@ -361,7 +344,7 @@ const Header = ({
           {showInstallButton && (
             <button
               onClick={handleInstallClick}
-              className="hidden md:block px-4 py-2 text-sm font-semibold bg-binance-accent-yellow text-binance-bg-primary rounded-lg hover:opacity-90 transition-opacity duration-200 focus:outline-none focus:ring-2 focus:ring-binance-accent-yellow"
+              className="hidden md:block px-3 sm:px-4 py-2 text-sm font-semibold bg-binance-accent-yellow text-binance-bg-primary rounded-lg hover:opacity-90 transition-opacity duration-200 focus:outline-none focus:ring-2 focus:ring-binance-accent-yellow flex-shrink-0 whitespace-nowrap"
             >
               Get App
             </button>
@@ -369,7 +352,7 @@ const Header = ({
 
           <button
             onClick={() => navigate('faqPage')}
-            className="px-4 py-2 text-sm font-semibold text-binance-text-light rounded-lg hover:bg-binance-surface-elevated transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-binance-accent-yellow"
+            className="px-3 sm:px-4 py-2 text-sm font-semibold text-binance-text-light rounded-lg hover:bg-binance-surface-elevated transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-binance-accent-yellow flex-shrink-0 whitespace-nowrap"
           >
             Need Help?
           </button>
@@ -377,20 +360,22 @@ const Header = ({
           {userStatus.isLoggedIn && (
             <button
               onClick={() => navigate('settingsPage')}
-              className="px-4 py-2 text-sm font-semibold text-binance-text-light rounded-lg hover:bg-binance-surface-elevated transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-binance-accent-yellow"
+              className="px-3 sm:px-4 py-2 text-sm font-semibold text-binance-text-light rounded-lg hover:bg-binance-surface-elevated transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-binance-accent-yellow flex-shrink-0 whitespace-nowrap"
             >
               Settings
             </button>
           )}
 
-          <DarkModeToggle isDarkMode={isDarkMode} toggleDarkMode={toggleDarkMode} />
+          <div className="flex-shrink-0">
+            <DarkModeToggle isDarkMode={isDarkMode} toggleDarkMode={toggleDarkMode} />
+          </div>
         </div>
       </nav>
     </header>
   );
 };
 
-        // Footer component with mobile navigation
+// Footer component
 const Footer = ({ navigate }) => {
   const navItems = [
     {
@@ -408,50 +393,49 @@ const Footer = ({ navigate }) => {
       route: 'marketsPage',
       icon: (
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-6 h-6">
-          <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m-4.5 4.5H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.615-2.23-1.666-2.75l-7.218-3.609a1.125 1.125 0 00-1.042 0L3.75 3.358c-1.051.52-1.666 1.615-1.666 2.75V19.5a2.25 2.25 0 002.25 2.25z" />
-        </svg>
-      ),
-      activeColor: 'text-binance-accent-yellow',
-    },
-    {
-      label: 'Trade',
-      route: 'tradePage',
-      icon: (
-        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 6h18M3 12h18m-12 6h12" />
-        </svg>
-      ),
-      activeColor: 'text-binance-accent-yellow',
-    },
-    {
-      label: 'Copy Trade',
-      route: 'copyTradePage',
-      icon: (
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-6 h-6">
-          <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 19.5a7.5 7.5 0 0114.998 0A8.25 8.25 0 0112 21.75a8.25 8.25 0 01-7.499-2.25z" />
-        </svg>
-      ),
-      activeColor: 'text-binance-accent-yellow',
-    },
-  ];
+        <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m-4.5 4.5H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.615-2.23-1.666-2.75l-7.218-3.609a1.125 1.125 0 00-1.042 0L3.75 3.358c-1.051.52-1.666 1.615-1.666 2.75V19.5a2.25 2.25 0 002.25 2.25z" />
+      </svg>
+    ),
+    activeColor: 'text-binance-accent-yellow',
+  },
+  {
+    label: 'Trade',
+    route: 'tradePage',
+    icon: (
+      <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 6h18M3 12h18m-12 6h12" />
+      </svg>
+    ),
+    activeColor: 'text-binance-accent-yellow',
+  },
+  {
+    label: 'Copy Trade',
+    route: 'copyTradePage',
+    icon: (
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-6 h-6">
+        <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 19.5a7.5 7.5 0 0114.998 0A8.25 8.25 0 0112 21.75a8.25 8.25 0 01-7.499-2.25z" />
+      </svg>
+    ),
+    activeColor: 'text-binance-accent-yellow',
+  },
+];
 
-  return (
-    <footer className="flex justify-around items-center p-4 border-t border-binance-border bg-binance-bg-primary fixed bottom-0 w-full z-10 md:hidden">
-      {navItems.map((item) => (
-        <button
-          key={item.label}
-          onClick={() => navigate(item.route)}
-          className={`flex flex-col items-center text-binance-text-muted hover:${item.activeColor}`}
-        >
-          {item.icon}
-          <span className="text-xs mt-1">{item.label}</span>
-        </button>
-      ))}
-    </footer>
-  );
+return (
+  <footer className="flex justify-start md:justify-around items-center p-4 border-t border-binance-border bg-binance-bg-primary fixed bottom-0 w-full z-10 overflow-x-auto no-scrollbar space-x-4">
+    {navItems.map((item) => (
+      <button
+        key={item.label}
+        onClick={() => navigate(item.route)}
+        className={`flex flex-col items-center text-binance-text-muted hover:${item.activeColor} flex-shrink-0`}
+      >
+        {item.icon}
+        <span className="text-xs mt-1 whitespace-nowrap">{item.label}</span>
+      </button>
+    ))}
+  </footer>
+);
 };
-
-        // --- TradingView Widget Component ---
+   // --- TradingView Widget Component ---
         // This component dynamically embeds the TradingView Advanced Chart Widget.
         const TradingViewWidget = ({ symbol, interval = "1D", theme = "dark", height = 400 }) => {
             const containerRef = useRef(null);
